@@ -1,0 +1,143 @@
+<template name="edit_questions">
+	<h2>Editing Questions for {{categoryName}}</h3>
+	{{> add_new_question}}
+	<h3>Current Questions:</h3>
+	{{#each questions}}
+		{{> question_edit}}
+	{{/each}}
+</template>
+
+<template name="add_new_question">
+	<h3>Add a Question:</h3>
+	<div>
+		<form role="form">
+	  		<div class="row">
+					<div class="form-group col-lg-8">
+					<label class="control-label" for="code">Question Title:</label>
+					  <input type="text" class="form-control" placeholder="Enter a Question Title" id="new-question-title"/>
+					</div>
+				</div>
+
+				<label for="code">Answers:</label>
+				<div class="row">
+					<div class="form-group col-lg-8">
+						<div class="input-group">
+							<span class="input-group-addon">Answer 1: </span>
+							<input type="text" class="form-control question-answer">
+							<span class="input-group-addon">Correct? <input type="radio" name="answer-options"></span>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="form-group col-lg-8">
+						<div class="input-group">
+							<span class="input-group-addon">Answer 2: </span>
+							<input type="text" class="form-control question-answer">
+							<span class="input-group-addon">Correct? <input type="radio" name="answer-options"></span>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="form-group col-lg-8">
+						<div class="input-group">
+							<span class="input-group-addon">Answer 3: </span>
+							<input type="text" class="form-control question-answer">
+							<span class="input-group-addon">Correct? <input type="radio" name="answer-options"></span>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="form-group col-lg-8">
+						<div class="input-group">
+							<span class="input-group-addon">Answer 4: </span>
+							<input type="text" class="form-control question-answer">
+							<span class="input-group-addon">Correct? <input type="radio" name="answer-options"></span>
+						</div>
+					</div>
+				</div>
+
+
+				<div class="row">
+				<div class="form-group col-lg-8 ">
+				<label for="code">Answer Explanation:</label>
+				  <input type="text" class="form-control input-normal" placeholder="Explain why your answer is correct" id="question-explanation"/>
+				</div>
+				</div>
+				<div class="row">
+				<button class="btn btn-success" id="add-question-button">Add Question</button>
+				<div id="add-question-errors" style="color:#a94442;">
+				</div>
+			</div>
+		</form>
+	</div>
+	<hr>
+</template>
+
+<template name="question_edit">
+	{{#if editing}}
+		{{> question_edit_fields}}
+	{{else}}
+		<div>
+			<div><strong>Question:</strong> {{question}}</div>
+			<ul>
+			{{#each answer }}
+				<li>{{option}} {{#if is_correct id ../correctAnswer}} <span class="glyphicon glyphicon-ok"></span> {{/if}}</li>
+			{{/each}}
+			</ul>
+			<div><strong>Answer Explanation:</strong> {{explanation}}</div>
+			<button class="btn btn-info edit-question">Edit</button> <button class="btn btn-danger delete-question">Delete</button>
+			 {{> move_question_dropdown}}
+		</div>
+	{{/if}}
+	<hr>
+</template>
+
+<template name="question_edit_fields">
+	<div class="row">
+		<div class="form-group col-lg-8">
+		<label class="control-label" for="code">Question Title:</label>
+		  <input type="text" class="form-control" placeholder="Enter a Question Title" id="new-question-title-{{_id}}" value="{{question}}"/>
+		</div>
+	</div>
+
+	<label for="code">Answers:</label>
+	{{#each answer}}
+		<div class="row">
+			<div class="form-group col-lg-8">
+				<div class="input-group">
+					<span class="input-group-addon">Answer {{answer_number}}: </span>
+					<input type="text" class="form-control question-answer-{{../_id}}" value="{{option}}">
+					<span class="input-group-addon">Correct? <input type="radio" name="answer-options-{{../_id}}" {{checked ../correctAnswer}}></span>
+				</div>
+			</div>
+		</div>
+	{{/each}}
+
+	<div class="row">
+	<div class="form-group col-lg-8 ">
+	<label for="code">Answer Explanation:</label>
+	  <input type="text" class="form-control input-normal" placeholder="Explain why your answer is correct" id="question-explanation-{{_id}}" value="{{explanation}}"/>
+	</div>
+	</div>
+
+	<div class="row">
+		<button class="btn btn-info update-from-edit">Update</button> <button class="btn btn-danger cancel-editing">Cancel</button>
+		<div id="update-question-errors-{{_id}}" style="color:#a94442;">
+	</div>
+
+</template>
+
+<template name="move_question_dropdown">
+	Move question to: 
+	<select id="move-question-{{_id}}">
+		<option selected="selected">Select One...</option>
+		{{#each categories}}
+			<option value="{{_id}}">{{name}}</option>
+		{{/each}}
+	</select>
+	<button class="btn btn-info move-question">Move</button>
+
+</template>

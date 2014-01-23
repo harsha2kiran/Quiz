@@ -1,0 +1,38 @@
+<template name="edit_users">
+	<h3>Edit Users</h3>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Username</th>
+				<th></th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+		{{#each users}}
+			<tr>
+				<td>{{username}} - {{points}} points</td>
+				<td>
+					{{#if is_admin}} 
+						{{#if is_not_me}}
+							<a href="#" class="revoke-admin">Revoke Admin Priveleges</a>
+						{{else}}
+							This is you!
+						{{/if}}
+					{{else}} 
+						<a href="#" class="make-admin">Make Admin</a>
+					{{/if}}
+				</td>
+				<td>
+					<span id="new-password-span-{{_id}}"><a href="#" class="change-password">Change Password</a></span>
+				</td>
+				<td>
+					{{#if is_not_me}}
+						<a href="#" class="delete-user">Delete User</a>
+					{{/if}}
+				</td>
+			</tr>
+		{{/each}}
+		</tbody>
+	</table>
+</template>

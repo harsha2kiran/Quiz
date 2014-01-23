@@ -1,0 +1,83 @@
+Router.map(function() {
+	this.route('homepage', {
+		path: '/',
+		waitOn: [categorySub, currentUserSub]
+	});
+
+	this.route('quiz_lobby', {
+		path: 'lobby/:_id',
+		waitOn: function() {
+			var categoryId = this.params._id;
+			lobbySub = Meteor.subscribe('lobbyForCategory', categoryId);
+			var lobby = Lobbys.findOne({});
+			if (lobby) {
+				var quizSub = Meteor.subscribe('currentQuiz', lobby._id);
+			}
+			return [categorySub, currentUserSub, lobbySub, quizSub];
+		},
+		data: function() {
+			return {
+				categoryId: this.params._id
+			}
+		}
+	});
+
+	this.route('admin', {
+		path: '/admin',
+		waitOn: [categorySub, currentUserSub],
+		controller: 'AdminController'
+	});
+
+	this.route('edit_categories', {
+		path: '/admin/categories',
+		waitOn: [categorySub, currentUserSub],
+		controller: 'AdminController',
+		data: function() { return Categories.find({}); }
+	});
+
+	this.route('edit_questions', {
+		path: '/admin/questions/:_id',
+		waitOn: function() {
+			var questionSub = Meteor.subscribe('questionsForCategory', this.params._id);
+			return [categorySub, currentUserSub, questionSub];
+		},
+		controller: 'AdminController',
+		data: function() {
+			return {
+				categoryId: this.params._id
+			}
+		}
+	});
+
+	this.route('edit_users', {
+		path: '/admin/users',
+		waitOn: function() {
+			var allUsersSub = Meteor.subscribe('allUsers');
+			return [allUsersSub, currentUserSub];
+		}, 
+		controller: 'AdminController'
+	});
+
+	this.route('my_account', {
+		path: '/my-account',
+		waitOn: [categorySub, currentUserSub]
+	});
+});
+
+Router.configure({
+  layoutTemplate: 'layout',
+  notFoundTemplate: '404',
+  loadingTemplate: 'loading'
+});
+
+AdminController = RouteController.extend({
+	action: function() {
+		//yeah this check is client side so a malicious user could get access to the page but publications will ensure only admins can see
+		//sensitive data and server side methods will ensure only admins can add/edit/delete appropriate stuff
+		if (!Meteor.user() || !Meteor.user().isAdmin) {
+			this.render('access_denied');
+		} else {
+			this.render();
+		}
+	}
+});

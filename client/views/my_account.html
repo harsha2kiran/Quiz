@@ -1,0 +1,40 @@
+<template name="my_account">
+	{{#if currentUser}}
+		<h3>My Account</h3>
+		<hr>
+		<h4>Change Password:</h4>
+		<div>
+			<form role="form">
+				<div class="row">
+					<div class="form-group col-lg-4">
+						<label class="control-label" for="code">Current Password:</label>
+						<input type="password" class="form-control" id="current-password"/>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="form-group col-lg-4">
+						<label class="control-label" for="code">New Password:</label>
+						<input type="password" class="form-control" id="new-password1"/>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="form-group col-lg-4">
+						<label class="control-label" for="code">New Password (again):</label>
+						<input type="password" class="form-control" id="new-password2"/>
+					</div>
+				</div>
+
+				<div class="row">
+					<button class="btn btn-primary" id="change-password-button">Change Password</button>
+					<div id="change-password-errors" style="color:#a94442;">
+					</div>
+				</div>
+			</form>
+		</div>
+	{{else}}
+		<h2>You must login to see this page</h2>
+		{{loginButtons}}
+	{{/if}}
+</template>

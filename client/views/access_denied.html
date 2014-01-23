@@ -1,0 +1,8 @@
+<template name="access_denied">
+	<h3>Access Denied</h3>
+	<p>Only admins have access to this page</p>
+	{{#if currentUser}}
+	{{else}}
+		{{loginButtons}}
+	{{/if}}
+</template>

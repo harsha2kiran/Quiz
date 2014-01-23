@@ -1,0 +1,17 @@
+<template name="homepage">
+	<h3>Homepage</h3>
+	{{#if currentUser}}
+	<div>
+		Choose a quiz (note a category must have 5 questions to appear here):
+		<ul>
+			{{#each categories_that_can_be_quizzed}}
+				<li><a href="{{pathFor 'quiz_lobby'}}">{{name}}</a></li>
+			{{/each}}
+		</ul>
+	</div>
+	{{else}}
+	<div>
+		You must be logged in to enter a Quiz: {{loginButtons}}
+	</div>
+	{{/if}}
+</template>

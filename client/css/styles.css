@@ -1,0 +1,9 @@
+.question-container {
+	width:800px;
+	text-align:center;
+}
+
+.question-option {
+	width:200px;
+	margin-bottom:10px;
+}

@@ -1,0 +1,128 @@
+<template name="quiz_lobby">
+	<h2>Quiz Lobby - {{categoryName}}</h2>
+	{{#if prequiz}}
+		<div>
+			{{#with lobby}}
+				<p>Player Count: {{playerCount}}</p>
+				<ul>
+				{{#each players}}
+					<li>{{username}}</li>
+				{{/each}}
+				</ul>
+			{{/with}}
+		</div>
+		<div id="quiz-countdown"></div>
+	{{else}}
+		<div class="question-container">
+		{{> currentPlayerStats}}
+		{{> opponentPlayerStats}}
+		<span style="display:block;width:100px;margin: 0 auto;"><strong>Clock: {{question_clock}}</strong></span>
+		<br>
+		<br>
+		<br>
+		{{#with current_question}}
+				<h3>Question {{question_number}} of 5</h3>
+				<h3>{{question}}</h3>
+				{{#each answer}}
+					{{> answer_option}}
+				{{/each}}
+			
+		{{/with}}
+		{{#if question_results}}
+			{{> question_result}}
+		{{/if}}
+		{{#if quiz_finished}}
+			<h3>Quiz Finished</h3>
+			{{winner_string}}
+			<div>
+				{{#if opponent_in_lobby}}
+					{{#if rematch_me}}
+						Waiting on {{opponent_name}} to choose to do a rematch...
+					{{else}}
+						Do you want to have a rematch? 
+						
+						{{#if rematch_opponent}}
+							<div>{{opponent_name}} has chose to do a rematch, do you accept?
+								<button type="button" class="btn btn-info quiz-rematch">Yes</button>
+								<button type="button" class="btn btn-info new-game">No</button>
+							</div>
+						{{else}}
+							<div>
+								<button type="button" class="btn btn-info quiz-rematch">Rematch</button>
+								<button type="button" class="btn btn-info new-game">New Game</button>
+							</div>
+						{{/if}}
+					{{/if}}
+				{{else}}
+					{{opponent_name}} has declined a rematch <button type="button" class="btn btn-info new-game">New Game</button>
+				{{/if}}
+			</div>
+		 	<div>
+		 		{{#if rematch_opponent}}
+
+		 		{{else}}
+		 		{{/if}}
+		 	</div>
+		{{/if}}
+		{{#if quiz_finished_early}}
+			<h3>Your opponent left!</h3>
+			<p>You must have been too good.</p>
+		{{/if}}
+		</div>
+	{{/if}}
+</template>
+
+<template name="answer_option">
+	<div>
+		{{#if myChoice}}<span class="glyphicon glyphicon-star"></span>{{/if}} 
+		<button type="button" class="btn btn-{{button_color}} question-option" {{disabled}}>{{option}}</button>
+		{{#if opponentChoice}} <span class="glyphicon glyphicon-star"></span>{{/if}}
+	</div>
+</template>
+
+<template name="currentPlayerStats">
+	<div style="float:left;">
+		{{#with playerMe}}
+			<p>{{username}}</p>
+			<p>Points: {{score}}</p>
+			{{#if answered}}<p>Answered</p>{{else}}<p>Not Answered</p>{{/if}}
+		{{/with}}
+	</div>
+</template>
+
+<template name="opponentPlayerStats">
+	<div style="float:right;">
+		{{#with playerOpponent}}
+			<p>{{username}}</p>
+			<p>Points: {{score}}</p>
+			{{#if answered}}<p>Answered</p>{{else}}<p>Not Answered</p>{{/if}}
+		{{/with}}
+	</div>
+</template>
+
+<template name="question_result">
+	<h3>Explanation:</h3>
+	<p>{{explanation}}</p>
+	{{> currentPlayerResults}}
+	{{> opponentPlayerResults}}
+</template>
+
+<template name="currentPlayerResults">
+	<div style="float:left;">
+		{{#if answered}}
+			<p>You answered {{correct_string}} in {{answer_time}} seconds(s).</p>
+		{{else}}
+			<p>You did not answer this question.</p>
+		{{/if}}
+	</div>
+</template>
+
+<template name="opponentPlayerResults">
+	<div style="float:right;">
+			{{#if answered}}
+				<p>{{username}} answered {{correct_string}} in {{answer_time}} seconds(s).</p>
+			{{else}}
+				<p>{{username}} did not answer this question.</p>
+			{{/if}}
+	</div>
+</template>

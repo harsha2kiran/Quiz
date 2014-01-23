@@ -1,0 +1,33 @@
+<template name="edit_categories">
+	<h1>Edit Categories</h1>
+	{{#with root_category}}
+		{{> category}}
+	{{/with}}
+</template>
+
+<template name="category">
+	<ul>
+		<li>
+			{{name}}
+			<button type="button" class="btn btn-primary add-sub">
+				Add Subcategory
+			</button>
+
+			{{#if not_root}}
+				<button type="button" class="btn btn-danger delete-cat">
+					Delete Category
+				</button>
+
+				<button type="button" class="btn btn-danger delete-cat-and-questions">
+					Delete Category &amp; Question
+				</button>
+			{{/if}}
+		
+			<a href="{{pathFor 'edit_questions'}}">Edit Questions</a>
+			<div id="add-category-{{_id}}"></div>
+			{{#each child_categories _id}}
+				{{> category}}
+			{{/each}}
+		</li>
+	</ul>
+</template>
