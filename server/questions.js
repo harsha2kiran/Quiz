@@ -7,7 +7,7 @@
 		explanation: String of the explanation to the answer
 */
 
-Questions = new Meteor.Collection('questions');
+
 
 //publishing all the questions for a given category. intended for the CRUD interface where admins can edit them
 Meteor.publish('questionsForCategory', function(categoryId) {

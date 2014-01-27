@@ -8,7 +8,7 @@
 		playing: boolean, true if the lobby is engaged in a quiz, otherwise false
 */
 
-Lobbys = new Meteor.Collection('lobbys');
+
 
 Meteor.publish('lobbyForCategory', function(categoryId) {
 	var userId = this.userId;

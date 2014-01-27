@@ -7,7 +7,6 @@
 				to initialise a quiz as opposed to sending all the questions to the client
 */
 
-Categories = new Meteor.Collection('categories');
 
 Meteor.publish('allCategories', function() {
 	return Categories.find({});

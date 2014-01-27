@@ -13,7 +13,7 @@
 
 */
 
-Quizzes = new Meteor.Collection('quizzes');
+
 
 Meteor.publish('currentQuiz', function(lobbyId) {
 	//will only return something if the user is actually in the quiz
