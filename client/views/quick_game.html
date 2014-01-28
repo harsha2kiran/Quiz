@@ -1,0 +1,58 @@
+<template name="quick_game"> 
+  <div class="modal fade" id="quick-game-modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Invite</h4>
+          Choose a quiz (note a category must have 5 questions to appear here):
+          
+        </div>
+        <div class="modal-body">
+     		{{>quick_game_modal_body}}
+      </div>
+    </div>
+  </div>
+</template>
+
+<template name="quick_game_modal_body">
+          <button class="dropdown">
+            <a data-toggle="dropdown" class="dropdown-toggle" href="#">Dropdown</a>
+              <ul class="dropdown-menu">
+                {{#each categories_that_can_be_quizzed}}
+                  <li><a href="#">{{name}}</a></li>
+                {{/each}}
+              </ul>
+          </button>
+  {{#if invited}}
+    User invites you to play quize!
+    <button type="button" class="btn btn-primary" id="accept">Accept</button>
+    <button type="button" class="btn btn-danger" id="reject">Reject</button>    
+  {{else}}
+    {{#if invitation}}
+      {{#if busy}}
+        User busy
+      {{else}}
+        {{#if rejected}}
+          User rejected your invitation!
+        {{else}}
+          {{#if waiting}}
+            Waiting for accept!
+          {{else}}
+            User Accept!
+          {{/if}}
+        {{/if}}
+      {{/if}}
+    {{else}}
+        <input class="invite" type="text"></input>
+        <div>
+          {{communique}}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="invite">invite</button>
+        </div>
+    {{/if}}
+  {{/if}}
+	
+</template>  

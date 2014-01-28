@@ -1,3 +1,5 @@
+
+
 Template.navbar.helpers({
 	is_admin: function() {
 		if (!Meteor.user())
@@ -10,13 +12,18 @@ Template.navbar.helpers({
 			return Meteor.user().username;
 	},
 	points: function() {
-		if (Meteor.user())
+		if (Meteor.user().stats){
 			return Meteor.user().stats.points.all;
+		}
 	}
+
 });
 
 Template.navbar.events({
 	'click .logout': function() {
 		Meteor.logout();
+	}, 
+	'click .quick': function(){
+		$('#quick-game-modal').modal('show');
 	}
 });

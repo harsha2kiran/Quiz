@@ -273,8 +273,6 @@ Quiz.doQuestion = function(quizId) {
 
 						var winner = (quiz.players[0].score>quiz.players[1].score) ? quiz.players[0] :
 									((quiz.players[1].score>quiz.players[0].score) ? quiz.players[1] : null);
-						console.log("the winner is"); 
-						console.log(winner);
 						if(winner)
 							Meteor.call('updateStats',winner.userId,'wins',1); 
 
