@@ -3,6 +3,7 @@ Meteor.startup(function () {
   var makeUser = function(email,role) {
 
     var uid = undefined, user = Meteor.users.findOne({role: role});
+    console.log(user);
     if (!user){
         try{
           uid = Accounts.createUser({email: email, password: 'password'});     
@@ -24,8 +25,8 @@ Meteor.startup(function () {
 
  };
 
-  makeUser('admin@admin.com', "admin");
+ /* makeUser('admin@admin.com', "admin");
   makeUser('moderator@moderator.com', "editor"); 
-
+*/
 });
 
