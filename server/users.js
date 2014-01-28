@@ -1,11 +1,33 @@
+
+
 Accounts.onCreateUser(function(options, user) {
 	//first user is Admin
 	if (Meteor.users.find({}).count() === 0) {
 		user.isAdmin = true;
 	}
-
-	user.points = 0;
-
+	user.stats = {
+		'points' : {
+			'all'   : 0, 
+			'day'   : 0, 
+			'week'  : 0,
+			'month' : 0,
+			'year'  : 0			
+		},
+		'wins' : {
+			'all'   : 0, 
+			'day'   : 0, 
+			'week'  : 0,
+			'month' : 0,
+			'year'  : 0			
+		},
+		'answers' : {
+			'all'   : 0, 
+			'day'   : 0, 
+			'week'  : 0,
+			'month' : 0,
+			'year'  : 0			
+		},
+	}
 	return user;
 });
 
@@ -64,6 +86,18 @@ Meteor.methods({
 			throw new Meteor.Error(500, "You cannot delete yourself");
 
 		Meteor.users.remove(deletedUserId);
+	}, 
+	updateStats: function(userId,stat,amount){
+
+		var user = Meteor.users.findOne({_id:userId}); 
+
+		var update = {};
+		for(var period in user.stats[stat]){
+			var key = 'stats.'+stat+'.'+period; 
+			update[key] = user.stats[stat][period]+amount; 
+		}
+				
+		Meteor.users.update(userId, {$set: update});
 	}
 });
 
@@ -73,3 +107,4 @@ Users.isAdmin = function(userId) {
 	var user = Meteor.users.findOne(userId);
 	return user.isAdmin;
 }
+

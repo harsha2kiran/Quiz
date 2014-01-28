@@ -1,0 +1,29 @@
+<template name="badges">
+    <table class="table-bordered">
+    <tr>
+      <th style="width: 20%">Name</th>
+      <th style="width: 20%">Poits Required</th>
+      <th style="width: 20%">icon</th> 
+      <th style="width: 20%">percentage</th>
+    </tr>
+    {{#each badges}}
+      <tr>
+        <td style="width: 20%">{{name}}</td>
+        <td style="width: 20%">{{points}}</td>
+        <td style="width: 20%">{{icon}}</td>
+        <td style="width: 20%">
+        	{{#if haveUserBadge}}
+        	<span class="glyphicon glyphicon-ok"></span>
+        	{{else}}
+        	<div class="progress">
+  				<div class="progress-bar" role="progressbar" aria-valuenow="{{percentage}}" aria-valuemin="0" aria-valuemax="100" style="width: {{percentage}}%;">
+    				<span class="sr-only">{{percentage}}% Complete</span>
+  				</div>
+			</div>
+			{{/if}}
+		</td>
+      </tr>
+    {{/each}}
+    </table>
+
+</template>

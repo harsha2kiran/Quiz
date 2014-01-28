@@ -11,7 +11,7 @@ Template.navbar.helpers({
 	},
 	points: function() {
 		if (Meteor.user())
-			return Meteor.user().points;
+			return Meteor.user().stats.points.all;
 	}
 });
 

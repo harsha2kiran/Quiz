@@ -11,6 +11,38 @@ Meteor.methods({
 	},
 	'updateBadge': function(id,badge){
 		Badges.update({_id:id},{$set : badge});
-	}
-
+	}, 
+	/*'giveUserBadge' : function(userId,badge){
+		Meteor.users.update({_id:userId},{$push:{badges:badge}});
+	},
+	'shouldUserHaveBadge' : function(user,badge){
+		return (user.points>badge.points && ((user.badges == undefined) ? true : !(badge.name in user.badges)));
+	}*/
 });
+
+//observe users and add them badges if they reach required points amount
+/*Meteor.startup(function(){
+	query = Meteor.users.find(); 
+	var handle = query.observeChanges({
+		changed: function(id, fields){
+			var user = Meteor.users.findOne({_id:id});
+			if('points' in fields){
+				Badges.find().forEach(function(badge){
+					console.log('checking for badge'+badge.name)
+					Meteor.call('shouldUserHaveBadge',user,badge,function(err,result){
+						if(err)
+							console.log("an error"+err+"occured");
+						if(result == true){
+							Meteor.call('giveUserBadge',user._id,{badge.name,badge.icon},function(err,result){
+								if(err)
+									console.log("an error"+err+occured);
+							});
+						} 
+					});
+				});
+
+			}
+		}
+	});
+}); 
+*/

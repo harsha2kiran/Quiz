@@ -1,0 +1,51 @@
+<template name="hall_of_fame">
+	<div class="navbar navbar-default" role="navigation">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="navbar-collapse collapse">
+        
+        	<ul class="nav navbar-nav">
+	            <li><a class="period" name ="year" href="#">Year</a></li>
+          	</ul>
+            <ul class="nav navbar-nav">
+              	<li><a class="period" name="month" href="#">Month</a></li>
+            </ul>
+            <ul class="nav navbar-nav">
+              	<li><a class="period" name="week" href="#">Week</a></li>
+            </ul>
+			<ul class="nav navbar-nav">
+				<li><a class="period" name="day" href="#">Day</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+
+				<li><a class="stat" name="points" href="#">By points</a></li>
+				<li><a class="stat" name="wins" href="#" class="logout">By wins</a></li>
+				<li><a class="stat" name="answers" href="#" class="logout">By answers</a></li>
+			</ul>
+
+        </div><!--/.nav-collapse -->
+  	</div>
+    <table class="table-bordered">
+		<tr>
+			<th style="width: 20%">Name</th>
+			<th style="width: 20%">{{stat}}</th>
+			<th style="width: 20%">Avatar</th> 
+			<th style="width: 20%">Link</th>
+		</tr>
+		{{#each users}}
+		<tr>
+			<th style="width: 20%">{{username}}</th>
+			<th style="width: 20%">{{amount}}</th>
+			<th style="width: 20%">Avatar</th> 
+			<th style="width: 20%">Link</th>
+		</th>
+		{{/each}} 
+	</table>
+
+</template>

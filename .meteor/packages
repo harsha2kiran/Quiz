@@ -10,3 +10,5 @@ accounts-password
 bootstrap-3
 iron-router
 insecure
+moment
+sync-methods

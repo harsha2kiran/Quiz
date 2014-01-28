@@ -270,6 +270,14 @@ Quiz.doQuestion = function(quizId) {
 					} else {
 						//if we're done we change the status which client side will display the winner and so on
 						Quizzes.update(quizId, {$set: { state: 'quizfinished' } } );
+
+						var winner = (quiz.players[0].score>quiz.players[1].score) ? quiz.players[0] :
+									((quiz.players[1].score>quiz.players[0].score) ? quiz.players[1] : null);
+						console.log("the winner is"); 
+						console.log(winner);
+						if(winner)
+							Meteor.call('updateStats',winner.userId,'wins',1); 
+
 					}
 				}, 3000);
 			}
@@ -297,7 +305,13 @@ Quiz.doQuestionResults = function(quizId, questionIdx, playerLeft) {
 				Quizzes.update({ _id: quizId, 'players.userId': player.userId },
 					{$inc: { 'players.$.score': points } } );
 
-				Meteor.users.update(player.userId, {$inc: { points: points } } );
+				//update user stats
+
+				Meteor.call('updateStats',player.userId,'points',points);
+				if(points > 0){
+					Meteor.call('updateStats',player.userId,'answers',1);	
+				}
+
 			}
 		}
 	});

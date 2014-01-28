@@ -54,10 +54,17 @@ Router.map(function() {
 			}
 		}
 	});
-	this.route('badges', {
+	this.route('edit_badges', {
 		path: '/admin/badges',
 		controller: 'AdminController',
 	});
+	this.route('badges', {
+		path: '/badges'
+	});
+	this.route('hall_of_fame', {
+		path: '/hall_of_fame'
+	});
+
 	this.route('edit_users', {
 		path: '/admin/users',
 		waitOn: function() {

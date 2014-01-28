@@ -3,7 +3,9 @@
   "dependencies": {
     "basePackages": {
       "iron-router": {},
-      "bootstrap-3": {}
+      "bootstrap-3": {},
+      "moment": {},
+      "sync-methods": {}
     },
     "packages": {
       "iron-router": {
@@ -15,6 +17,16 @@
         "git": "https://github.com/mangasocial/meteor-bootstrap-3.git",
         "tag": "v0.3.7",
         "commit": "5dd0d142c870647b910be80bc777b96f0dd45e5e"
+      },
+      "moment": {
+        "git": "https://github.com/acreeger/meteor-moment.git",
+        "tag": "v2.5.1",
+        "commit": "8c9bc5d3fc96705057737cb9743d555417f6e551"
+      },
+      "sync-methods": {
+        "git": "https://github.com/ianserlin/meteor-sync-methods.git",
+        "tag": "v0.1.1",
+        "commit": "2a7b094d54f3fb7c9acebbe10b68f9db1e5f156b"
       }
     }
   }

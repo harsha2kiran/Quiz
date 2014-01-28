@@ -33,8 +33,21 @@
 				</div>
 			</form>
 		</div>
+		{{>my_badges}}
 	{{else}}
 		<h2>You must login to see this page</h2>
 		{{loginButtons}}
 	{{/if}}
+</template>
+<template name="my_badges">
+	<h2>My badges</h2>		
+	{{#each badges}}
+	<div>
+		{{name}} 
+		<div class="badge">
+			{{icon}}
+		</div>
+	</div>
+	{{/each}}
+
 </template>

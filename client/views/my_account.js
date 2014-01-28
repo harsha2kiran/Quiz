@@ -1,3 +1,7 @@
+Meteor.startup(function(){
+	//Meteor.subscribe('mybadges',Meteor.user().points);
+});
+
 Template.my_account.events({
 	'click #change-password-button': function(evt) {
 		evt.preventDefault();
@@ -49,3 +53,14 @@ Template.my_account.events({
 		}
 	}
 });
+Template.my_badges.badges = function(){
+	//check why $lt doesnt work ??? 
+	var result = []; 
+	var points = Meteor.user().points;
+	Badges.find().forEach(function(badge){
+		if(badge.points < points){
+			result.push(badge); 
+		}
+	});
+	return result;
+}
