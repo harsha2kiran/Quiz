@@ -4,8 +4,7 @@ Template.navbar.helpers({
 	is_admin: function() {
 		if (!Meteor.user())
 			return;
-
-		return Meteor.user().isAdmin;
+		return (Meteor.user().isAdmin || Meteor.user().isModerator);
 	},
 	username: function() {
 		if (Meteor.user())

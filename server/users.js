@@ -5,6 +5,9 @@ Accounts.onCreateUser(function(options, user) {
 	if (Meteor.users.find({}).count() === 0) {
 		user.isAdmin = true;
 	}
+	if (Meteor.users.find({}).count() === 0) {
+		user.isModerator = true;
+	}
 	user.stats = {
 		'points' : {
 			'all'   : 0, 
@@ -40,13 +43,15 @@ Meteor.publish('currentUser', function() {
 //all users are published to an admin
 Meteor.publish('allUsers', function() {
 	 if (this.userId && Users.isAdmin(this.userId)) 
+	 	console.log(Meteor.users.find().fetch());
 		return Meteor.users.find();
 });
 
 Meteor.methods({
 	makeAdmin: function(newAdminUserId) {
 		check(newAdminUserId, String)
-
+		console.log(this.userId);
+		console.log(Users.isAdmin(this.userId));
 		if (!Users.isAdmin(this.userId))
 			throw new Meteor.Error(500, "Only admins can do this");
 
@@ -65,6 +70,29 @@ Meteor.methods({
 
 		Meteor.users.update(revokeUserId, {
 			$set: { isAdmin: false }
+		});
+	},
+	makeModerator: function(newAdminUserId) {
+		check(newAdminUserId, String)
+
+		if (!Users.isAdmin(this.userId))
+			throw new Meteor.Error(500, "Only admins can do this");
+
+		Meteor.users.update(newAdminUserId, {
+			$set: { isModerator: true }
+		});
+	},
+	revokeModerator: function(revokeUserId) {
+		check(revokeUserId, String);
+
+		if (!Users.isAdmin(this.userId))
+			throw new Meteor.Error(500, "Only admins can do this");
+
+		if (revokeUserId === this.userId)
+			throw new Meteor.Error(500, "You can't remove admin from yourself");
+
+		Meteor.users.update(revokeUserId, {
+			$set: { isModerator: false }
 		});
 	},
 	changeUserPassword: function(changedUsersId, newPassword) {
@@ -108,3 +136,7 @@ Users.isAdmin = function(userId) {
 	return user.isAdmin;
 }
 
+Users.isModerator = function(userId) {
+	var user = Meteor.users.findOne(userId);
+	return user.Moderator;
+}

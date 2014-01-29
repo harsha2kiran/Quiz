@@ -24,6 +24,17 @@
 					{{/if}}
 				</td>
 				<td>
+					{{#if is_moderator}} 
+						{{#if is_not_me}}
+							<a href="#" class="revoke-mod">Revoke Moderator Priveleges</a>
+						{{else}}
+							This is you!
+						{{/if}}
+					{{else}} 
+						<a href="#" class="make-mod">Make Moderator</a>
+					{{/if}}
+				</td>
+				<td>
 					<span id="new-password-span-{{_id}}"><a href="#" class="change-password">Change Password</a></span>
 				</td>
 				<td>

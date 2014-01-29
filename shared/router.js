@@ -67,10 +67,6 @@ Router.map(function() {
 
 	this.route('edit_users', {
 		path: '/admin/users',
-		waitOn: function() {
-			var allUsersSub = Meteor.subscribe('allUsers');
-			return [allUsersSub, currentUserSub];
-		}, 
 		controller: 'AdminController'
 	});
 
@@ -92,7 +88,7 @@ AdminController = RouteController.extend({
 	action: function() {
 		//yeah this check is client side so a malicious user could get access to the page but publications will ensure only admins can see
 		//sensitive data and server side methods will ensure only admins can add/edit/delete appropriate stuff
-		if (!Meteor.user() || !Meteor.user().isAdmin) {
+		if (!Meteor.user() || !(Meteor.user().isAdmin || Meteor.user().isModerator)) {
 			this.render('access_denied');
 		} else {
 			this.render();

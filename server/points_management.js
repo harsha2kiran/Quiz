@@ -13,7 +13,7 @@ function resetUsersStats(period){
 				Meteor.users.update({_id:user._id},{$set: update});
 			});			
 		}
-		console.log("users stats reset at the and of" + period);
+		console.log("users stats reset at the end of" + period);
 		resetUsersStats(period);
 	},delay); 
 }

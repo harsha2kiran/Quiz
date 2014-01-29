@@ -11,8 +11,10 @@
 
 
 Meteor.publish('lobbyForCategory', function(categoryId) {
+
 	var userId = this.userId;
 	//if a non logged in user goes into a lobby we do nothing
+
 	if (userId) {
 		var lobbyId = addToLobby(userId, categoryId);
 	}

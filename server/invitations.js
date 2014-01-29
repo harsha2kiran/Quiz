@@ -9,7 +9,7 @@ Meteor.startup(function(){
 });
 
 Meteor.methods({
-	'invite':function(invited){
+	'invite':function(invited,category){
 		var invited = Meteor.users.findOne({username: invited}); 
 		var invitation;
 		if(!invited){
@@ -17,14 +17,24 @@ Meteor.methods({
 		}
 		var invitation = {
 			'invitator' : Meteor.userId(), 
+			'invitatorName' : Meteor.users.findOne({_id:Meteor.userId()}).username,
 			'invited' : invited._id,
-			'category' : 'category',
+			'category' : category,
 			'state' : 'waiting'
 		};
 		Invitations.insert(invitation); 
 	}, 
 	'rejectInvitation': function(inv){
 		Invitations.update({_id:inv},{$set:{state: 'rejected'}}); 
+		Meteor.setTimeout(function(){
+			console.log("remove inv");
+			Invitations.remove({_id:inv});
+		},4000);
+	}, 
+	'acceptInvitation' : function(inv){
+		console.log("call acceptinvitation")
+		console.log(inv);
+		Invitations.update({_id:inv},{$set:{state: 'accepted'}}); 
 		Meteor.setTimeout(function(){
 			console.log("remove inv");
 			Invitations.remove({_id:inv});

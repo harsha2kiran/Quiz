@@ -7,8 +7,9 @@ standard-app-packages
 preserve-inputs
 accounts-ui
 accounts-password
-bootstrap-3
 iron-router
 insecure
 moment
 sync-methods
+bootstrap3-wysihtml5
+bootstrap-3

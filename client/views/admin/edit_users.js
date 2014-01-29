@@ -1,9 +1,18 @@
+Meteor.startup(function(){
+	Deps.autorun(function(){
+		Meteor.subscribe('allUsers');
+	});
+});
+
 Template.edit_users.helpers({
 	users: function() {
 		return Meteor.users.find({}, { sort: { username: 1 } })
 	},
 	is_admin: function() {
 		return this.isAdmin;
+	},
+	is_moderator: function() {
+		return this.isModerator;
 	},
 	is_not_me: function() {
 		if (Meteor.user())
@@ -19,6 +28,16 @@ Template.edit_users.events({
 	},	
 	'click .make-admin': function() {
 		Meteor.call('makeAdmin', this._id, function(err, res) {
+
+		});
+	},
+	'click .revoke-mod': function() {
+		Meteor.call('revokeModerator', this._id, function(err, res) {
+			
+		});
+	},	
+	'click .make-mod': function() {
+		Meteor.call('makeModerator', this._id, function(err, res) {
 
 		});
 	},

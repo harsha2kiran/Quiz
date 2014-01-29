@@ -19,7 +19,7 @@ Meteor.methods({
 		check(parentId, String);
 
 		//checking is user initiating this is an admin
-		if (!Users.isAdmin(this.userId))
+		if (!(Users.isAdmin(this.userId) || Users.isModerator(this.userId)))
 			throw new Meteor.Error(500, "Only Admins can add categories");
 
 		//if a parentId has been supplied make sure there is actually a corresponding category
@@ -50,7 +50,7 @@ Meteor.methods({
 		if (thisCategory.name === "Root Category")
 			throw new Meteor.Error(500, "You cannot delete the Root Category");
 
-		if (!Users.isAdmin(this.userId))
+		if (!(Users.isAdmin(this.userId) || Users.isModerator(this.userId)))
 			throw new Meteor.Error(500, "You must be an admin to delete categories");
 
 		var parentCategory = Categories.findOne(thisCategory.parentId);

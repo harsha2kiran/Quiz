@@ -12,7 +12,7 @@
 //publishing all the questions for a given category. intended for the CRUD interface where admins can edit them
 Meteor.publish('questionsForCategory', function(categoryId) {
 	check(categoryId, String);
-	if (!Users.isAdmin(this.userId))
+	if (!(Users.isAdmin(this.userId) || Users.isModerator(this.userId)))
 		return;
 	
 	return Questions.find({ categoryId: categoryId });
@@ -26,7 +26,7 @@ Meteor.methods({
 		check(correctAnswer, Number);
 		check(explanation, String);
 		//checking is user initiating this is an admin
-		if (!Users.isAdmin(this.userId))
+		if (!(Users.isAdmin(this.userId) || Users.isModerator(this.userId)))
 			throw new Meteor.Error(500, "Only Admins can add questions");
 
 		//checking that the category this question belongs to actually exists
@@ -49,7 +49,7 @@ Meteor.methods({
 	removeQuestion: function(questionId) {
 		check(questionId, String);
 
-		if (!Users.isAdmin(this.userId))
+		if (!(Users.isAdmin(this.userId) || Users.isModerator(this.userId)))
 			throw new Meteor.Error(500, "Only Admins can add questions");
 
 		var question = Questions.findOne(questionId);
@@ -69,7 +69,7 @@ Meteor.methods({
 		check(correctAnswer, Number);
 		check(explanation, String);
 
-		if (!Users.isAdmin(this.userId))
+		if (!(Users.isAdmin(this.userId) || Users.isModerator(this.userId)))
 			throw new Meteor.Error(500, "Only Admins can edit questions");
 
 		//checking question exists
@@ -77,7 +77,7 @@ Meteor.methods({
 			throw new Meteor.Error(500, "This question does not exist");
 
 		//checking is user initiating this is an admin
-		if (!Users.isAdmin(this.userId))
+		if (!(Users.isAdmin(this.userId) || Users.isModerator(this.userId)))
 			throw new Meteor.Error(500, "Only Admins can add questions");
 
 		Questions.update(questionId, 
@@ -93,7 +93,7 @@ Meteor.methods({
 		check(questionId, String);
 		check(toCategoryId, String);
 
-		if (!Users.isAdmin(this.userId))
+		if (!(Users.isAdmin(this.userId) || Users.isModerator(this.userId)))
 			throw new Meteor.Error(500, "Only Admins can move questions");
 
 		var question = Questions.findOne(questionId);

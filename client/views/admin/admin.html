@@ -1,6 +1,8 @@
 <template name="admin">
 	<h1>Admin Section</h1>
 	<p><a href="/admin/categories">Edit Categories/Questions</a></p>
+	{{#if isAdmin}}
 	<p><a href="/admin/users">Edit Users</a></p>
+	{{/if}}
 	<p><a href="/admin/badges">Edit/add badge</a></p>
 </template>
