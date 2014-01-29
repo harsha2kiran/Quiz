@@ -17,7 +17,7 @@ Meteor.methods({
 		check(name, String);
 		//a parentId doesn't have to be supplied such as in the case of a new top level category, but if one is supplied it must be a string
 		check(parentId, String);
-
+	
 		//checking is user initiating this is an admin
 		if (!(Users.isAdmin(this.userId) || Users.isModerator(this.userId)))
 			throw new Meteor.Error(500, "Only Admins can add categories");
@@ -29,12 +29,13 @@ Meteor.methods({
 		//if category name is not unique 
 		if (Categories.findOne({ name: name }))
 			throw new Meteor.Error(500, "There already exists a category with this name");
-
+		
 		Categories.insert({
 			name: name,
 			parentId: parentId,
 			questionCount: 0
 		});
+
 	},
 	removeCategory: function(categoryId, removeQuestions) {
 		check(categoryId, String);

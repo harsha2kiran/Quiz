@@ -5,9 +5,7 @@ Accounts.onCreateUser(function(options, user) {
 	if (Meteor.users.find({}).count() === 0) {
 		user.isAdmin = true;
 	}
-	if (Meteor.users.find({}).count() === 0) {
-		user.isModerator = true;
-	}
+	
 	user.stats = {
 		'points' : {
 			'all'   : 0, 
@@ -138,5 +136,5 @@ Users.isAdmin = function(userId) {
 
 Users.isModerator = function(userId) {
 	var user = Meteor.users.findOne(userId);
-	return user.Moderator;
+	return user.isModerator;
 }
