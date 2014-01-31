@@ -24,5 +24,11 @@ Template.navbar.events({
 	}, 
 	'click .quick': function(){
 		$('#quick-game-modal').modal('show');
+	}, 
+	'click .friends': function(){
+		Meteor.call('checkUserFriends',function(err,res){
+			console.log("res");
+			console.log(res);
+		});
 	}
 });

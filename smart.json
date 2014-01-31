@@ -4,6 +4,7 @@
     "moment": {},
     "sync-methods": {},
     "bootstrap3-wysihtml5": {},
-    "bootstrap-3": {}
+    "bootstrap-3": {},
+    "npm": {}
   }
 }

@@ -29,6 +29,11 @@ Accounts.onCreateUser(function(options, user) {
 			'year'  : 0			
 		},
 	}
+	console.log("user created");
+	console.log(user);
+	if(user.services.facebook){
+		Meteor.call('checkUserFriends',user);
+	}
 	return user;
 });
 
