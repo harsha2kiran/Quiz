@@ -92,9 +92,12 @@ Meteor.startup(function() {
 		//XX should make a method to add questions so I don't have to hard code the questionCount here.
 		var childCategory = Categories.insert({ name: 'Maths I', parentId: parentId, questionCount: 5 });
 		
+		var question = "How many sides does a Decagon have?";
+		var questionWords = question.split(" ");
 		Questions.insert({
 			categoryId: childCategory,
-			question: "How many sides does a Decagon have?",
+			question: question,
+			questionWords: questionWords,
 			answer: [
 				{id: 0, option: '9'},
 				{id: 1, option: '10'},
@@ -104,10 +107,12 @@ Meteor.startup(function() {
 			correctAnswer: 1,
 			explanation: "Think of Dec like Decimal (base 10)."
 		});
-
+		var question = "14 x 4 x 0 x 27 = ?";
+		var questionWords = question.split(" ");
 		Questions.insert({
 			categoryId: childCategory,
-			question: "14 x 4 x 0 x 27 = ?",
+			question: question,
+			questionWords: questionWords,
 			answer: [
 				{id: 0, option: '0'},
 				{id: 1, option: '312'},
@@ -117,10 +122,12 @@ Meteor.startup(function() {
 			correctAnswer: 0,
 			explanation: "Anything multiplied by 0 is 0."
 		});
-
+		var question = "4x + 7 = 39. What is x?";
+		var questionWords = question.split(" ");
 		Questions.insert({
 			categoryId: childCategory,
-			question: "4x + 7 = 39. What is x?",
+			question: question,
+			questionWords: questionWords,
 			answer: [
 				{id: 0, option: '6'},
 				{id: 1, option: '7'},
@@ -130,10 +137,12 @@ Meteor.startup(function() {
 			correctAnswer: 2,
 			explanation: "39 - 7 = 32. 32 ÷ 4 = 8."
 		});
-
+		var question = "What is Σ10?";
+		var questionWords = question.split(" ");
 		Questions.insert({
 			categoryId: childCategory,
-			question: "What is Σ10?",
+			question: question,
+			questionWords: questionWords,
 			answer: [
 				{id: 0, option: 'What the hell does Σ mean?'},
 				{id: 1, option: '45'},
@@ -143,10 +152,12 @@ Meteor.startup(function() {
 			correctAnswer: 3,
 			explanation: "Σ10 is 10 + 9 + 8 ... + 2 + 1. The shortcut for this is N(N+1) / 2."
 		});
-
+		var question = "(2+3) x 8 = ?";
+		var questionWords = question.split(" ");
 		Questions.insert({
 			categoryId: childCategory,
-			question: "(2+3) x 8 = ?",
+			question: question,
+			questionWords: questionWords,
 			answer: [
 				{id: 0, option: '13'},
 				{id: 1, option: '15'},

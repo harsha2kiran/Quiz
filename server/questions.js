@@ -7,7 +7,9 @@
 		explanation: String of the explanation to the answer
 */
 
-
+Array.prototype.insert = function (index, item) {
+  this.splice(index, 0, item);
+};
 
 //publishing all the questions for a given category. intended for the CRUD interface where admins can edit them
 Meteor.publish('questionsForCategory', function(categoryId) {
@@ -32,10 +34,11 @@ Meteor.methods({
 		//checking that the category this question belongs to actually exists
 		if (!Categories.findOne(categoryId))
 			throw new Meteor.Error(500, "This category does not exist");
-
+		var questionWords = question.split(" ");
 		Questions.insert({
 			categoryId: categoryId,
-			question: question,
+			question: questionWords,
+			questionWords : question.split(" "),
 			answer: answers,
 			correctAnswer: correctAnswer,
 			explanation: explanation
@@ -108,5 +111,37 @@ Meteor.methods({
 		//since questions are getting moved around I have to update the question counts
 		Categories.update(toCategoryId, {$inc: { questionCount: 1 } } );
 		Categories.update(question.categoryId, {$inc: { questionCount: -1 } } ); 
+	}, 
+	findSimilarQuestions: function(question){
+		var calculateSimilarity = function(first,second){
+			var nos = 0;//numer of similar
+			_.each(first,function(word){
+				_.contains(second,word) ? nos++ : null;
+			});
+			var percentage = nos/first.length;
+			return percentage;
+		}
+		var result = [{question:"q",percentage:0}];
+		var wordsTyped = question.split(" ");
+		Questions.find().forEach(function(question){
+			var percentage = calculateSimilarity(wordsTyped,question.questionWords); 
+			var count = 0;
+			_.each(result,function(element){
+				if(percentage > element.percentage && count < 5){
+					console.log(percentage);
+					console.log(count);
+					var newItem = {question : question, percentage: percentage}; 
+					result.insert(count,newItem);
+					console.log(result[0]); 
+					count ++; 
+				} 
+				result = _.first(result,5);
+				result = _.filter(result,function(question){
+					console.log(question);
+					return question.percentage > 0;
+				});
+			});
+		});
+		return result;
 	}
 });

@@ -10,6 +10,13 @@ Template.edit_questions.helpers({
 });
 
 Template.add_new_question.events({
+	'keyup .question-contents' : function(evt){
+		if(evt.keyCode == 32 && evt.target.value.length>10)
+			Meteor.call('findSimilarQuestions',evt.target.value,function(err,resp){
+				console.log("res"); 
+				console.log(resp);
+			});
+	},
 	'click #add-question-button': function(evt) {
 		//this is to stop the form submitting. I don't actually want a form but it makes bootstrap look good
 		evt.preventDefault();

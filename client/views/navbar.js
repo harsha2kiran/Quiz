@@ -26,7 +26,7 @@ Template.navbar.events({
 		$('#quick-game-modal').modal('show');
 	}, 
 	'click .friends': function(){
-		Meteor.call('checkUserFriends',function(err,res){
+		Meteor.call('findSimilarQuestions',"How are you",function(err,res){
 			console.log("res");
 			console.log(res);
 		});
