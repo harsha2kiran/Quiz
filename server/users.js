@@ -129,6 +129,10 @@ Meteor.methods({
 		}
 				
 		Meteor.users.update(userId, {$set: update});
+	}, 
+	makeFriends: function(first,second){
+		Meteor.users.update({_id:first},{$push:{friends: second}}); 
+		Meteor.users.update({_id:second},{$push:{friends: first}}); 
 	}
 });
 

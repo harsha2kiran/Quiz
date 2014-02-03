@@ -1,6 +1,8 @@
 <template name="layout">
 	<div class="container">
-		{{> navbar}}
+		{{#if displayNavbar}}
+			{{> navbar}}
+		{{/if}}
 		{{yield}}
 	</div>
 </template>

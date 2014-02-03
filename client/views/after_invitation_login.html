@@ -1,0 +1,44 @@
+<template name="after_invitation_login">
+  <div class="modal fade" id="loginModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Login</h4>
+        </div>
+        <div class="modal-body">
+	    	<form id="loginForm">
+		<table class="table table-condensed">
+            <tr>
+				<th>
+					<label>username</label>
+				</th>
+				<th>
+					<input name="username" >
+				</th>
+            </tr>
+            <tr>
+				<th>
+					<label>email</label>
+				</th>
+				<th>
+					<input type="email" name="email">
+				</th>
+            </tr>
+            <tr>
+				<th>
+					<label>password</label>
+				</th>
+				<th>
+					<input type="password" name="password">
+				</th>
+            </tr>
+      	</table>
+			</form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="create-account">Create Account</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
