@@ -1,4 +1,4 @@
-
+Accounts.config({sendVerificationEmail: true, forbidClientAccountCreation: false});
 
 Accounts.onCreateUser(function(options, user) {
 	//first user is Admin
