@@ -64,8 +64,6 @@ Template.quick_game_modal_body.helpers({
 		return choosenCategory; 
 	},
 	'categories_that_can_be_quizzed': function() {
-		
-		console.log(Categories.find({ questionCount: {$gte: 5 }}));
 		return Categories.find({ questionCount: {$gte: 5 }});
 	},
 	'communique' : function(){

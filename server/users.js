@@ -5,7 +5,7 @@ Accounts.onCreateUser(function(options, user) {
 	if (Meteor.users.find({}).count() === 0) {
 		user.isAdmin = true;
 	}
-	
+	user.friends = [];
 	user.stats = {
 		'points' : {
 			'all'   : 0, 
@@ -45,9 +45,18 @@ Meteor.publish('currentUser', function() {
 
 //all users are published to an admin
 Meteor.publish('allUsers', function() {
-	 if (this.userId && Users.isAdmin(this.userId)) 
-	 	console.log(Meteor.users.find().fetch());
+	 if (this.userId && Users.isAdmin(this.userId)){
+		console.log("admin");
 		return Meteor.users.find();
+	 }
+});
+
+Meteor.publish('friends', function(){
+	if(this.userId){
+		var user = Meteor.users.findOne({_id:this.userId}); 
+		var friends =  Meteor.users.find({_id:{$in: user.friends }},{fields:{_id :1,username:1}});
+	 	return friends;
+	}
 });
 
 Meteor.methods({

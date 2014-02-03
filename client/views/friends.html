@@ -1,5 +1,9 @@
 <template name = "friends"> 
+ 	{{#constant}}
+		<div id="fb-root"></div>
+	{{/constant}}
 	{{>invite_email_modal}}
+	{{>invite_facebook_modal}}
 	<div class="navbar navbar-default" role="navigation">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -16,7 +20,37 @@
 			</ul>
         </div><!--/.nav-collapse -->
   	</div>
+	<table class="table table-condensed">
+        <tr>
+        	<th>
+				<label>username</label>
+        	</th>
+        	<th>
+				<label>status</label>
+        	</th>
+        </tr>
+        {{#each friends}}
+        <tr>
+        	<th>
+				<label>{{username}}</label>
+        	</th>
+        	<th>
+				<label>status</label>
+        	</th>
+        	<th>
+				<button class="btn btn primary">invite</button>
+        	</th>
+        </tr>
+        {{/each}}
+  	</table>
 </template>
+
+
+
+
+
+
+
 <template name="invite_email_modal">
   <div class="modal fade" id="invite_email_modal">
     <div class="modal-dialog">
@@ -44,4 +78,41 @@
       </div>
     </div>
   </div>
+</template>
+
+<template name="invite_facebook_modal">
+  <div class="modal fade" id="invite_facebook_modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Invite Friends</h4>
+        </div>
+        <div class="modal-body">
+        	{{>facebook_friends}}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<template name="facebook_friends">
+	<table class="span12 table table-striped">
+	  <thead>
+	    <tr>
+	      <th style="width: 50%"></th>
+	      <th style="width: 50%"></th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	  	{{#each facebookFriends}}
+	    <tr>
+	      <td>{{name}}</th>
+	      <td><button class="btn btn-primary invite-button">invite</button></th>
+	    </tr>
+	    {{/each}}
+	  </tbody>
+	</table>
 </template>
