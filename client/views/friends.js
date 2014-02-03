@@ -16,7 +16,9 @@ Template.friends.events({
 	}, 
 	'click #send-invitation': function(){
 		var friend = $('#email-input').val();
-		Meteor.call('sendMail',friend); 
+		Meteor.call('sendMail',friend,function(err,res){
+			$('#invite_email_modal').modal('hide');	
+		}); 
 	}
 });
 
@@ -36,7 +38,7 @@ Template.friends.helpers({
 });
 Template.facebook_friends.helpers({
 	'facebookFriends' : function(){
-		if(Meteor.user().services.facebook){
+		if(Meteor.user() && Meteor.user().services.facebook){
 			var result = Meteor.call("getFacebookFriendsNames",function(err,res){
 				Session.set("facebook_friends",res);			
 			});
