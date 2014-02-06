@@ -78,21 +78,23 @@ Template.add_new_question.events({
 				if (err) {
 					//if a server side error (shouldn't happen because of all the validate client side) then append that to the error div
 					$("#add-question-errors").html("<strong>Error: </strong>" + err.reason);
-				}
-				if($('#question-table').dataTable()){
-					var question = Questions.findOne({_id:res});
-			        var record = []; 
-			        record.push(question.status); 
-			        var categoryName = Categories.findOne({_id:question.categoryId}).name;
-			        record.push(categoryName); 
-			        var begin = question.question.substring(0,20); 
-			        if(question.question.length > 20)
-			            begin += "...";
-			        record.push(begin);
-			        record.push('<button name="'+question._id+'"class="delete btn btn-danger" >delete</button>');
-			        record.push('<button name="'+question._id+'"class="edit btn btn-primary" >edit</button>');
-			        record.push('<button name="'+question._id+'"class="change btn btn-warning">change state</button>');
-					$('#question-table').dataTable().fnAddData(record);
+				}else{
+					if($('#question-table').dataTable()){
+						var question = Questions.findOne({_id:res});
+				        var record = []; 
+				        record.push(question.status); 
+				        var categoryName = Categories.findOne({_id:question.categoryId}).name;
+				        record.push(categoryName); 
+				        var begin = question.question.substring(0,20); 
+				        if(question.question.length > 20)
+				            begin += "...";
+				        record.push(begin);
+				        record.push('<button name="'+question._id+'"class="delete btn btn-danger" >delete</button>');
+				        record.push('<button name="'+question._id+'"class="edit btn btn-primary" >edit</button>');
+				        record.push('<button name="'+question._id+'"class="change btn btn-warning">change state</button>');
+						$('#question-table').dataTable().fnAddData(record);
+						$('#edit-question-modal').modal('hide');
+					}
 				}
 			});
 			//if no errors, reset the fields

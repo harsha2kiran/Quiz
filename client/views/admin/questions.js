@@ -1,6 +1,7 @@
 Meteor.startup(function(){
-
-    Meteor.subscribe('questions');
+    Deps.autorun(function(){
+        Meteor.subscribe('questions');
+    });
 });
 
 
@@ -57,7 +58,7 @@ Template.question_table.events({
         var oTable = $('#question-table').dataTable();
         var rowIndex = oTable.fnGetPosition( $(evt.target).closest('tr')[0] );
         oTable.fnDeleteRow(rowIndex);   
-        Meteor.call('removeQuestion',evt.target.id);
+        Meteor.call('removeQuestion',evt.target.name);
     },
     'click .change': function(evt){
 
@@ -67,8 +68,7 @@ Template.question_table.events({
         var update = (value == "pending") ? "approved" : "pending";
         oTable.fnUpdate( update, rowIndex , 0);  
         Meteor.call('changeQuestionStatus',evt.target.name,update,function(err,res){
-            console.log(err); 
-            console.log(res);
+
         });
     },
     'click .edit': function(evt){

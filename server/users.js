@@ -46,7 +46,6 @@ Meteor.publish('currentUser', function() {
 //all users are published to an admin
 Meteor.publish('allUsers', function() {
 	 if (this.userId && Users.isAdmin(this.userId)){
-		console.log("admin");
 		return Meteor.users.find();
 	 }
 });
