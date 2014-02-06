@@ -41,6 +41,11 @@ Router.map(function() {
 			data: function() { return Categories.find({}); }
 		});
 
+		this.route('question_table', {
+			path: '/admin/question_table',
+			controller: 'AdminController',
+		});
+
 		this.route('edit_questions', {
 			path: '/admin/questions/:_id',
 			waitOn: function() {

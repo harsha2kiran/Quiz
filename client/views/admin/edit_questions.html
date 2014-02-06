@@ -9,6 +9,7 @@
 
 <template name="add_new_question">
 	<h3>Add a Question:</h3>
+
 	<div>
 		<form role="form">
 	  		<div class="row">
@@ -68,9 +69,20 @@
 				</div>
 				<div class="row">
 				<button class="btn btn-success" id="add-question-button">Add Question</button>
+
 				<div id="add-question-errors" style="color:#a94442;">
 				</div>
+				{{#if categoryChoosen}}
+				{{else}}
+					<select id="choose-category">
+						<option selected="selected">Select One...</option>
+						{{#each categories}}
+							<option value="{{_id}}">{{name}}</option>
+						{{/each}}
+					</select>
+				{{/if}}
 			</div>
+
 		</form>
 	</div>
 	<hr>
@@ -79,6 +91,7 @@
 <template name="question_edit">
 	{{#if editing}}
 		{{> question_edit_fields}}
+	 	{{> move_question_dropdown}}
 	{{else}}
 		<div>
 			<div><strong>Question:</strong> {{question}}</div>
@@ -139,5 +152,7 @@
 		{{/each}}
 	</select>
 	<button class="btn btn-info move-question">Move</button>
-
+	or
+	<button class="btn btn-info create-category">Create Category</button>
 </template>
+

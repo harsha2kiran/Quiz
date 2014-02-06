@@ -6,7 +6,7 @@ Template.edit_questions.helpers({
 	},
 	questions: function() {
 		return Questions.find({ categoryId: this.categoryId });
-	}
+	},
 });
 
 Template.add_new_question.events({
@@ -27,7 +27,10 @@ Template.add_new_question.events({
 		$("div").removeClass("has-error");
 
 		var categoryId = this.categoryId;
+		if(!categoryId){
+			categoryId = $("#choose-category")[0].value;
 
+		}
 		var question = $('#new-question-title');
 		if (!question.val()) {
 			errors.push("Question Title is required");
@@ -75,6 +78,21 @@ Template.add_new_question.events({
 				if (err) {
 					//if a server side error (shouldn't happen because of all the validate client side) then append that to the error div
 					$("#add-question-errors").html("<strong>Error: </strong>" + err.reason);
+				}
+				if($('#question-table').dataTable()){
+					var question = Questions.findOne({_id:res});
+			        var record = []; 
+			        record.push(question.status); 
+			        var categoryName = Categories.findOne({_id:question.categoryId}).name;
+			        record.push(categoryName); 
+			        var begin = question.question.substring(0,20); 
+			        if(question.question.length > 20)
+			            begin += "...";
+			        record.push(begin);
+			        record.push('<button name="'+question._id+'"class="delete btn btn-danger" >delete</button>');
+			        record.push('<button name="'+question._id+'"class="edit btn btn-primary" >edit</button>');
+			        record.push('<button name="'+question._id+'"class="change btn btn-warning">change state</button>');
+					$('#question-table').dataTable().fnAddData(record);
 				}
 			});
 			//if no errors, reset the fields
@@ -181,6 +199,8 @@ Template.question_edit_fields.events({
 		}
 	},
 	'click .cancel-editing': function() {
+		if($('#edit-question-modal'))
+			$('#edit-question-modal').modal('hide');
 		Session.set('editing-question-' + this._id, false);
 	}
 });
@@ -197,5 +217,15 @@ Template.move_question_dropdown.events({
 		if (selectedCategoryId !== "Select One...") {
 			Meteor.call('moveQuestion', this._id, selectedCategoryId);
 		}
+	}
+});
+
+Template.add_new_question.helpers({
+	'categoryChoosen': function(){
+		console.log("ok");
+		return this.categoryId;
+	},
+	'categories': function(){
+		return Categories.find();
 	}
 });

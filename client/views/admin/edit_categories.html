@@ -5,6 +5,13 @@
 	{{/with}}
 </template>
 
+<template name="edit_categories_modal">
+	<h1>Edit Categories</h1>
+	{{#with root_category}}
+		{{> category_in_modal}}
+	{{/with}}
+</template>
+
 <template name="category">
 	<ul>
 		<li>
@@ -27,6 +34,22 @@
 			<div id="add-category-{{_id}}"></div>
 			{{#each child_categories _id}}
 				{{> category}}
+			{{/each}}
+		</li>
+	</ul>
+</template>
+
+<template name="category_in_modal">
+	<ul>
+		<li>
+			{{name}}
+			<button type="button" class="btn btn-primary add-sub">
+				Add Subcategory
+			</button>
+
+			<div id="add-category-{{_id}}"></div>
+			{{#each child_categories _id}}
+				{{> category_in_modal}}
 			{{/each}}
 		</li>
 	</ul>

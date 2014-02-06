@@ -20,8 +20,13 @@ Meteor.publish('questionsForCategory', function(categoryId) {
 	return Questions.find({ categoryId: categoryId });
 });
 
+Meteor.publish('questions',function(){
+	return Questions.find();
+});
+
 Meteor.methods({
 	addQuestion: function(categoryId, question, answers, correctAnswer, explanation) {
+		var status = (Users.isAdmin(this.userId) || Users.isModerator(this.userId)) ? "approved" : "pending";
 		check(categoryId, String);
 		check(question, String);
 		//XX validate answers
@@ -34,10 +39,11 @@ Meteor.methods({
 		//checking that the category this question belongs to actually exists
 		if (!Categories.findOne(categoryId))
 			throw new Meteor.Error(500, "This category does not exist");
-		var questionWords = question.split(" ");
-		Questions.insert({
+
+		var q = Questions.insert({
+			status: status,
 			categoryId: categoryId,
-			question: questionWords,
+			question: question,
 			questionWords : question.split(" "),
 			answer: answers,
 			correctAnswer: correctAnswer,
@@ -47,7 +53,7 @@ Meteor.methods({
 		//have to update the question count for the category
 		Categories.update(categoryId, 
 			{ $inc: { questionCount: 1 } } );
-
+		return q;
 	},
 	removeQuestion: function(questionId) {
 		check(questionId, String);
@@ -63,6 +69,21 @@ Meteor.methods({
 		Questions.remove(questionId);
 		Categories.update(question.categoryId,
 			{ $inc: { questionCount: -1 } } );
+
+	},
+	changeQuestionStatus: function(id,status){
+		if (!(Users.isAdmin(this.userId) || Users.isModerator(this.userId)))
+			throw new Meteor.Error(500, "Only Admins can edit questions");
+
+		//checking question exists
+		if (!Questions.findOne(id))
+			throw new Meteor.Error(500, "This question does not exist");
+
+		//checking is user initiating this is an admin
+		if (!(Users.isAdmin(this.userId) || Users.isModerator(this.userId)))
+			throw new Meteor.Error(500, "Only Admins can add questions");
+
+		Questions.update({_id:id},{$set:{status: status}});
 
 	},
 	updateQuestion: function(questionId, question, answers, correctAnswer, explanation) {

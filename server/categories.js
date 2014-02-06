@@ -96,6 +96,7 @@ Meteor.startup(function() {
 		var questionWords = question.split(" ");
 		Questions.insert({
 			categoryId: childCategory,
+			status: "approved",
 			question: question,
 			questionWords: questionWords,
 			answer: [
@@ -111,6 +112,7 @@ Meteor.startup(function() {
 		var questionWords = question.split(" ");
 		Questions.insert({
 			categoryId: childCategory,
+			status: "approved",
 			question: question,
 			questionWords: questionWords,
 			answer: [
@@ -126,6 +128,7 @@ Meteor.startup(function() {
 		var questionWords = question.split(" ");
 		Questions.insert({
 			categoryId: childCategory,
+			status: "approved",
 			question: question,
 			questionWords: questionWords,
 			answer: [
@@ -141,6 +144,7 @@ Meteor.startup(function() {
 		var questionWords = question.split(" ");
 		Questions.insert({
 			categoryId: childCategory,
+			status: "pending",
 			question: question,
 			questionWords: questionWords,
 			answer: [
@@ -156,6 +160,7 @@ Meteor.startup(function() {
 		var questionWords = question.split(" ");
 		Questions.insert({
 			categoryId: childCategory,
+			status: "pending",
 			question: question,
 			questionWords: questionWords,
 			answer: [
