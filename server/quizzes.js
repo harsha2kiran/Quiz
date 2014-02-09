@@ -197,6 +197,11 @@ Quiz.createNewQuiz = function(categoryId, lobbyId) {
 	var numberOfQuestions = 5;
 
 	var players = lobby.players;
+	_.each(players,function(player){
+		console.log("quizstarted");
+		console.log(player);
+		Meteor.call('setUserState','busy',player.userId);
+	});
 	//we already have the players name and id, now adding a score element and answered elements to it
 	_.each(players, function(player) {
 		player.score = 0;
@@ -292,6 +297,9 @@ Quiz.doQuestion = function(quizId) {
 					} else {
 						//if we're done we change the status which client side will display the winner and so on
 						Quizzes.update(quizId, {$set: { state: 'quizfinished' } } );
+						_.each(quiz.players,function(player){
+							Meteor.call('setUserState','available',player.userId);
+						});
 
 						var winner = (quiz.players[0].score>quiz.players[1].score) ? quiz.players[0] :
 									((quiz.players[1].score>quiz.players[0].score) ? quiz.players[1] : null);

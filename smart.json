@@ -6,6 +6,7 @@
     "bootstrap3-wysihtml5": {},
     "bootstrap-3": {},
     "npm": {},
-    "datatables": {}
+    "datatables": {},
+    "event-hooks": {}
   }
 }

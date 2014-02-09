@@ -59,6 +59,11 @@ Meteor.publish('friends', function(){
 });
 
 Meteor.methods({
+	setUserState : function(state,userId){
+		console.log(state);
+		console.log(userId);
+		Meteor.users.update({_id:userId},{$set:{state:state}});
+	},
 	makeAdmin: function(newAdminUserId) {
 		check(newAdminUserId, String)
 		console.log(this.userId);

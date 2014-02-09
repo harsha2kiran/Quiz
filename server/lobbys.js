@@ -90,6 +90,10 @@ var addToLobby = function(userId, categoryId) {
 
 //removes a player from a lobby when their subscription ends (i.e. they leave the page)
 var removeFromLobby = function(userId, lobbyId) {
+	var player = Meteor.users.findOne({_id:userId}); 
+	if(player.state == "busy"){
+		Meteor.call('setUserState','available',userId);
+	}
 	Lobbys.update(lobbyId, 
 	{
 		$pull: { players: { userId: userId } },
