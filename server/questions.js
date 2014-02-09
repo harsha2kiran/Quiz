@@ -98,7 +98,7 @@ Meteor.methods({
 
 		Questions.update(questionId, 
 			{$set: {
-				question: question,
+				question: question.question,
 				answer: answers,
 				correctAnswer: correctAnswer,
 				explanation: explanation	

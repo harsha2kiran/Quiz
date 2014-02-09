@@ -49,13 +49,20 @@ Template.add_new_question.events({
 			var answer = {};
 			answer.id = i;
 			var option = $(this).val();
-			if (!option) {
+			/*if (!option) {
 				errors.push("You must provide an Answer for Answer " + (i + 1));
 				$(this).parent().parent(".form-group").addClass("has-error");
-			}
+			}*/
 			answer.option = option;
-			answers.push(answer);
+			if(answer.option != ""){
+				answers.push(answer);
+			}
 		});
+		console.log("answers");
+		console.log(answers);
+		if(answers.length <2){
+			errors.push("You must provide at least two answers");
+		}
 
 		var explanation = $("#question-explanation");
 		if (!explanation.val()) {
@@ -153,24 +160,33 @@ Template.question_edit_fields.events({
 		$("div").removeClass("has-error");
 
 		var question = $('#new-question-title-' + questionId);
+		console.log("question"); 
+		console.log(question);
 		if (!question.val()) {
 			errors.push("Question Title is required");
 			question.parent(".form-group").addClass("has-error");
 		}
 			
 		var answers = [];
-		$('input.question-answer-' + questionId).each(function(i, element) {
+		$('input.question-answer').each(function(i, element) {
 			//each answer will be submitted in the form {id: 0, option: "What the user sees as an option"}
 			var answer = {};
 			answer.id = i;
 			var option = $(this).val();
-			if (!option) {
+			/*if (!option) {
 				errors.push("You must provide an Answer for Answer " + (i + 1));
 				$(this).parent().parent(".form-group").addClass("has-error");
-			}
+			}*/
 			answer.option = option;
-			answers.push(answer);
+			if(answer.option != ""){
+				answers.push(answer);
+			}
 		});
+		console.log("answers");
+		console.log(answers);
+		if(answers.length <2){
+			errors.push("You must provide at least two answers");
+		}
 
 		var explanation = $("#question-explanation-" + questionId);
 		if (!explanation.val()) {
