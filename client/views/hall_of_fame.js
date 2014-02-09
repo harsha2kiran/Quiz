@@ -26,6 +26,7 @@ Template.hall_of_fame.helpers({
 		var sort = {}; 
 		var key = 'stats.'+stat+'.'+period; 
 		sort[key] = -1;
+		console.log(HallOfFameData.find({},{sort:sort}));
 		return HallOfFameData.find({},{sort:sort});	
 	}, 
 	'stat' : function(){

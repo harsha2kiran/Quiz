@@ -72,7 +72,10 @@ Router.map(function() {
 			path: '/hall_of_fame'
 		});
 		this.route('friends',{
-			path : '/friends'
+			path : '/friends',
+		    waitOn: function () {
+      			return Meteor.subscribe('friends');
+    		}
 		});
 		this.route('edit_users', {
 			path: '/admin/users',
@@ -80,6 +83,17 @@ Router.map(function() {
 		});
 		this.route('after_invitation_login', {
 			path : '/invite/:_id',
+			//controller: 'InvitationController'
+		});
+
+		this.route('user_page', {
+			path : '/user/:_id',
+			waitOn : function() {
+				return Meteor.subscribe('hallOfFame');
+			},
+			data : function(){
+				return HallOfFameData.findOne({_id:this.params._id});
+			}
 			//controller: 'InvitationController'
 		});
 

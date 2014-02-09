@@ -1,0 +1,32 @@
+<template name="user_page">
+	<div>
+		<img style="width:200px" src="http://fc07.deviantart.net/fs27/f/2008/182/f/0/He_Man_redesign_concept_by_GrayskullPrime.jpg">
+	</div>
+
+	<div>
+		games: {{games}}
+	<div>
+	<div>
+		wins: {{wins}}
+	<div>
+	<div>
+		ties: {{ties}}
+	<div>
+	<div>
+		defeats: {{defeats}}
+	<div>
+	{{>user_badges}}
+</template>
+
+<template name="user_badges">
+	<h2>user badges</h2>		
+	{{#each badges}}
+	<div>
+		{{name}} 
+		<div class="badge">
+			{{icon}}
+		</div>
+	</div>
+	{{/each}}
+
+</template>

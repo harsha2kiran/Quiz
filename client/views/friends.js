@@ -1,11 +1,13 @@
-Deps.autorun(function(){
-	var friends = Meteor.subscribe('friends');
+Meteor.startup(function(){
+	Deps.autorun(function(){
+		var friends = Meteor.subscribe('friends');
+	});
 });
+
 
 Template.friends.events({
 	'click .invite' : function(evt){
 		if(evt.target.name == "email"){
-			console.log("ok");
 			$('#invite_email_modal').modal('show');
 		}
 		if(evt.target.name == "facebook"){
@@ -24,13 +26,10 @@ Template.friends.events({
 
 Template.friends.helpers({
 	'friends': function(){
-		console.log(Meteor.user());
-		console.log(Meteor.users.find({_id:{$ne : Meteor.user()._id}}));
 		return Meteor.users.find({_id:{$ne : Meteor.user()._id}});
 	},
 	'facebookFriends' : function(){
 		if(Meteor.user().services.facebook){
-			console.log("ok");
 			Meteor.call("getFacebookFriendsNames",function(err,res){
 				return res;			
 			});
