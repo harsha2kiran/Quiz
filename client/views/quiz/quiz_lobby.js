@@ -177,6 +177,16 @@ Template.quiz_lobby.events({
 			}
 				
 		});
+	},
+	'click .make-friend' : function(){
+		var quiz = Quizzes.findOne({});
+		if (Meteor.user()) {
+			var opponentPlayer = _.find(quiz.players, function(plyr) {
+				return plyr.userId !== Meteor.user()._id;
+			});
+
+			Meteor.call('makeFriends',Meteor.user()._id,opponentPlayer.userId,true);
+		} 
 	}
 });
 

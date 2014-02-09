@@ -24,6 +24,8 @@ Template.friends.events({
 
 Template.friends.helpers({
 	'friends': function(){
+		console.log(Meteor.user());
+		console.log(Meteor.users.find({_id:{$ne : Meteor.user()._id}}));
 		return Meteor.users.find({_id:{$ne : Meteor.user()._id}});
 	},
 	'facebookFriends' : function(){
@@ -34,7 +36,7 @@ Template.friends.helpers({
 			});
 			//$('#invite_facebook_modal').modal('show'); 
 		}		
-	}
+	},
 });
 Template.facebook_friends.helpers({
 	'facebookFriends' : function(){

@@ -53,7 +53,7 @@ Meteor.publish('allUsers', function() {
 Meteor.publish('friends', function(){
 	if(this.userId){
 		var user = Meteor.users.findOne({_id:this.userId}); 
-		var friends =  Meteor.users.find({_id:{$in: user.friends }},{fields:{_id :1,username:1}});
+		var friends =  Meteor.users.find({_id:{$in: user.friends }},{fields:{_id :1,username:1,state:1}});
 	 	return friends;
 	}
 });
@@ -143,10 +143,19 @@ Meteor.methods({
 				
 		Meteor.users.update(userId, {$set: update});
 	}, 
-	makeFriends: function(first,second){
-		Meteor.users.update({_id:first},{$push:{friends: second}}); 
-		Meteor.users.update({_id:second},{$push:{friends: first}}); 
-	}
+	makeFriends: function(first,second,oneWay){
+		console.log("ok");
+		if(oneWay){
+			console.log("okok");
+			console.log(first);
+			console.log(second);
+			Meteor.users.update({_id:first},{$push:{friends: second}}); 	
+		}else{
+			Meteor.users.update({_id:first},{$push:{friends: second}}); 
+			Meteor.users.update({_id:second},{$push:{friends: first}}); 			
+		}
+	},
+
 });
 
 Users = {};

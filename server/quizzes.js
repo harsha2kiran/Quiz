@@ -298,7 +298,7 @@ Quiz.doQuestion = function(quizId) {
 						//if we're done we change the status which client side will display the winner and so on
 						Quizzes.update(quizId, {$set: { state: 'quizfinished' } } );
 						_.each(quiz.players,function(player){
-							Meteor.call('setUserState','available',player.userId);
+							Meteor.call('setUserState','online',player.userId);
 						});
 
 						var winner = (quiz.players[0].score>quiz.players[1].score) ? quiz.players[0] :
