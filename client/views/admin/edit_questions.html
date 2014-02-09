@@ -9,7 +9,6 @@
 
 <template name="add_new_question">
 	<h3>Add a Question:</h3>
-
 	<div>
 		<form role="form">
 	  		<div class="row">
@@ -152,8 +151,10 @@
 		{{/each}}
 	</select>
 	<button class="btn btn-info move-question">Move</button>
+	{{#if isAdmin}}
 	or
 	<button class="btn btn-info create-category">Create Category</button>
+	{{/if}}
 </template>
 
 <template name="similarQuestions">

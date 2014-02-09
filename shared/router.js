@@ -43,9 +43,7 @@ Router.map(function() {
 
 		this.route('question_table', {
 			path: '/admin/question_table',
-			controller: 'AdminController',
 			waitOn: [categorySub, currentUserSub],
-			controller: 'AdminController'
 		});
 
 		this.route('edit_questions', {

@@ -2,40 +2,82 @@ Meteor.startup(function(){
     Deps.autorun(function(){
         Meteor.subscribe('questions');
     });
+
 });
-console.log("ok");
+
+var rendered;
+
 
 
 var tableData = [];
 var prepareDataSet = function(){
     tableData = [];
     var counter = 0;
-    Questions.find().forEach(function(question){
-        var record = []; 
-        record.push(question.status); 
-        var categoryName = Categories.findOne({_id:question.categoryId}).name;
-        record.push(categoryName); 
-        var begin = question.question.substring(0,20); 
-        if(question.question.length > 20)
-            begin += "...";
-        record.push(begin);
-        record.push('<button name="'+question._id+'"class="delete btn btn-danger" >delete</button>');
-        record.push('<button name="'+question._id+'"class="edit btn btn-primary" >edit</button>');
-        record.push('<button name="'+question._id+'"class="change btn btn-warning">change state</button>');
+    var query = Questions.find();
+    var handle = query.observeChanges({
+        added: function(id,question){
+            if(Meteor.user().isAdmin || Meteor.user().isModerator){
+                var record = []; 
+                record.push(question.status); 
+                var categoryName = Categories.findOne({_id:question.categoryId}).name;
+                record.push(categoryName); 
+                var begin = question.question.substring(0,20); 
+                if(question.question.length > 20)
+                    begin += "...";
+                record.push(begin);
+                record.push('<button name="'+id+'"class="delete btn btn-danger" >delete</button>');
+                record.push('<button name="'+id+'"class="edit btn btn-primary" >edit</button>');
+                record.push('<button name="'+id+'"class="change btn btn-warning">change state</button>');
 
-        tableData.push(record);
-        counter++;
-    });    
+                tableData.push(record);
+                counter++;
+   
+            }else{
+                if(question.author == Meteor.user()._id){
+                    var record = []; 
+                    record.push(question.status); 
+                    var categoryName = Categories.findOne({_id:question.categoryId}).name;
+                    record.push(categoryName); 
+                    var begin = question.question.substring(0,20); 
+                    if(question.question.length > 20)
+                        begin += "...";
+                    record.push(begin);
+                    if(question.status == "pending"){
+                        record.push('<button name="'+id+'"class="delete btn btn-danger" >delete</button>');
+                        record.push('<button name="'+id+'"class="edit btn btn-primary" >edit</button>');                 
+                    }
+         
+                    tableData.push(record);
+                    counter++;
+                }     
+            }
+            if(rendered && question.author != Meteor.user()._id){
+                var record = []; 
+                record.push(question.status); 
+                var categoryName = Categories.findOne({_id:question.categoryId}).name;
+                record.push(categoryName); 
+                var begin = question.question.substring(0,20); 
+                if(question.question.length > 20)
+                    begin += "...";
+                record.push(begin);
+                record.push('<button name="'+id+'"class="delete btn btn-danger" >delete</button>');
+                record.push('<button name="'+id+'"class="edit btn btn-primary" >edit</button>');
+                record.push('<button name="'+id+'"class="change btn btn-warning">change state</button>');
+                $('#question-table').dataTable().fnAddData(record);
+            }
+        }
+    });
 }
 Template.question_table.rendered = function () {
+
     $('#edit-question-modal').on('hidden.bs.modal', function() {
         similarQuestions = [];
         questionsDep.changed();
     });  
-    var rendered = false;
+    rendered = false;
     try{
         var oTable = $('#question-table').dataTable();
-        var rendered = true; 
+        rendered = true; 
     }catch(err){
         console.log("err");
     }
@@ -51,7 +93,6 @@ Template.question_table.rendered = function () {
                 { "sTitle": "question" , "sWidth": "30%"},
                 {  "sWidth": "10%" ,"bSortable": false, "sTitle": "" },
                 {  "sWidth": "10%" ,"bSortable": false, "sTitle": "" },
-                {  "sWidth": "10%" ,"bSortable": false, "sTitle": "" }
             ],
             sPaginationType: "full_numbers"
         } ); 
@@ -78,6 +119,8 @@ Template.question_table.events({
         });
     },
     'click .edit': function(evt){
+        console.log("edit");
+        console.log(evt.target.name);
         Session.set("currentStage","editQuestion");
         var oTable = $('#question-table').dataTable();
         var rowIndex = oTable.fnGetPosition( $(evt.target).closest('tr')[0] ); 
@@ -126,9 +169,11 @@ Template.question_table.helpers({
 
 Template.modalbody.helpers({
     'editedQuestion' : function(){
+        console.log(Questions.findOne({_id:Session.get("edited")}));
         return Questions.findOne({_id:Session.get("edited")});
     },
     'question' : function(){
+        console.log(Session.get("currentStage"));
         return Session.get("currentStage") == "editQuestion";
     },
     'addQuestion':function(){

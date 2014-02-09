@@ -24,7 +24,9 @@
           {{/if}}
           <ul class="nav navbar-nav">
           	{{#if is_admin}}
-            <li><a href="/admin">Admin</a></li>
+              <li><a href="/admin">Admin</a></li>
+            {{else}}
+              <li><a href="/admin/question_table">Questions</a></li>
             {{/if}}
           </ul>
           <ul class="nav navbar-nav navbar-right">

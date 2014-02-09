@@ -216,6 +216,9 @@ Template.question_edit_fields.events({
 Template.move_question_dropdown.helpers({
 	categories: function() {
 		return Categories.find({ _id : { $ne: this.categoryId } }, { sort: { name: 1 } } );
+	},
+	isAdmin: function(){
+		return Meteor.user().isAdmin;
 	}
 });
 

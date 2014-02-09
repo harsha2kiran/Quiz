@@ -32,15 +32,13 @@ Meteor.methods({
 		//XX validate answers
 		check(correctAnswer, Number);
 		check(explanation, String);
-		//checking is user initiating this is an admin
-		if (!(Users.isAdmin(this.userId) || Users.isModerator(this.userId)))
-			throw new Meteor.Error(500, "Only Admins can add questions");
 
 		//checking that the category this question belongs to actually exists
 		if (!Categories.findOne(categoryId))
 			throw new Meteor.Error(500, "This category does not exist");
 
 		var q = Questions.insert({
+			author : this.userId,
 			status: status,
 			categoryId: categoryId,
 			question: question,
@@ -57,15 +55,11 @@ Meteor.methods({
 	},
 	removeQuestion: function(questionId) {
 		check(questionId, String);
-
-		if (!(Users.isAdmin(this.userId) || Users.isModerator(this.userId)))
-			throw new Meteor.Error(500, "Only Admins can add questions");
-
 		var question = Questions.findOne(questionId);
-
 		if (!question)
 			throw new Meteor.Error(500, "This question does not exist.");
-
+		if (!(Users.isAdmin(this.userId) || Users.isModerator(this.userId) || question.author == this.userId))
+			throw new Meteor.Error(500, "User cant delete this question");
 		Questions.remove(questionId);
 		Categories.update(question.categoryId,
 			{ $inc: { questionCount: -1 } } );
@@ -92,17 +86,15 @@ Meteor.methods({
 		//XX validate answers
 		check(correctAnswer, Number);
 		check(explanation, String);
+		var question = Questions.findOne(questionId);
 
-		if (!(Users.isAdmin(this.userId) || Users.isModerator(this.userId)))
-			throw new Meteor.Error(500, "Only Admins can edit questions");
+		if (!(Users.isAdmin(this.userId) || Users.isModerator(this.userId)
+		 	|| question.author == this.userId))
+			throw new Meteor.Error(500, "User cant edit this question");
 
 		//checking question exists
 		if (!Questions.findOne(questionId))
 			throw new Meteor.Error(500, "This question does not exist");
-
-		//checking is user initiating this is an admin
-		if (!(Users.isAdmin(this.userId) || Users.isModerator(this.userId)))
-			throw new Meteor.Error(500, "Only Admins can add questions");
 
 		Questions.update(questionId, 
 			{$set: {
@@ -160,7 +152,6 @@ Meteor.methods({
 				} 
 				result = _.first(result,5);
 				result = _.filter(result,function(question){
-					console.log(question);
 					return question.percentage > 0;
 				});
 			});
