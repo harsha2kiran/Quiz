@@ -9,8 +9,7 @@
       "bootstrap-3": {},
       "npm": {},
       "datatables": {},
-      "event-hooks": {},
-      "raphaeljs-package": {}
+      "event-hooks": {}
     },
     "packages": {
       "iron-router": {
@@ -52,11 +51,6 @@
         "git": "https://github.com/BenjaminRH/meteor-event-hooks.git",
         "tag": "v1.4.3",
         "commit": "ba4f3d7887748458618d29615492906f0c88d31c"
-      },
-      "raphaeljs-package": {
-        "git": "https://github.com/doubledare/raphaeljs-package.git",
-        "tag": "v0.1.0",
-        "commit": "3945af98a318e189d45e9118db4040ea8cbb9596"
       }
     }
   }

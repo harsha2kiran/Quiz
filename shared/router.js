@@ -16,8 +16,6 @@ Router.map(function() {
 				var categoryId = this.params._id;
 				lobbySub = Meteor.subscribe('lobbyForCategory', categoryId);
 				var lobby = Lobbys.findOne({});
-				console.log("dupa");
-				console.log(lobby);
 				if (lobby) {
 					var quizSub = Meteor.subscribe('currentQuiz', lobby._id);
 				}
@@ -45,7 +43,8 @@ Router.map(function() {
 
 		this.route('question_table', {
 			path: '/admin/question_table',
-			waitOn: [categorySub, currentUserSub]
+			waitOn: [categorySub, currentUserSub],
+			controller: 'SimpleController',			
 		});
 
 		this.route('edit_questions', {
@@ -66,17 +65,21 @@ Router.map(function() {
 			controller: 'AdminController',
 		});
 		this.route('badges', {
-			path: '/badges'
+			path: '/badges',
+			controller: 'SimpleController'
 		});
 		this.route('hall_of_fame', {
-			path: '/hall_of_fame'
+			path: '/hall_of_fame',
+			controller: 'SimpleController'
 		});
 		this.route('friends',{
 			path : '/friends',
+			controller: 'SimpleController',
 		    waitOn: function () {
       			return Meteor.subscribe('friends');
     		}
 		});
+
 		this.route('edit_users', {
 			path: '/admin/users',
 			controller: 'AdminController'
@@ -119,6 +122,19 @@ AdminController = RouteController.extend({
 			this.render('access_denied');
 		} else {
 			this.render();
+		}
+	}
+});
+
+SimpleController = RouteController.extend({
+	before: function(){
+		if(!Meteor.user()){
+			Router.go("/");
+		}
+	},
+	after: function(){
+		if(!Meteor.user()){
+			Router.go("/");
 		}
 	}
 });

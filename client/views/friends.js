@@ -26,7 +26,9 @@ Template.friends.events({
 
 Template.friends.helpers({
 	'friends': function(){
-		return Meteor.users.find({_id:{$ne : Meteor.user()._id}});
+		if(Meteor.user()){
+			return Meteor.users.find({_id:{$ne : Meteor.user()._id}});
+		}
 	},
 	'facebookFriends' : function(){
 		if(Meteor.user().services.facebook){

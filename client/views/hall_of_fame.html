@@ -1,4 +1,5 @@
 <template name="hall_of_fame">
+	{{#if currentUser}}
 	<div class="navbar navbar-default" role="navigation">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -47,5 +48,9 @@
 		</th>
 		{{/each}} 
 	</table>
-
+	{{else}}
+	<div>
+		You must be logged in to enter a Quiz: {{loginButtons}}
+	</div>
+	{{/if}}
 </template>

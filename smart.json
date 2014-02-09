@@ -7,7 +7,6 @@
     "bootstrap-3": {},
     "npm": {},
     "datatables": {},
-    "event-hooks": {},
-    "raphaeljs-package": {}
+    "event-hooks": {}
   }
 }

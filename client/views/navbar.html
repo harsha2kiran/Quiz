@@ -21,14 +21,14 @@
             <ul class="nav navbar-nav">
               <li><a href="/hall_of_fame">Hall of fame</a></li>
             </ul>
-          {{/if}}
-          <ul class="nav navbar-nav">
-          	{{#if is_admin}}
+            <ul class="nav navbar-nav">
+            {{#if is_admin}}
               <li><a href="/admin">Admin</a></li>
             {{else}}
               <li><a href="/admin/question_table">Questions</a></li>
             {{/if}}
           </ul>
+          {{/if}}
           <ul class="nav navbar-nav navbar-right">
           	{{#if currentUser}}
               <li><a href="#" class="quick">quick game </a></li>
