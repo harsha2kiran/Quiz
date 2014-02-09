@@ -3,6 +3,7 @@ Meteor.startup(function(){
         Meteor.subscribe('questions');
     });
 });
+console.log("ok");
 
 
 var tableData = [];
@@ -27,6 +28,10 @@ var prepareDataSet = function(){
     });    
 }
 Template.question_table.rendered = function () {
+    $('#edit-question-modal').on('hidden.bs.modal', function() {
+        similarQuestions = [];
+        questionsDep.changed();
+    });  
     var rendered = false;
     try{
         var oTable = $('#question-table').dataTable();
@@ -54,6 +59,7 @@ Template.question_table.rendered = function () {
 };
 
 Template.question_table.events({
+
     'click .delete': function(evt){
         var oTable = $('#question-table').dataTable();
         var rowIndex = oTable.fnGetPosition( $(evt.target).closest('tr')[0] );
@@ -105,7 +111,6 @@ Template.question_table.events({
     },
 });
 
-
 Template.question_table.helpers({
 	'categoryName' : function(){
 		return Categories.findOne({_id:this.categoryId}).name;
@@ -114,7 +119,7 @@ Template.question_table.helpers({
 		return Questions.find();
 	}, 
 	'question' : function(){
-		var end = ((this.question.length < 20) ? "" : "...")
+		var end = ((this.question.length < 20) ? "" : "...");
 		return this.question.substring(0,20) + end;
 	}
 });

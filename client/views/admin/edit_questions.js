@@ -1,3 +1,7 @@
+similarQuestions = []; 
+questionsDep = new Deps.Dependency();
+
+
 Template.edit_questions.helpers({
 	categoryName: function() {
 		//the 'this' data context comes from the router
@@ -10,12 +14,14 @@ Template.edit_questions.helpers({
 });
 
 Template.add_new_question.events({
-	'keyup .question-contents' : function(evt){
-		if(evt.keyCode == 32 && evt.target.value.length>10)
-			Meteor.call('findSimilarQuestions',evt.target.value,function(err,resp){
-				console.log("res"); 
-				console.log(resp);
+	'keydown .question-contents' : function(evt){
+		if(evt.keyCode == 32 && evt.target.value.length>10){
+			Meteor.call('findSimilarQuestions',evt.target.value,function(err,res){
+				similarQuestions = res;
+				console.log(similarQuestions);
+				questionsDep.changed();
 			});
+		}
 	},
 	'click #add-question-button': function(evt) {
 		//this is to stop the form submitting. I don't actually want a form but it makes bootstrap look good
@@ -224,10 +230,20 @@ Template.move_question_dropdown.events({
 
 Template.add_new_question.helpers({
 	'categoryChoosen': function(){
-		console.log("ok");
 		return this.categoryId;
 	},
 	'categories': function(){
 		return Categories.find();
+	},
+});
+
+Template.similarQuestions.helpers({
+	'similarQuestions' : function(){
+		questionsDep.depend(); 
+		var result = [];
+		_.each(similarQuestions,function(question){
+			result.push(question.question);
+		});
+		return result;
 	}
 });

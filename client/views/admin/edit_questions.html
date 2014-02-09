@@ -18,7 +18,7 @@
 					  <input type="text" class="question-contents form-control" placeholder="Enter a Question Title" id="new-question-title"/>
 					</div>
 				</div>
-
+				{{>similarQuestions}}
 				<label for="code">Answers:</label>
 				<div class="row">
 					<div class="form-group col-lg-8">
@@ -156,3 +156,13 @@
 	<button class="btn btn-info create-category">Create Category</button>
 </template>
 
+<template name="similarQuestions">
+	{{#if similarQuestions}}
+	Please check if these questions are not the same as you type?
+	{{/if}}
+	{{#each similarQuestions}}
+	<div>
+		{{question}}
+	<div>
+	{{/each}}
+</template>

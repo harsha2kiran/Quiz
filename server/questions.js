@@ -139,6 +139,8 @@ Meteor.methods({
 			_.each(first,function(word){
 				_.contains(second,word) ? nos++ : null;
 			});
+			console.log(nos);
+			console.log(first);
 			var percentage = nos/first.length;
 			return percentage;
 		}
