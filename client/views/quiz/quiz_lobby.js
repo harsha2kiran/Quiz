@@ -1,6 +1,8 @@
 Template.quiz_lobby.helpers({
 	prequiz: function()  {
 		var quiz = Quizzes.findOne({});
+		console.log("prequiz");
+		console.log((!quiz || quiz.state === 'prequiz'));
 		return (!quiz || quiz.state === 'prequiz');
 	},
 	categoryName: function() {
@@ -8,6 +10,7 @@ Template.quiz_lobby.helpers({
 		return category.name;
 	},
 	lobby: function() {
+		console.log(Lobbys.findOne({}));
 		return Lobbys.findOne({});
 	},
 	current_question: function() {

@@ -303,8 +303,20 @@ Quiz.doQuestion = function(quizId) {
 
 						var winner = (quiz.players[0].score>quiz.players[1].score) ? quiz.players[0] :
 									((quiz.players[1].score>quiz.players[0].score) ? quiz.players[1] : null);
-						if(winner)
-							Meteor.call('updateStats',winner.userId,'wins',1); 
+						if(winner){
+							var looser = _.find(quiz.players,function(player){
+								return player.userId !== winner.userId;
+							});
+						}
+
+						if(winner){
+							Meteor.call('updateStats',winner.userId,'wins',1);
+							Meteor.call('updateStats',looser.userId,'defeats',1);
+						}else{
+							_.each(quiz.players,function(player){
+								Meteor.call('updateStats',player.userId,'ties',1);
+							});
+						}
 
 					}
 				}, 3000);

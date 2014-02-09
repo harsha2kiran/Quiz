@@ -28,6 +28,20 @@ Accounts.onCreateUser(function(options, user) {
 			'month' : 0,
 			'year'  : 0			
 		},
+		'ties' :{
+			'all'   : 0, 
+			'day'   : 0, 
+			'week'  : 0,
+			'month' : 0,
+			'year'  : 0			
+		},
+		'defeats' :{
+			'all'   : 0, 
+			'day'   : 0, 
+			'week'  : 0,
+			'month' : 0,
+			'year'  : 0			
+		},
 	}
 	console.log("user created");
 	console.log(user);

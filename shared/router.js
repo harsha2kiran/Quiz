@@ -16,6 +16,8 @@ Router.map(function() {
 				var categoryId = this.params._id;
 				lobbySub = Meteor.subscribe('lobbyForCategory', categoryId);
 				var lobby = Lobbys.findOne({});
+				console.log("dupa");
+				console.log(lobby);
 				if (lobby) {
 					var quizSub = Meteor.subscribe('currentQuiz', lobby._id);
 				}
@@ -43,7 +45,7 @@ Router.map(function() {
 
 		this.route('question_table', {
 			path: '/admin/question_table',
-			waitOn: [categorySub, currentUserSub],
+			waitOn: [categorySub, currentUserSub]
 		});
 
 		this.route('edit_questions', {
