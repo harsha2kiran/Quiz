@@ -36,13 +36,24 @@ Meteor.methods({
 		//checking that the category this question belongs to actually exists
 		if (!Categories.findOne(categoryId))
 			throw new Meteor.Error(500, "This category does not exist");
-
+		while(answers.length<4){
+			var answer = {};
+			answer.id = answers.lenght;
+			var option = "";
+			answer.option  = option;
+			answers.push(answer);
+		}
+		var q = question.split(" ");
+		var questionWords =[];
+		_.each(q,function(word){
+			_.contains(questionWords,word) ? null : questionWords.push(word);
+		});
 		var q = Questions.insert({
 			author : this.userId,
 			status: status,
 			categoryId: categoryId,
 			question: question,
-			questionWords : question.split(" "),
+			questionWords : questionWords,
 			answer: answers,
 			correctAnswer: correctAnswer,
 			explanation: explanation
@@ -127,35 +138,41 @@ Meteor.methods({
 	}, 
 	findSimilarQuestions: function(question){
 		var calculateSimilarity = function(first,second){
+			console.log("claculate similarity");
+			console.log(first);
+			console.log(second);
 			var nos = 0;//numer of similar
 			_.each(first,function(word){
 				_.contains(second,word) ? nos++ : null;
 			});
-			console.log(nos);
-			console.log(first);
-			var percentage = nos/first.length;
+			var percentage = nos/second.length;
+			console.log("per");
+			console.log(percentage);
 			return percentage;
 		}
 		var result = [{question:"q",percentage:0}];
-		var wordsTyped = question.split(" ");
-		Questions.find().forEach(function(question){
-			var percentage = calculateSimilarity(wordsTyped,question.questionWords); 
-			var count = 0;
-			_.each(result,function(element){
-				if(percentage > element.percentage && count < 5){
-					console.log(percentage);
-					console.log(count);
-					var newItem = {question : question, percentage: percentage}; 
-					result.insert(count,newItem);
-					console.log(result[0]); 
-					count ++; 
-				} 
-				result = _.first(result,5);
-				result = _.filter(result,function(question){
-					return question.percentage > 0.4;
-				});
-			});
+		var q = question.split(" ");
+		var wordsTyped =[];
+		_.each(q,function(word){
+			_.contains(wordsTyped,word) ? null : wordsTyped.push(word);
 		});
+		console.log("words"); 
+		console.log(wordsTyped);
+		Questions.find().forEach(function(question){
+			console.log("questiondd20000");
+			console.log(question);
+			var percentage = calculateSimilarity(wordsTyped,question.questionWords); 
+			var newItem = {"question" : question.question, "percentage": percentage}; 
+			result.push(newItem);
+		});
+		console.log("result");
+		console.log(result);
+		result = _.filter(result,function(question){
+			console.log("question");
+			console.log(question);
+			return question.percentage > 0.4;
+		});
+		console.log(result);
 		return result;
 	}
 });

@@ -1,14 +1,19 @@
+
+
 Meteor.startup(function(){
 	Session.setDefault("friendFilter","all");
 	Deps.autorun(function(){
 		var status = Session.get("friendFilter");
+		console.log(status);
 		var friends = Meteor.subscribe('friends',status);
+
 	});
 });
 
 
 Template.friends.events({
 	'click .sort-friends' : function(evt){
+		console.log("click");
 		Session.set("friendFilter",evt.target.name);
 	},
 	'click .game-invite' : function(evt){
@@ -40,9 +45,10 @@ Template.friends.helpers({
 		return this.state == "online";
 	},
 	'friends': function(){
-		if(Meteor.user()){
-			return Meteor.users.find({_id:{$ne : Meteor.user()._id}});
-		}
+		var status = Session.get("friendFilter");
+		var friends = Meteor.subscribe('friends',status);	
+		Meteor.users.find({_id:{$ne : Meteor.user()._id}});
+		return Meteor.users.find({_id:{$ne : Meteor.user()._id}});
 	},
 	'facebookFriends' : function(){
 		if(Meteor.user().services.facebook){

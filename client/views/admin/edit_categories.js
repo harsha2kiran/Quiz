@@ -53,6 +53,11 @@ Template.category.helpers({
 });
 
 Template.category.events({
+	'click .change-name':function(evt){
+		evt.stopImmediatePropagation();
+		var newName = $(evt.target).prev().attr('value');
+		Meteor.call('changeCategoryName',this._id,newName);
+	},
 	'click .add-sub': function(evt) {
 		//this stops this firing multiple times in the case of a nested button being clicked
 		evt.stopImmediatePropagation();

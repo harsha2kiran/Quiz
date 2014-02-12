@@ -130,6 +130,8 @@ Template.add_new_question.events({
 					//if a server side error (shouldn't happen because of all the validate client side) then append that to the error div
 					$("#add-question-errors").html("<strong>Error: </strong>" + err.reason);
 				}else{
+					$('#new-question-title').val('');
+					$("#question-explanation").val('');
 					if($('#question-table').dataTable()){
 						var question = Questions.findOne({_id:res});
 				        var record = []; 
@@ -147,16 +149,14 @@ Template.add_new_question.events({
 		                        record.push(answer.option);
 		                    }
 		                });
-				        record.push(buttons(question._id));
+				        record.push(buttons(question._id,"approved"));
                         record.push('<input name="'+question._id+'"type="checkbox">');
 						$('#question-table').dataTable().fnAddData(record);
 						$('#edit-question-modal').modal('hide');
 					}
 				}
 			});
-			//if no errors, reset the fields
-			$('#new-question-title').val('');
-			$("#question-explanation").val('');
+
 		}
 		
 	}
@@ -305,10 +305,8 @@ Template.add_new_question.helpers({
 Template.similarQuestions.helpers({
 	'similarQuestions' : function(){
 		questionsDep.depend(); 
-		var result = [];
-		_.each(similarQuestions,function(question){
-			result.push(question.question);
-		});
-		return result;
+		console.log("similarity");
+		console.log(similarQuestions);
+		return similarQuestions;
 	}
 });

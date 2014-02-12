@@ -28,10 +28,13 @@
 				<button type="button" class="btn btn-danger delete-cat-and-questions">
 					Delete Category &amp; Question
 				</button>
+				<input type="text" placeholder="new category name">
+				<button  class ="btn btn-primary change-name">change</button>
+				<div id="add-category-{{_id}}"></div>
 			{{/if}}
 		
 			<a href="{{pathFor 'edit_questions'}}">Edit Questions</a>
-			<div id="add-category-{{_id}}"></div>
+
 			{{#each child_categories _id}}
 				{{> category}}
 			{{/each}}
