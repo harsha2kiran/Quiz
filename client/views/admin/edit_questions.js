@@ -1,3 +1,31 @@
+var deleteButton = function(id){
+    console.log(id);
+    return '<button name="'+id+'"class="delete btn btn-danger" >'+
+    '<span  class="glyphicon glyphicon-remove-circle"></button>';
+}
+
+var editButton = function(id){
+    return '<button name="'+id+'"class="edit btn btn-primary" >'+
+    '<span class="glyphicon glyphicon-edit"></button>';
+}
+
+var statusChangeButton = function(id,status){
+    if(status == "approved"){
+        return '<button name="'+id+'"class="change btn btn-success" >'+
+        '<span class="glyphicon glyphicon-ok-circle"></button>';
+    }else{
+        return '<button name="'+id+'"class="change btn btn-warning" >'+
+        '<span class="glyphicon glyphicon-ban-circle"></button>';
+    }
+}
+
+var buttons = function(id,status){
+	if(Meteor.user().isAdmin || Meteor.user().isModerator){
+		return deleteButton(id)+editButton(id)+statusChangeButton(id,status);
+	}
+    return deleteButton(id)+editButton(id);
+}
+
 similarQuestions = []; 
 questionsDep = new Deps.Dependency();
 
@@ -16,6 +44,16 @@ Template.edit_questions.helpers({
 Template.add_new_question.events({
 	'keydown .question-contents' : function(evt){
 		if(evt.keyCode == 32 && evt.target.value.length>10){
+			Meteor.call('findSimilarQuestions',evt.target.value,function(err,res){
+				similarQuestions = res;
+				console.log(similarQuestions);
+				questionsDep.changed();
+			});
+		}
+	},
+
+	'keyup .question-contents' : function(evt){
+		if(evt.keyCode == 8 ){
 			Meteor.call('findSimilarQuestions',evt.target.value,function(err,res){
 				similarQuestions = res;
 				console.log(similarQuestions);
@@ -102,9 +140,14 @@ Template.add_new_question.events({
 				        if(question.question.length > 20)
 				            begin += "...";
 				        record.push(begin);
-				        record.push('<button name="'+question._id+'"class="delete btn btn-danger" >delete</button>');
-				        record.push('<button name="'+question._id+'"class="edit btn btn-primary" >edit</button>');
-				        record.push('<button name="'+question._id+'"class="change btn btn-warning">change state</button>');
+                        _.each(question.answer,function(answer){
+		                    if(question.correctAnswer == answer.id){
+		                        record.push('<FONT COLOR="green">'+answer.option+'</FONT>');
+		                    }else{
+		                        record.push(answer.option);
+		                    }
+		                });
+				        record.push(buttons(question._id));
 						$('#question-table').dataTable().fnAddData(record);
 						$('#edit-question-modal').modal('hide');
 					}
@@ -229,13 +272,15 @@ Template.question_edit_fields.events({
 	}
 });
 
+Handlebars.registerHelper('isAdmin',function(){
+		return Meteor.user().isAdmin;
+});
+
 Template.move_question_dropdown.helpers({
 	categories: function() {
 		return Categories.find({ _id : { $ne: this.categoryId } }, { sort: { name: 1 } } );
 	},
-	isAdmin: function(){
-		return Meteor.user().isAdmin;
-	}
+
 });
 
 Template.move_question_dropdown.events({

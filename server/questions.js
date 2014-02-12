@@ -152,7 +152,7 @@ Meteor.methods({
 				} 
 				result = _.first(result,5);
 				result = _.filter(result,function(question){
-					return question.percentage > 0;
+					return question.percentage > 0.4;
 				});
 			});
 		});

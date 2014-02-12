@@ -42,7 +42,12 @@ Router.map(function() {
 		});
 
 		this.route('question_table', {
-			path: '/admin/question_table',
+			path: '/admin/question',
+			waitOn: [categorySub, currentUserSub],
+			controller: 'AdminController',			
+		});
+		this.route('question_table', {
+			path: '/user/questions',
 			waitOn: [categorySub, currentUserSub],
 			controller: 'SimpleController',			
 		});

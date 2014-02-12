@@ -38,17 +38,14 @@ Meteor.publish('lobbyForCategory', function(categoryId) {
 //function for managing the lobbies.
 var addToLobby = function(userId, categoryId) {
 	var user = Meteor.users.findOne(userId);
-	console.log("user");
-	console.log(user);
+
 	var alreadyInLobby = Lobbys.findOne({ categoryId: categoryId, 'players.userId': userId });
-	console.log("already");
-	console.log(alreadyInLobby);
+
 	if (alreadyInLobby)
 		return alreadyInLobby._id;
 
 	var currentLobby = Lobbys.findOne({ categoryId: categoryId, playing: false });
-	console.log("current");
-	console.log(currentLobby);
+
 	//a non-active lobby does not exist for this category so we create one.
 	if (!currentLobby) {
 		var newLobby = Lobbys.insert({

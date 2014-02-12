@@ -2,9 +2,32 @@ Meteor.startup(function(){
     Deps.autorun(function(){
         Meteor.subscribe('questions');
     });
-
 });
 
+var deleteButton = function(id){
+    console.log(id);
+    return '<button name="'+id+'"class="delete btn btn-danger" >'+
+    '<span  class="glyphicon glyphicon-remove-circle"></button>';
+}
+
+var editButton = function(id){
+    return '<button name="'+id+'"class="edit btn btn-primary" >'+
+    '<span class="glyphicon glyphicon-edit"></button>';
+}
+
+var statusChangeButton = function(id,status){
+    if(status == "approved"){
+        return '<button name="'+id+'"class="change btn btn-success" >'+
+        '<span class="glyphicon glyphicon-ok-circle"></button>';
+    }else{
+        return '<button name="'+id+'"class="change btn btn-warning" >'+
+        '<span class="glyphicon glyphicon-ban-circle"></button>';
+    }
+}
+
+var buttons = function(id,status){
+    return deleteButton(id)+editButton(id)+statusChangeButton(id,status);
+}
 var rendered;
 
 
@@ -25,10 +48,15 @@ var prepareDataSet = function(){
                 if(question.question.length > 20)
                     begin += "...";
                 record.push(begin);
-                record.push('<button name="'+id+'"class="delete btn btn-danger" >delete</button>');
-                record.push('<button name="'+id+'"class="edit btn btn-primary" >edit</button>');
-                record.push('<button name="'+id+'"class="change btn btn-warning">change state</button>');
 
+                _.each(question.answer,function(answer){
+                    if(question.correctAnswer == answer.id){
+                        record.push('<FONT COLOR="green">'+answer.option+'</FONT>');
+                    }else{
+                        record.push(answer.option);
+                    }
+                });
+                record.push(deleteButton(id)+editButton(id)+statusChangeButton(id,question.status));
                 tableData.push(record);
                 counter++;
    
@@ -42,16 +70,22 @@ var prepareDataSet = function(){
                     if(question.question.length > 20)
                         begin += "...";
                     record.push(begin);
+                    _.each(question.answer,function(answer){
+                        if(question.correctAnswer == answer.id){
+                            record.push('<FONT COLOR="green">'+answer.option+'</FONT>');
+                        }else{
+                            record.push(answer.option);
+                        }
+                    });                    
                     if(question.status == "pending"){
-                        record.push('<button name="'+id+'"class="delete btn btn-danger" >delete</button>');
-                        record.push('<button name="'+id+'"class="edit btn btn-primary" >edit</button>');                 
+                        record.push(deleteButton(id)+editButton(id));
                     }
-         
                     tableData.push(record);
                     counter++;
                 }     
             }
             if(rendered && question.author != Meteor.user()._id){
+                console.log("test0");
                 var record = []; 
                 record.push(question.status); 
                 var categoryName = Categories.findOne({_id:question.categoryId}).name;
@@ -60,11 +94,27 @@ var prepareDataSet = function(){
                 if(question.question.length > 20)
                     begin += "...";
                 record.push(begin);
-                record.push('<button name="'+id+'"class="delete btn btn-danger" >delete</button>');
-                record.push('<button name="'+id+'"class="edit btn btn-primary" >edit</button>');
-                record.push('<button name="'+id+'"class="change btn btn-warning">change state</button>');
+                _.each(question.answer,function(answer){
+                    if(question.correctAnswer == answer.id){
+                        record.push('<FONT COLOR="green">'+answer.option+'</FONT>');
+                    }else{
+                        record.push(answer.option);
+                    }
+                });
+                var editPanel = '<button name="'+id+'"class="delete btn btn-danger" >delete</button>';
+                editPanel= editPanel + '<button name="'+id+'"class="edit btn btn-primary" >edit</button>';
+                if(Meteor.user().isAdmin || Meteor.user().isModerator)
+                    editPanel = editPanel +'<button name="'+id+'"class="change btn btn-warning">change state</button>';
+                console.log(editPanel);
+                record.push(editPanel);
                 $('#question-table').dataTable().fnAddData(record);
             }
+        },
+        changed: function(id,question){
+
+        },
+        removed : function(id,question){
+
         }
     });
 }
@@ -73,6 +123,9 @@ Template.question_table.rendered = function () {
     $('#edit-question-modal').on('hidden.bs.modal', function() {
         similarQuestions = [];
         questionsDep.changed();
+        _.each($('input'),function(field){
+            $(field).val("");
+        });
     });  
     rendered = false;
     try{
@@ -85,48 +138,75 @@ Template.question_table.rendered = function () {
         prepareDataSet();
         $('#question-table').remove(); 
         $('#table-container').append('<div><table cellpadding="1" cellspacing="0" border="5" class="display" id="question-table"></table></div>');
-        $('#question-table').dataTable( {
-            "aaData": tableData,
-            "aoColumns": [
-                { "sTitle": "status" },
-                { "sTitle": "category" },
-                { "sTitle": "question" , "sWidth": "30%"},
-                {  "sWidth": "10%" ,"bSortable": false, "sTitle": "" },
-                {  "sWidth": "10%" ,"bSortable": false, "sTitle": "" },
-            ],
-            sPaginationType: "full_numbers"
-        } ); 
+        if(Meteor.user().isAdmin || Meteor.user().isModerator){
+            $('#question-table').dataTable( {
+                "aaData": tableData,
+                "aoColumns": [
+                    { "sTitle": "status" },
+                    { "sTitle": "category" },
+                    { "sTitle": "question" , "sWidth": "20%"},
+                    { "sTitle": "answer" },
+                    { "sTitle": "answer" },
+                    { "sTitle": "answer" },
+                    { "sTitle": "answer" },
+                    { "sWidth": "20%", "bSortable": false, "sTitle": "" },
+
+                ],
+                sPaginationType: "full_numbers"
+            } ); 
+        }else{
+            $('#question-table').dataTable( {
+                "aaData": tableData,
+                "aoColumns": [
+                    { "sTitle": "status" },
+                    { "sTitle": "category" },
+                    { "sTitle": "question" , "sWidth": "20%"},
+                    { "sTitle": "answer" },
+                    { "sTitle": "answer" },
+                    { "sTitle": "answer" },
+                    { "sTitle": "answer" },
+                    { "sWidth": "20%", "bSortable": false, "sTitle": "" },
+                ],
+                sPaginationType: "full_numbers"
+            } );             
+        }
     }
 };
 
 Template.question_table.events({
-
+    'click glyphicon': function(evt){
+        evt.preventDefault();
+    },
     'click .delete': function(evt){
+        var name = evt.target.parentNode.name+evt.target.name;
+        name = name.replace("undefined","");
         var oTable = $('#question-table').dataTable();
         var rowIndex = oTable.fnGetPosition( $(evt.target).closest('tr')[0] );
         oTable.fnDeleteRow(rowIndex);   
-        Meteor.call('removeQuestion',evt.target.name);
+        Meteor.call('removeQuestion',name);
     },
     'click .change': function(evt){
-
+        var name = evt.target.parentNode.name+evt.target.name;
+        name = name.replace("undefined","");
         var oTable = $('#question-table').dataTable();
         var rowIndex = oTable.fnGetPosition( $(evt.target).closest('tr')[0] ); 
         var value = oTable.fnGetData($(evt.target).closest('tr')[0])[0];  
         var update = (value == "pending") ? "approved" : "pending";
         oTable.fnUpdate( update, rowIndex , 0);  
-        Meteor.call('changeQuestionStatus',evt.target.name,update,function(err,res){
+        oTable.fnUpdate( buttons(name,update), rowIndex , 7);
+        Meteor.call('changeQuestionStatus',name,update,function(err,res){
 
         });
     },
     'click .edit': function(evt){
-        console.log("edit");
-        console.log(evt.target.name);
+        var name = evt.target.parentNode.name+evt.target.name;
+        name = name.replace("undefined","");
         Session.set("currentStage","editQuestion");
         var oTable = $('#question-table').dataTable();
         var rowIndex = oTable.fnGetPosition( $(evt.target).closest('tr')[0] ); 
         Session.set("selectedRow",rowIndex);
-        Session.set("edited",evt.target.name);
-        Session.set('editing-question-' + evt.target.name, true);
+        Session.set("edited",name);
+        Session.set('editing-question-' + name, true);
         $('#edit-question-modal').modal('show');
     }, 
     'click .create-category' : function(){
@@ -173,7 +253,6 @@ Template.modalbody.helpers({
         return Questions.findOne({_id:Session.get("edited")});
     },
     'question' : function(){
-        console.log(Session.get("currentStage"));
         return Session.get("currentStage") == "editQuestion";
     },
     'addQuestion':function(){

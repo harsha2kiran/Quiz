@@ -6,6 +6,11 @@ Meteor.startup(function(){
 
 
 Template.friends.events({
+	'click .game-invite' : function(evt){
+		$('#quick-game-modal').modal('show');
+		var test = $('input.invite')[0];
+		$(test).val(this.username);
+	},
 	'click .invite' : function(evt){
 		if(evt.target.name == "email"){
 			$('#invite_email_modal').modal('show');
