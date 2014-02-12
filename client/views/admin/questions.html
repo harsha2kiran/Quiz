@@ -1,5 +1,9 @@
 <template name="question_table">
   <button class="btn btn-primary add-question">Add Question</button>
+  <button class="btn btn-danger bulk-delete">Delete Selected</button>
+  {{#if isAdmin}}
+    <button class="btn btn-success bulk-approve">Approve Selected</button>
+  {{/if}}
   {{#isolate}}
     <div id="table-container">
         <table cellpadding="0" cellspacing="0" border="0" class="display" id="question-table">

@@ -57,6 +57,7 @@ var prepareDataSet = function(){
                     }
                 });
                 record.push(deleteButton(id)+editButton(id)+statusChangeButton(id,question.status));
+                record.push('<input name="'+id+'"type="checkbox">');
                 tableData.push(record);
                 counter++;
    
@@ -79,8 +80,9 @@ var prepareDataSet = function(){
                     });                    
                     if(question.status == "pending"){
                         record.push(deleteButton(id)+editButton(id));
+                        record.push('<input name="'+id+'"type="checkbox">');
                     }
-                    tableData.push(record);
+                    tableData.push(record);                   
                     counter++;
                 }     
             }
@@ -107,6 +109,7 @@ var prepareDataSet = function(){
                     editPanel = editPanel +'<button name="'+id+'"class="change btn btn-warning">change state</button>';
                 console.log(editPanel);
                 record.push(editPanel);
+                record.push('<input name="'+id+'"type="checkbox">');
                 $('#question-table').dataTable().fnAddData(record);
             }
         },
@@ -150,6 +153,7 @@ Template.question_table.rendered = function () {
                     { "sTitle": "answer" },
                     { "sTitle": "answer" },
                     { "sWidth": "20%", "bSortable": false, "sTitle": "" },
+                    { "sWidth": "5%", "bSortable": false, "sTitle": "" },
 
                 ],
                 sPaginationType: "full_numbers"
@@ -166,6 +170,7 @@ Template.question_table.rendered = function () {
                     { "sTitle": "answer" },
                     { "sTitle": "answer" },
                     { "sWidth": "20%", "bSortable": false, "sTitle": "" },
+                    { "sWidth": "5%", "bSortable": false, "sTitle": "" },
                 ],
                 sPaginationType: "full_numbers"
             } );             
@@ -174,6 +179,34 @@ Template.question_table.rendered = function () {
 };
 
 Template.question_table.events({
+    'click .bulk-delete':function(){
+        _.each($('input[type=checkbox]'),function(checkbox){
+            if($(checkbox).prop('checked')){
+                console.log(checkbox.name);
+                var oTable = $('#question-table').dataTable();
+                var rowIndex = oTable.fnGetPosition( $(checkbox).closest('tr')[0] );
+                oTable.fnDeleteRow(rowIndex); 
+                Meteor.call('removeQuestion',checkbox.name);
+            }
+        });
+    },
+    'click .bulk-approve':function(){
+        _.each($('input[type=checkbox]'),function(checkbox){
+            if($(checkbox).prop('checked')){
+                var oTable = $('#question-table').dataTable();
+                var rowIndex = oTable.fnGetPosition( $(checkbox).closest('tr')[0] ); 
+                var value = oTable.fnGetData($(checkbox).closest('tr')[0])[0];  
+                if(value == "pending"){
+                    var update = "approved";
+                    oTable.fnUpdate( update, rowIndex , 0);  
+                    oTable.fnUpdate( buttons(checkbox.name,update), rowIndex , 7);
+                    Meteor.call('changeQuestionStatus',checkbox.name,update,function(err,res){
+
+                    });
+                }
+            }
+        });
+    },
     'click glyphicon': function(evt){
         evt.preventDefault();
     },

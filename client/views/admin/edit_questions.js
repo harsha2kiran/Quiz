@@ -148,6 +148,7 @@ Template.add_new_question.events({
 		                    }
 		                });
 				        record.push(buttons(question._id));
+                        record.push('<input name="'+question._id+'"type="checkbox">');
 						$('#question-table').dataTable().fnAddData(record);
 						$('#edit-question-modal').modal('hide');
 					}
