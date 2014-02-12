@@ -64,12 +64,21 @@ Meteor.publish('allUsers', function() {
 	 }
 });
 
-Meteor.publish('friends', function(){
-	if(this.userId){
-		var user = Meteor.users.findOne({_id:this.userId}); 
-		var friends =  Meteor.users.find({_id:{$in: user.friends }},{fields:{_id :1,username:1,state:1}});
-	 	return friends;
+Meteor.publish('friends', function(userState){
+	if(userState == "all"){
+		if(this.userId){
+			var user = Meteor.users.findOne({_id:this.userId}); 
+			var friends =  Meteor.users.find({_id:{$in: user.friends }},{fields:{_id :1,username:1,state:1}});
+		 	return friends;
+		}		
+	}else{
+		if(this.userId){
+			var user = Meteor.users.findOne({_id:this.userId}); 
+			var friends =  Meteor.users.find({$and:[{_id:{$in: user.friends }},{state: userState}]},{fields:{_id :1,username:1,state:1}});
+		 	return friends;
+		}		
 	}
+
 });
 
 Meteor.methods({
@@ -80,7 +89,7 @@ Meteor.methods({
 	},
 	makeAdmin: function(newAdminUserId) {
 		check(newAdminUserId, String)
-		console.log(this.userId);
+		console.log(this.userId);t
 		console.log(Users.isAdmin(this.userId));
 		if (!Users.isAdmin(this.userId))
 			throw new Meteor.Error(500, "Only admins can do this");

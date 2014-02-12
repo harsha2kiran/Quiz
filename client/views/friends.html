@@ -20,28 +20,40 @@
 			</ul>
         </div><!--/.nav-collapse -->
   	</div>
-	<table class="table table-condensed">
+  <div class="btn-group">
+    <button type="button" name="all" class="btn btn-primary sort-friends">All</button>
+    <button type="button" name="online" class="btn btn-success sort-friends">Online</button>
+    <button type="button" name="busy" class="btn btn-warning sort-friends">Busy</button>
+    <button type="button" name="offline" class="btn btn-danger sort-friends">Offline</button>
+  </div>
+	<table class="table table-bordered">
+        <thead>
         <tr>
         	<th>
-				<label>username</label>
+				    <label>username</label>
         	</th>
         	<th>
-				<label>status</label>
+				    <label>state</label>
         	</th>
         </tr>
+        </thead>
+        <tbody>
         {{#each friends}}
         <tr>
         	<th>
-				<label>{{username}}</label>
+				    <label>{{username}}</label>
         	</th>
         	<th>
-				<label>{{state}}</label>
+				    <label>{{state}}</label>
         	</th>
         	<th>
-				<button class="btn btn primary game-invite">invite</button>
+            {{#if $eq state "online"}}
+				    <button class="btn btn-primary game-invite">invite</button>
+            {{/if}}
         	</th>
         </tr>
         {{/each}}
+        </tbody>
   	</table>
 </template>
 
