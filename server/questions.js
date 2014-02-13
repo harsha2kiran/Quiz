@@ -138,16 +138,12 @@ Meteor.methods({
 	}, 
 	findSimilarQuestions: function(question){
 		var calculateSimilarity = function(first,second){
-			console.log("claculate similarity");
-			console.log(first);
-			console.log(second);
 			var nos = 0;//numer of similar
 			_.each(first,function(word){
 				_.contains(second,word) ? nos++ : null;
 			});
 			var percentage = nos/second.length;
-			console.log("per");
-			console.log(percentage);
+	
 			return percentage;
 		}
 		var result = [{question:"q",percentage:0}];
@@ -156,20 +152,12 @@ Meteor.methods({
 		_.each(q,function(word){
 			_.contains(wordsTyped,word) ? null : wordsTyped.push(word);
 		});
-		console.log("words"); 
-		console.log(wordsTyped);
 		Questions.find().forEach(function(question){
-			console.log("questiondd20000");
-			console.log(question);
 			var percentage = calculateSimilarity(wordsTyped,question.questionWords); 
 			var newItem = {"question" : question.question, "percentage": percentage}; 
 			result.push(newItem);
 		});
-		console.log("result");
-		console.log(result);
 		result = _.filter(result,function(question){
-			console.log("question");
-			console.log(question);
 			return question.percentage > 0.4;
 		});
 		console.log(result);

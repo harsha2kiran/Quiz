@@ -82,6 +82,17 @@ Meteor.publish('friends', function(userState){
 });
 
 Meteor.methods({
+	setUserName : function(name){
+		var found = false;
+		Meteor.users.find().forEach(function(user){
+			if(user.username == name){
+				found = true;
+			}
+		});
+		if(!found)
+			Meteor.users.update({_id:this.userId},{$set:{username:name}});
+		return found;
+	},
 	setUserState : function(state,userId){
 		console.log(state);
 		console.log(userId);

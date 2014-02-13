@@ -30,3 +30,62 @@ tfoot th, tfoot td {
 	text-align: center;
 	vertical-align:middle;
 }
+.modalActive{
+	position: absolute;
+	opacity:0;
+	z-index: 1000;
+	margin: auto;
+	padding: 20px;
+	width: 500px;
+	height: 500px;
+	border-radius: 10px;
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	overflow-y: scroll;
+	background-color: rgba(0,0,0,0.7);
+	
+	-webkit-box-shadow: 3px 3px 3px rgba(0,0,0,0.1);
+	box-shadow: 3px 3px 3px rgba(0,0,0,0.1);
+	opacity: 1;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+	filter: alpha(opacity=0);
+
+	-webkit-transition: opacity 1s ease;
+	-moz-transition: opacity 1s ease;
+	-ms-transition: opacity 1s ease;
+	-o-transition: opacity 1s ease;
+	transition: opacity 1s ease;
+}
+.modalHidden {
+	position: absolute;
+	opacity:0;
+	z-index: 1000;
+	display:none;
+	margin: auto;
+	padding: 20px;
+	width: 500px;
+	height: 500px;
+	border-radius: 10px;
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	overflow-y: scroll;
+	background-color: rgba(0,0,0,0.7);
+
+	-webkit-box-shadow: 3px 3px 3px rgba(0,0,0,0.1);
+	box-shadow: 3px 3px 3px rgba(0,0,0,0.1);
+	opacity: 1;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+	filter: alpha(opacity=0);
+
+	-webkit-transition: opacity 1s ease;
+	-moz-transition: opacity 1s ease;
+	-ms-transition: opacity 1s ease;
+	-o-transition: opacity 1s ease;
+	transition: opacity 1s ease;
+}

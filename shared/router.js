@@ -7,9 +7,9 @@ Router.map(function() {
 	if(Meteor.isClient){
 		this.route('homepage', {
 			path: '/',
-			waitOn: [categorySub, currentUserSub]
+			waitOn: [categorySub, currentUserSub],
+			controller: 'SimpleController'
 		});
-
 		this.route('quiz_lobby', {
 			path: 'lobby/:_id',
 			waitOn: function() {
@@ -69,6 +69,10 @@ Router.map(function() {
 			path: '/admin/badges',
 			controller: 'AdminController',
 		});
+		this.route('username',{
+			path: '/username',
+		});
+
 		this.route('badges', {
 			path: '/badges',
 			controller: 'SimpleController'
@@ -107,7 +111,8 @@ Router.map(function() {
 
 		this.route('my_account', {
 			path: '/my-account',
-			waitOn: [categorySub, currentUserSub]
+			waitOn: [categorySub, currentUserSub],
+			controller: 'SimpleController',
 		});	
 	}
 
@@ -132,14 +137,17 @@ AdminController = RouteController.extend({
 });
 
 SimpleController = RouteController.extend({
-	before: function(){
-		if(!Meteor.user()){
-			Router.go("/");
-		}
-	},
 	after: function(){
 		if(!Meteor.user()){
-			Router.go("/");
+			if(Router._currentController.path != "/"){
+				Router.go("/");
+			}
+		}else if(!Meteor.user().username){
+			pathDependency.changed();
+			console.log("user");
+			console.log(Meteor.user());
+			console.log(Meteor.user().username);
+			Router.go("/username");
 		}
 	}
 });

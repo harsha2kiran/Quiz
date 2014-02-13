@@ -14,3 +14,33 @@
 <template name="loading">
 	<h2>Loading...</h2>
 </template>
+
+<template name="username">
+
+<div class=".modalActive" id="username-modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Please choose your username</h4>
+        </div>
+        <div class="modal-body">
+          <table class="table table-condensed">
+            <tr>
+              <th>
+                <label>username</label>
+              </th>
+              <th>
+                <input name="name" class="add-badge-modal-input" >
+                <div id="username-errors" style="color:#a94442;">
+              </th>
+            </tr>
+          </table>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" >Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
