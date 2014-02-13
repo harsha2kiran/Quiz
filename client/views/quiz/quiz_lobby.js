@@ -1,7 +1,28 @@
 Template.quiz_lobby.helpers({
+	noFriendhip : function(){
+		var quiz = Quizzes.findOne({});
+		if (Meteor.user()) {
+			var players = quiz.players;
+
+			var currentPlayer = _.find(quiz.players, function(plyr) {
+				return plyr.userId === Meteor.user()._id;
+			});
+
+			var opponentPlayer = _.find(quiz.players, function(plyr) {
+				return plyr.userId !== Meteor.user()._id;
+			});
+			var result = true;
+			_.each(Meteor.user().friends,function(friend){
+				if(friend == opponentPlayer){
+					result = false;
+				}
+			});
+			return result;
+		}
+
+	},
 	prequiz: function()  {
 		var quiz = Quizzes.findOne({});
-		console.log((!quiz || quiz.state === 'prequiz'));
 		return (!quiz || quiz.state === 'prequiz');
 	},
 	categoryName: function() {

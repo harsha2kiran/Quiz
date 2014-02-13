@@ -36,16 +36,17 @@
 			{{winner_string}}
 			<div>
 				{{#if opponent_in_lobby}}
+					{{#if noFriendship}}
 					<button class="btn btn-primary make-friend">Make {{opponent_name}} friend</button>
+					{{/if}}
 					{{#if rematch_me}}
 						Waiting on {{opponent_name}} to choose to do a rematch...
 					{{else}}
 						Do you want to have a rematch? 
 						
 						{{#if rematch_opponent}}
-							<div>{{opponent_name}} has chose to do a rematch, do you accept?
+							<div>{{opponent_name}} has choose to do a rematch, do you accept?
 								<button type="button" class="btn btn-info quiz-rematch">Yes</button>
-								<button type="button" class="btn btn-info new-game">No</button>
 								<button type="button" class="btn btn-info new-game">No</button>
 							</div>
 						{{else}}

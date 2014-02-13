@@ -10,7 +10,8 @@
       "npm": {},
       "datatables": {},
       "event-hooks": {},
-      "handlebar-helpers": {}
+      "handlebar-helpers": {},
+      "user-session": {}
     },
     "packages": {
       "iron-router": {
@@ -57,6 +58,11 @@
         "git": "https://github.com/raix/Meteor-handlebar-helpers.git",
         "tag": "v0.0.9",
         "commit": "71e94c99462b8801a34c5363510758b6ff5f5ac7"
+      },
+      "user-session": {
+        "git": "https://github.com/BenjaminRH/meteor-user-session.git",
+        "tag": "v0.2.0",
+        "commit": "9ce8cb3385f6bc08918dd30313f2251a42e6ff3b"
       }
     }
   }

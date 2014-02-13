@@ -9,3 +9,4 @@ Quizzes = new Meteor.Collection('quizzes');
 HallOfFameData = new Meteor.Collection('hallOfFameData');
 Invitations = new Meteor.Collection('invitations');
 lobbySub = null;
+Messages = new Meteor.Collection("messages");

@@ -26,9 +26,12 @@ Meteor.startup(function(){
 		}, 
 		changed: function(id,inv){
 			if(inv.state == 'accepted'){
-				var quiz = '/lobby/'+Categories.findOne({name:choosenCategory})._id;
-				Router.go(quiz);
 				$('#quick-game-modal').modal('hide');
+				$('#quick-game-modal').modal('hide');
+				var quiz = '/lobby/'+Categories.findOne({name:choosenCategory})._id;
+				
+				//Router.go(quiz);
+				
 			}
 		},
 		removed: function(id,inv){
@@ -108,10 +111,8 @@ Template.quick_game_modal_body.events({
 		var cateogryId = Categories.findOne({name:choosenCategory})._id;
 		var pl1 = Invitations.findOne().invitator; 
 		var pl2 = Invitations.findOne().invited;
-		console.log("clicked");
+		$('#quick-game-modal').modal('hide');
 		Meteor.call('quickGame',cateogryId,pl1,pl2,function(err,response){
-			console.log("lobby for quck game created"); 
-			console.log(response)
 			Meteor.call('acceptInvitation',Invitations.findOne({})._id);
 		});
 	},

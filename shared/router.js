@@ -142,7 +142,7 @@ SimpleController = RouteController.extend({
 			if(Router._currentController.path != "/"){
 				Router.go("/");
 			}
-		}else if(!Meteor.user().username){
+		}else if(!Meteor.user().username || !Meteor.user().emails){
 			pathDependency.changed();
 			console.log("user");
 			console.log(Meteor.user());

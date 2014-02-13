@@ -82,6 +82,9 @@ Meteor.publish('friends', function(userState){
 });
 
 Meteor.methods({
+	getUserName : function(id){
+		return Meteor.users.findOne({_id:id}).username;
+	},
 	setUserName : function(name){
 		var found = false;
 		Meteor.users.find().forEach(function(user){
@@ -92,6 +95,45 @@ Meteor.methods({
 		if(!found)
 			Meteor.users.update({_id:this.userId},{$set:{username:name}});
 		return found;
+	},
+	setUserMissingData : function(name,email){
+
+		var result = {};
+		if(!Meteor.user().username)
+			result['usernameFound'] = false;
+		if(!Meteor.user().emails)
+			result['emailFound'] = false;
+		Meteor.users.find().forEach(function(user){
+			if(result.hasOwnProperty('usernameFound')){
+				console.log(user.username);
+				if(user.username == name){
+					result['usernameFound'] = true;
+				}
+			}
+			if(result.hasOwnProperty('emailFound')){
+				if(user.emails){
+					_.each(user.emails,function(mail){
+						if(mail == email){
+							result['emailFound'] = true;
+						}
+					});
+				}
+			}
+		});
+		if(result['usernameFound'] == false && result['emailFound'] == false){
+			var emails = []; 
+			emails[0] = {'address' : email, 'verified' : false};
+			var update = {
+				'username' : name,
+				'emails' : emails,
+			}
+			var self = this;
+			Meteor.users.update({_id:this.userId},{$set: update},function(){
+				Accounts.sendVerificationEmail(self.userId);
+			});
+		}
+		console.log(result);
+		return result;
 	},
 	setUserState : function(state,userId){
 		console.log(state);

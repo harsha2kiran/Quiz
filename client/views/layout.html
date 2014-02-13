@@ -1,9 +1,13 @@
 <template name="layout">
+
+    {{>emailVerificationInfo}}
+
 	<div class="container">
 		{{#if displayNavbar}}
 			{{> navbar}}
 		{{/if}}
 		{{yield}}
+    
 	</div>
 </template>
 
@@ -26,19 +30,45 @@
         <div class="modal-body">
           <table class="table table-condensed">
             <tr>
+              {{#if usernameMissing}}
               <th>
                 <label>username</label>
               </th>
               <th>
-                <input name="name" class="add-badge-modal-input" >
+                <input name="name">
                 <div id="username-errors" style="color:#a94442;">
               </th>
+              {{/if}}
+              {{#if emailMissing}}
+              <th>
+                <label>email</label>
+              </th>
+              <th>
+                <input name="email" >
+                <div id="email-errors" style="color:#a94442;">
+              </th>
+              {{/if}}
             </tr>
           </table>
 
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" >Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template name="emailVerificationInfo">
+  <div class="modal fade" id="emailVerification-modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        </div>
+        <div class="modal-body">
+          <h4>We send you verification email, please check your email box</h4>
         </div>
       </div>
     </div>

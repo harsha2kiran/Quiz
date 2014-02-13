@@ -1,4 +1,6 @@
 <template name="navbar">
+  {{>emailVerificationInfo}}
+  {{>notificationsModal}}
   {{>quick_game}}
 	<div class="navbar navbar-default" role="navigation">
         <div class="navbar-header">
@@ -35,8 +37,53 @@
             	<li><a href="#">{{username}} - {{points}} points</a></li>
             	<li><a href="#" class="logout">Logout</a></li>
               <li><a href="/friends" class="friends">Friends</a></li>
+              <li>
+              <div class="btn-group messages-button">
+                  <button data-toggle="dropdown" class="btn navbar-btn dropdown-toggle"><span class="glyphicon glyphicon-envelope"></span> Messages({{numberOfUnread}})<span class="caret"></span></button>
+                 
+                  <ul class="dropdown-menu">
+                      {{#each messages}}
+                        <li><a class="message" href="#">{{title}}</a></li>
+                      {{/each}}
+                  </ul>
+                  
+              </div>
+              </li>
             {{/if}}
           </ul>
         </div><!--/.nav-collapse -->
       </div>
+</template>
+<template name="notificationsModal">
+    <div class="modal fade" id="notifications_modal">
+    <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        {{>notifications_modal_header}}
+      </div>
+        {{>notifications_modal_body}}
+      <div class="modal-footer">
+      <button type="button" class="btn btn-default close" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+    </div>
+</template>
+<template name="notifications_modal_header">
+  {{#with message}}
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h3>{{title}}</h3>  
+  {{/with}}
+</template>
+<template name="notifications_modal_body">
+  {{#with message}}
+    <div class="modal-body">
+        {{content}}
+        {{#if isFriendRequest}}
+            <button id="friendRequestAccept" class="btn btn-primary">accept invitation</button>
+            <button id="friendRequestReject" class="btn btn-primary reject">reject invitation</button>
+        {{/if}}
+    </div>
+
+  {{/with}}
 </template>

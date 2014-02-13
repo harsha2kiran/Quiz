@@ -8,6 +8,7 @@
     "npm": {},
     "datatables": {},
     "event-hooks": {},
-    "handlebar-helpers": {}
+    "handlebar-helpers": {},
+    "user-session": {}
   }
 }

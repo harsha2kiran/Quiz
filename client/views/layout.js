@@ -1,4 +1,33 @@
 pathDependency = new Deps.Dependency; 
+var userDep = new Deps.Dependency();
+Meteor.startup(function(){
+	UserSession.set("emailInfoShowed",false);
+	console.log(Session.get("emailInfoShowed"));
+});
+
+
+Deps.autorun(function(){
+	if(Meteor.user()){
+		var result = true; 
+		if(Meteor.user().emails){
+			_.each(Meteor.user().emails,function(email){
+				if(email.verified){
+					result = false;
+				}
+			});
+		}
+		console.log("result");
+		console.log(result);
+		console.log("session");
+		console.log(UserSession.get("emailInfoShowed"));
+		if(result && !UserSession.get("emailInfoShowed")){
+			Meteor.setTimeout(function(){
+				$('#emailVerification-modal').modal("show");
+			},500);
+			UserSession.set("emailInfoShowed",true);
+		}	
+	};
+});
 
 Template.layout.helpers({
 	'displayNavbar': function(){
@@ -13,16 +42,26 @@ Template.layout.helpers({
 Template.username.events({
 	'click .btn' : function(){
 		var newName = $('input[name=name]').val();
-		console.log(newName);
-		Meteor.call('setUserName',newName, function(err,res){
-			console.log("res");
-			console.log(res);
-			if(res == false){
+		var email = $('input[name=email]').val();
+		Meteor.call('setUserMissingData',newName,email,function(err,res){
+			if(res['usernameFound'] == true){
+				$('#username-errors').html("<strong>username already use</strong> <ul>");
+			}else if(res['emailFound'] == true){
+				$('#email-errors').html("<strong>username already use</strong> <ul>");				
+			}else{
 				pathDependency.changed();
 				Router.go("/");
-			}else if(res == true){
-				$('#username-errors').html("<strong>username already use</strong> <ul>");
 			}
 		});
 	}
 });
+
+Template.username.helpers({
+	'emailMissing' : function(){
+		return !Meteor.user().hasOwnProperty('emails'); 
+	},
+	'usernameMissing': function(){
+		return !Meteor.user().hasOwnProperty('username');
+	}
+});
+

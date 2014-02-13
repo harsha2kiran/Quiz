@@ -1,4 +1,6 @@
 <template name="user_page">
+
+	{{inviteBox}}
 	<div>
 		<img style="width:200px" src="http://fc07.deviantart.net/fs27/f/2008/182/f/0/He_Man_redesign_concept_by_GrayskullPrime.jpg">
 	</div>
@@ -23,9 +25,7 @@
 	{{#each badges}}
 	<div>
 		{{name}} 
-		<div class="badge">
-			{{icon}}
-		</div>
+		<img class="badgeicon" src="{{icon}}">
 	</div>
 	{{/each}}
 

@@ -12,6 +12,14 @@ Meteor.methods({
 	'updateBadge': function(id,badge){
 		Badges.update({_id:id},{$set : badge});
 	}, 
+	'giveBadge' : function(badge){
+		Meteor.users.update({_id:this.userId},{$push:{badges:badge}});
+		var sender = "system"; 
+		var recipient = this.userId;
+		var title = "new badge";
+		var message = " you just recive badge " + badge.name;
+		Meteor.call('sendInternalMessage',sender,recipient,title,message);
+	}
 	/*'giveUserBadge' : function(userId,badge){
 		Meteor.users.update({_id:userId},{$push:{badges:badge}});
 	},
@@ -19,6 +27,7 @@ Meteor.methods({
 		return (user.points>badge.points && ((user.badges == undefined) ? true : !(badge.name in user.badges)));
 	}*/
 });
+
 
 //observe users and add them badges if they reach required points amount
 /*Meteor.startup(function(){
