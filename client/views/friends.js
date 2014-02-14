@@ -1,7 +1,8 @@
 
-
+var autoDep = new Deps.Dependency;
 Meteor.startup(function(){
 	Session.setDefault("friendFilter","all");
+	Session.set("facebookFriends",false);
 	Deps.autorun(function(){
 		var status = Session.get("friendFilter");
 		console.log(status);
@@ -29,7 +30,6 @@ Template.friends.events({
 			if(Meteor.user().services.facebook){
 				$('#invite_facebook_modal').modal('show'); 
 			}else{
-				console.log("o chujtu chodzi");
 				$('#facebook-connect-modal').modal('show');
 			}
 		}
@@ -64,9 +64,15 @@ Template.friends.helpers({
 });
 Template.facebook_friends.helpers({
 	'facebookFriends' : function(){
+		autoDep.depend();
 		if(Meteor.user() && Meteor.user().services.facebook){
 			var result = Meteor.call("getFacebookFriendsNames",function(err,res){
-				Session.set("facebook_friends",res);			
+				if(res != undefined){
+					Session.set("facebook_friends",res);
+				}else{
+					autoDep.changed();
+				}
+							
 			});
 			//$('#invite_facebook_modal').modal('show'); 
 		}else{
@@ -85,7 +91,7 @@ Template.facebook_friends.events({
 		  		from:response.authResponse.userID,
 				to: self.id,
 				method: 'feed',
-				link: Meteor.absoluteUrl('invite') + "/"+Meteor.user()._id,
+				link: 'http://ourSuperApp.com',
 			}, function(response){});
 		    
 		  }
