@@ -21,6 +21,12 @@ Router.map(function() {
 			waitOn: [categorySub, currentUserSub],
 			controller: 'SimpleController'
 		});
+		this.route('user', {
+			path: '/user',
+			after: function(){
+				Router.go("/friends");
+			}
+		});
 		this.route('quiz_lobby', {
 			path: 'lobby/:_id',
 			waitOn: function() {

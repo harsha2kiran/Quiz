@@ -38,6 +38,7 @@ Facebook.prototype.getUserData = function() {
     return data;     
 }
 
+
 Facebook.prototype.getUserID = function() {
     var query = "SELECT uid2 FROM user WHERE uid = me()";
     var data = this.fqlQuery(query);
@@ -53,7 +54,6 @@ Facebook.prototype.getUserFriends = function() {
 Facebook.prototype.getFriendsNames = function(){
     var query = "SELECT name,id FROM profile WHERE id IN (SELECT uid2 FROM friend WHERE uid1=me())"
     var data = this.fqlQuery(query); 
-    console.log(data.result.data);
     return data;
 }
 
