@@ -28,6 +28,9 @@ Template.friends.events({
 		if(evt.target.name == "facebook"){
 			if(Meteor.user().services.facebook){
 				$('#invite_facebook_modal').modal('show'); 
+			}else{
+				console.log("o chujtu chodzi");
+				$('#facebook-connect-modal').modal('show');
 			}
 		}
 	}, 
@@ -66,20 +69,42 @@ Template.facebook_friends.helpers({
 				Session.set("facebook_friends",res);			
 			});
 			//$('#invite_facebook_modal').modal('show'); 
+		}else{
+			
 		}
 	return Session.get("facebook_friends");			
 	}
 });
 Template.facebook_friends.events({
 	'click .invite-button' : function(){
-		FB.ui({
-			method: 'feed',
-			link: 'https://developers.facebook.com/docs/dialogs/',
-			caption: 'An example caption',
-		}, function(response){});
+		var self = this;
+
+		FB.getLoginStatus(function(response) {
+		  if (response.status === 'connected') {
+		  	FB.ui({
+		  		from:response.authResponse.userID,
+				to: self.id,
+				method: 'feed',
+				link: Meteor.absoluteUrl('invite') + "/"+Meteor.user()._id,
+			}, function(response){});
+		    
+		  }
+		});
 
 	}
 
+});
+Template.facebookConnectModal.events({
+	'click .confirm-facebook': function(){
+      Meteor.call('getFacebookCode',function(err,res){
+      	console.log("res");
+      	console.log(res);
+      	$('#facebook-connect-modal').modal('hide');
+        var x = screen.width/2 - 700/2;
+        var y = screen.height/2 - 450/2;
+        window.location.replace(res);
+      }); 
+	}
 });
 
 var fbSdkLoader = function() {
@@ -110,4 +135,4 @@ var fbSdkLoader = function() {
 			}(document, /*debug*/ false));
 	}
 };
-fbSdkLoader(); // run the loader
+fbSdkLoader();

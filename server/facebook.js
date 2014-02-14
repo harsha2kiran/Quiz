@@ -38,6 +38,12 @@ Facebook.prototype.getUserData = function() {
     return data;     
 }
 
+Facebook.prototype.getUserID = function() {
+    var query = "SELECT uid2 FROM user WHERE uid = me()";
+    var data = this.fqlQuery(query);
+    return data;     
+}
+
 Facebook.prototype.getUserFriends = function() {
     var query = "SELECT uid2 FROM friend WHERE uid1=me()"; 
     var data = this.fqlQuery(query); 
@@ -63,7 +69,47 @@ Facebook.prototype.postOnWall = function(id){
 }
 
 Meteor.methods({
+    getFacebookCode: function(){
+        var graph = Meteor.require('fbgraph');
+        var authUrl = graph.getOauthUrl({
 
+        "client_id":  "250844995088258",
+        "redirect_uri":  Meteor.absoluteUrl("facebook"),
+        "scope": " email, user_friends, user_location,user_events,friends_events, friends_location,friends_about_me,user_status,friends_status,read_friendlists,user_photos,publish_stream"
+
+        });
+        
+        return authUrl;
+    },
+    getFacebookAccessToken: function(query,id){
+        console.log("id");
+        console.log(id);
+        var self = this; 
+        var graph = Meteor.require('fbgraph'); 
+            graph.authorize({
+                "client_id":      "250844995088258",
+                "redirect_uri":   Meteor.absoluteUrl("facebook"),
+                "client_secret":  "be5eac28e0b084fa4cd4783620af2fef",
+                "code":           query
+            }, Meteor.bindEnvironment(
+                function (err, facebookRes) {
+                    console.log(facebookRes);
+                    var updates = {}; 
+                    updates['services.facebook.accessToken'] = facebookRes.access_token; 
+
+                    Meteor.users.update({_id:id},
+                        {$set:updates},
+                        function(err,res){
+                            if(err)
+                                console.log("an error"+err+"occured");
+
+                    }); 
+                },
+                function(e){
+                    console.log('bind failure');
+                }
+            ));
+    },
     getUserFriends: function(user) { 
         var fb = new Facebook(user.services.facebook.accessToken);
         var data = fb.getUserFriends();

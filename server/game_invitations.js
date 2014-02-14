@@ -32,11 +32,8 @@ Meteor.methods({
 		},4000);
 	}, 
 	'acceptInvitation' : function(inv){
-		console.log("call acceptinvitation")
-		console.log(inv);
 		Invitations.update({_id:inv},{$set:{state: 'accepted'}}); 
 		Meteor.setTimeout(function(){
-			console.log("remove inv");
 			Invitations.remove({_id:inv});
 		},4000);
 	}

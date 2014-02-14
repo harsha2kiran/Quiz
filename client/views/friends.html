@@ -4,6 +4,7 @@
 	{{/constant}}
 	{{>invite_email_modal}}
 	{{>invite_facebook_modal}}
+  {{>facebookConnectModal}}
 	<div class="navbar navbar-default" role="navigation">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -121,4 +122,31 @@
 	    {{/each}}
 	  </tbody>
 	</table>
+</template>
+
+<template name="facebookConnectModal">
+    <div class="modal fade" id="facebook-connect-modal">
+    <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      </div>
+        {{>facebook_modal_body}}
+      <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+    </div>
+
+</template>
+<template name="facebook_modal_body">
+    <div>
+      Your account is not connected with your facebook account. 
+      Connect to facebook if you want to publish image on your wall 
+      after completion. 
+    </div>
+    <div>
+      <button class="btn btn-primary confirm-facebook">Connect </button>
+    </div>
 </template>

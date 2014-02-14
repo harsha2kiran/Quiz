@@ -5,6 +5,17 @@
 
 Router.map(function() {
 	if(Meteor.isClient){
+	  	this.route('facebook',{
+		    path: '/facebook',
+		    action: function(req,res){
+		      //Meteor.call('getFacebookAccessToken',this.params.code);
+		    },
+		    after: function(req,res){
+		     Meteor.call('getFacebookAccessToken',this.params.code,Meteor.userId(),function(er,res){
+		        window.location.href=Meteor.absoluteUrl("user");
+		     });; 
+		    }
+		  });
 		this.route('homepage', {
 			path: '/',
 			waitOn: [categorySub, currentUserSub],

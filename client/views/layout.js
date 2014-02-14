@@ -16,14 +16,11 @@ Deps.autorun(function(){
 				}
 			});
 		}
-		console.log("result");
-		console.log(result);
-		console.log("session");
-		console.log(UserSession.get("emailInfoShowed"));
 		if(result && !UserSession.get("emailInfoShowed")){
-			Meteor.setTimeout(function(){
+			console.log("will be show");
+			Deps.afterFlush(function(){
 				$('#emailVerification-modal').modal("show");
-			},500);
+			});
 			UserSession.set("emailInfoShowed",true);
 		}	
 	};

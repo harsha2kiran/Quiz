@@ -2,5 +2,10 @@
   "public" : {
     "characters" : 100,
   },
-  
+	"facebook":{
+    "redirectUri": "facebook",
+    "clientId": "250844995088258", 
+    "secret":"be5eac28e0b084fa4cd4783620af2fef",
+    "facebookScope":" email, user_friends, user_location,user_events,friends_events, friends_location,friends_about_me,user_status,friends_status,read_friendlists,user_photos,publish_stream"
+  }
 }

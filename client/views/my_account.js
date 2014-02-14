@@ -57,11 +57,9 @@ Template.my_badges.badges = function(){
 	//check why $lt doesnt work ??? 
 	var result = []; 
 	var points = Meteor.user().stats.points.all;
-	console.log("user");
-	console.log(Meteor.user());
+
 	Badges.find().forEach(function(badge){
-		console.log("badges"); 
-		console.log(points);
+
 		if(badge.points < points){
 			result.push(badge); 
 		}
