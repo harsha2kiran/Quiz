@@ -5,11 +5,14 @@ Meteor.startup(function(){
 	console.log(Session.get("emailInfoShowed"));
 });
 
+afterEnterDetailDep = new Deps.Dependency;
 
 Deps.autorun(function(){
 	if(Meteor.user()){
-		var result = true; 
+		afterEnterDetailDep.depend();
+		var result = false; 
 		if(Meteor.user().emails){
+			result = true;
 			_.each(Meteor.user().emails,function(email){
 				if(email.verified){
 					result = false;
@@ -47,6 +50,7 @@ Template.username.events({
 				$('#email-errors').html("<strong>username already use</strong> <ul>");				
 			}else{
 				pathDependency.changed();
+				afterEnterDetailDep.changed();
 				Router.go("/");
 			}
 		});
