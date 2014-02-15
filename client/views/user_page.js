@@ -6,8 +6,10 @@ Template.user_page.helpers({
 			return new Handlebars.SafeString('<h4>friend request sent</h4>');
 		}else if(_.contains(Meteor.user().friends,this._id)){
 			return new Handlebars.SafeString('');
+		}else if(Meteor.user()._id == this._id){
+			return new Handlebars.SafeString('');
 		}else{
-			return new Handlebars.SafeString('<button class="btn btn-primary invite">isend friend request</button>'); 
+			return new Handlebars.SafeString('<button class="btn btn-primary invite">send friend request</button>'); 
 		}
 	},
 	'wins' : function(){

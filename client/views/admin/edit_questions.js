@@ -83,6 +83,7 @@ Template.add_new_question.events({
 			
 		var answers = [];
 		$('input.question-answer').each(function(i, element) {
+			console.log("test");
 			//each answer will be submitted in the form {id: 0, option: "What the user sees as an option"}
 			var answer = {};
 			answer.id = i;
@@ -212,19 +213,18 @@ Template.question_edit_fields.events({
 		}
 			
 		var answers = [];
-		$('input.question-answer').each(function(i, element) {
+
+		$('input.question-answer-' + questionId).each(function(i, element) {
 			//each answer will be submitted in the form {id: 0, option: "What the user sees as an option"}
 			var answer = {};
 			answer.id = i;
 			var option = $(this).val();
-			/*if (!option) {
+			if (!option) {
 				errors.push("You must provide an Answer for Answer " + (i + 1));
 				$(this).parent().parent(".form-group").addClass("has-error");
-			}*/
-			answer.option = option;
-			if(answer.option != ""){
-				answers.push(answer);
 			}
+			answer.option = option;
+			answers.push(answer);
 		});
 		console.log("answers");
 		console.log(answers);

@@ -31,8 +31,11 @@ Template.navbar.helpers({
 	title : function(){
 		return this.title;
 	},
+	unread : function(){
+		return this.state == "unread";
+	},
 	messages: function(){
-		return Messages.find({state: 'unread'});
+		return Messages.find();
 	}
 });
 
@@ -58,7 +61,8 @@ Template.notificationsModal.events({
 	},
 	'click #friendRequestAccept' : function(){
 		Meteor.call('makeFriends',this.sender,this.recipient);
-		$('#notifications_modal').modal('hide');;
+		$('#notifications_modal').modal('hide');
+		Meteor.call('reply',this._id);
 		var self = this;
 		Meteor.call('getUserName',this.recipient,function(err,res){
 			var sender = self.recipient;
@@ -72,6 +76,7 @@ Template.notificationsModal.events({
 	'click #friendRequestReject' : function(){
 		$('#notifications_modal').modal('hide');
 		var self = this;
+		Meteor.call('reply',this._id);
 		Meteor.call('getUserName',this.recipient,function(err,res){
 			var sender = self.recipient;
 			var recipient = self.sender;
@@ -86,7 +91,7 @@ Template.notificationsModal.events({
 
 Handlebars.registerHelper('isFriendRequest',function(){
 	return this.sender != "system" && this.title !="friend requested rejected" 
-	&& this.title !="friend request accepted";
+	&& this.title !="friend request accepted" && this.state!="replied"; 
 });
 Handlebars.registerHelper('message',function(){
 	return Session.get('currentlySelectedMessage');	

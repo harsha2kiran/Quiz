@@ -81,6 +81,9 @@ var prepareDataSet = function(){
                     if(question.status == "pending"){
                         record.push(deleteButton(id)+editButton(id));
                         record.push('<input name="'+id+'"type="checkbox">');
+                    }else{
+                        record.push('');
+                        record.push('');
                     }
                     tableData.push(record);                   
                     counter++;

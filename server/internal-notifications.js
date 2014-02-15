@@ -15,5 +15,8 @@ Meteor.methods({
 	}, 
 	'readMessage' : function(id){
 		Messages.update({_id:id},{$set:{state: 'read'}});
+	},
+	'reply' : function(id){
+		Messages.update({_id:id},{$set:{state: 'replied'}});
 	}
 });

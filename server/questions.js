@@ -26,6 +26,7 @@ Meteor.publish('questions',function(){
 
 Meteor.methods({
 	addQuestion: function(categoryId, question, answers, correctAnswer, explanation) {
+		console.log("inside add question");
 		var status = (Users.isAdmin(this.userId) || Users.isModerator(this.userId)) ? "approved" : "pending";
 		check(categoryId, String);
 		check(question, String);
@@ -35,7 +36,7 @@ Meteor.methods({
 
 		//checking that the category this question belongs to actually exists
 		if (!Categories.findOne(categoryId))
-			throw new Meteor.Error(500, "This category does not exist");
+			throw new Meteor.Error(500, "please select a category");
 		while(answers.length<4){
 			var answer = {};
 			answer.id = answers.lenght;
@@ -109,6 +110,7 @@ Meteor.methods({
 
 		Questions.update(questionId, 
 			{$set: {
+
 				question: question.question,
 				answer: answers,
 				correctAnswer: correctAnswer,
