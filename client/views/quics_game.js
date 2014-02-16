@@ -21,26 +21,31 @@ Meteor.startup(function(){
 			choosenCategory = inv.category;
 			categoryDep.changed(); 
 			if(inv.invited = Meteor.user()._id){
-				$('#quick-game-modal').modal('show');
+				$('#quick-game-modal').removeClass('modalHidden');
+				$('#quick-game-modal').addClass('modalActive');
 			}
 		}, 
 		changed: function(id,inv){
 			if(inv.state == 'accepted'){
-				$('#quick-game-modal').modal('hide');
-				$('#quick-game-modal').modal('hide');
+
 				var quiz = '/lobby/'+Categories.findOne({name:choosenCategory})._id;
 				
-				//Router.go(quiz);
+				Router.go(quiz);
 				
 			}
 		},
 		removed: function(id,inv){
-			$('#quick-game-modal').modal('hide');
+	
 		}
 	});
 });
 
 Template.quick_game.events({
+	'click #closeQuickGameModal' : function(){
+			console.log("test");
+			$('#quick-game-modal').addClass('modalHidden');
+			$('#quick-game-modal').removeClass('modalActive');	
+	},
 	'click #test' : function(){
 		$('.invite').wysihtml5();
 	},
@@ -62,6 +67,9 @@ Template.quick_game.events({
 });
 
 Template.quick_game_modal_body.helpers({
+	'userInvited' : function(){
+		return	Session.get("invitedFriend");
+	},
 	'category' : function(){
 		categoryDep.depend();
 		return choosenCategory; 
@@ -111,7 +119,8 @@ Template.quick_game_modal_body.events({
 		var cateogryId = Categories.findOne({name:choosenCategory})._id;
 		var pl1 = Invitations.findOne().invitator; 
 		var pl2 = Invitations.findOne().invited;
-		$('#quick-game-modal').modal('hide');
+			$('#quick-game-modal').removeClass('modalActive');
+			$('#quick-game-modal').addClass('moadlHidden');		
 		Meteor.call('quickGame',cateogryId,pl1,pl2,function(err,response){
 			Meteor.call('acceptInvitation',Invitations.findOne({})._id);
 		});
@@ -122,7 +131,8 @@ Template.quick_game_modal_body.events({
 	},	
 	'click #reject' : function(){
 		Meteor.call('rejectInvitation',Invitations.findOne({})._id,function(err,recponse){
-			$('#quick-game-modal').modal('hide');			
+			$('#quick-game-modal').removeClass('modalActive');
+			$('#quick-game-modal').addClass('moadlHidden');			
 		});
 	}
 });

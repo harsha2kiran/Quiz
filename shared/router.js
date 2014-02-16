@@ -122,8 +122,7 @@ Router.map(function() {
 			},
 			data : function(){
 				return HallOfFameData.findOne({_id:this.params._id});
-			}
-			//controller: 'InvitationController'
+			},
 		});
 
 		this.route('my_account', {

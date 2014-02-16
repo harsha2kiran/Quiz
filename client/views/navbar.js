@@ -49,7 +49,9 @@ Template.navbar.events({
 		Meteor.logout();
 	}, 
 	'click .quick': function(){
-		$('#quick-game-modal').modal('show');
+		$('#quick-game-modal').addClass('modalActive');
+		$('#quick-game-modal').removeClass('modalHidden');
+
 	}, 
 	'click .friends': function(){
 	},
@@ -90,7 +92,7 @@ Template.notificationsModal.events({
 
 
 Handlebars.registerHelper('isFriendRequest',function(){
-	return this.sender != "system" && this.title !="friend requested rejected" 
+	return this.sender != "system" && this.title !="friend request rejected" 
 	&& this.title !="friend request accepted" && this.state!="replied"; 
 });
 Handlebars.registerHelper('message',function(){

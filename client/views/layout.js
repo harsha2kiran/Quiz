@@ -22,7 +22,11 @@ Deps.autorun(function(){
 		if(result && !UserSession.get("emailInfoShowed")){
 			console.log("will be show");
 			Deps.afterFlush(function(){
-				$('#emailVerification-modal').modal("show");
+				Meteor.setTimeout(function(){
+					$('#emailVerification_modal').removeClass("modalHidden");
+					$('#emailVerification_modal').addClass("modalActive");
+				},1000);
+
 			});
 			UserSession.set("emailInfoShowed",true);
 		}	
@@ -63,6 +67,14 @@ Template.username.helpers({
 	},
 	'usernameMissing': function(){
 		return !Meteor.user().hasOwnProperty('username');
+	}
+});
+
+Template.emailVerificationInfo.events({
+	'click #closeEmailVerificationInfo' : function(){
+		console.log("test");
+		$('#emailVerification_modal').addClass("modalHidden");
+		$('#emailVerification_modal').removeClass("modalActive");		
 	}
 });
 

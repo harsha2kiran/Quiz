@@ -18,9 +18,10 @@ Template.friends.events({
 		Session.set("friendFilter",evt.target.name);
 	},
 	'click .game-invite' : function(evt){
-		$('#quick-game-modal').modal('show');
-		var test = $('input.invite')[0];
-		$(test).val(this.username);
+		$('#quick-game-modal').addClass('modalActive');
+		$('#quick-game-modal').removeClass('modalHidden');
+		console.log(this);
+		Session.set("invitedFriend",this.username);
 	},
 	'click .invite' : function(evt){
 		if(evt.target.name == "email"){

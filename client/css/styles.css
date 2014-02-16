@@ -36,8 +36,8 @@ tfoot th, tfoot td {
 	z-index: 1000;
 	margin: auto;
 	padding: 20px;
-	width: 500px;
-	height: 500px;
+	width: 100%;
+	height: 100%;
 	border-radius: 10px;
 	position: fixed;
 	top: 0;
