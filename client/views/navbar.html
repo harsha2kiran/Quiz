@@ -59,7 +59,8 @@
       </div>
 </template>
 <template name="notificationsModal">
-    <div class="modal fade" id="notifications_modal">
+  {{#if notificationModalVisible}}
+    <div class="modalActive" id="notifications_modal">
     <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -72,13 +73,16 @@
     </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
     </div>
+    {{/if}}
 </template>
+
 <template name="notifications_modal_header">
   {{#with message}}
       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
       <h3>{{title}}</h3>  
   {{/with}}
 </template>
+
 <template name="notifications_modal_body">
   {{#with message}}
     <div class="modal-body">

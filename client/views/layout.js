@@ -3,6 +3,7 @@ var userDep = new Deps.Dependency();
 Meteor.startup(function(){
 	UserSession.set("emailInfoShowed",false);
 	console.log(Session.get("emailInfoShowed"));
+	Session.set("emailInfoModalVisibility",false);
 });
 
 afterEnterDetailDep = new Deps.Dependency;
@@ -20,14 +21,9 @@ Deps.autorun(function(){
 			});
 		}
 		if(result && !UserSession.get("emailInfoShowed")){
-			console.log("will be show");
-			Deps.afterFlush(function(){
 				Meteor.setTimeout(function(){
-					$('#emailVerification_modal').removeClass("modalHidden");
-					$('#emailVerification_modal').addClass("modalActive");
+					Session.set("emailInfoModalVisibility",true);
 				},1000);
-
-			});
 			UserSession.set("emailInfoShowed",true);
 		}	
 	};
@@ -72,9 +68,15 @@ Template.username.helpers({
 
 Template.emailVerificationInfo.events({
 	'click #closeEmailVerificationInfo' : function(){
-		console.log("test");
 		$('#emailVerification_modal').addClass("modalHidden");
-		$('#emailVerification_modal').removeClass("modalActive");		
+		$('#emailVerification_modal').removeClass("modalActive");	
+		Session.set("emailInfoModalVisibility",false);	
+	}
+});
+
+Template.emailVerificationInfo.helpers({
+	'visible' : function(){
+		return Session.get("emailInfoModalVisibility") == true;
 	}
 });
 

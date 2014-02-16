@@ -29,8 +29,16 @@ Meteor.startup(function(){
 			if(inv.state == 'accepted'){
 
 				var quiz = '/lobby/'+Categories.findOne({name:choosenCategory})._id;
+				console.log(Router._currentController.path.indexOf("/lobby"));
+				if(Router._currentController.path.indexOf("/lobby")>-1){
+					$('#quick-game-modal').removeClass('modalActive');
+					$('#quick-game-modal').addClass('modalHidden');
+				}else{
+					$('#quick-game-modal').removeClass('modalActive');
+					$('#quick-game-modal').addClass('modalHidden');
+					Router.go(quiz);
+				}
 				
-				Router.go(quiz);
 				
 			}
 		},

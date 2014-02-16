@@ -61,6 +61,20 @@
 </template>
 
 <template name="emailVerificationInfo">
+  {{#if visible}}
+  <div class="modalActive" id="emailVerification_modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button id="closeEmailVerificationInfo" type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        </div>
+        <div class="modal-body">
+          <h4>We send you verification email, please check your email box</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{else}}
   <div class="modalHidden" id="emailVerification_modal">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -73,4 +87,5 @@
       </div>
     </div>
   </div>
+  {{/if}}
 </template>

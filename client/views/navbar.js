@@ -2,6 +2,7 @@ Meteor.startup(function(){
 	Deps.autorun(function(){
 		Meteor.subscribe("messages");
 	});
+	Session.set("notificationModalVisible",false);
 });
 
 Template.navbar.helpers({
@@ -42,7 +43,7 @@ Template.navbar.helpers({
 Template.navbar.events({
 	'click .message' : function(){
 		Session.set('currentlySelectedMessage',this);
-		$('#notifications_modal').modal('show');
+		Session.set("notificationModalVisible",true);
 		Meteor.call('readMessage',this._id);
 	},
 	'click .logout': function() {
@@ -57,13 +58,17 @@ Template.navbar.events({
 	},
 
 });
+
+Template.notificationsModal.helpers({
+	'notificationModalVisible' : function(){
+		return Session.get('notificationModalVisible');
+	}
+});
 Template.notificationsModal.events({
-	'click ':function(){
-		console.log("clicked");
-	},
+
 	'click #friendRequestAccept' : function(){
 		Meteor.call('makeFriends',this.sender,this.recipient);
-		$('#notifications_modal').modal('hide');
+		Session.set("notificationModalVisible",false);
 		Meteor.call('reply',this._id);
 		var self = this;
 		Meteor.call('getUserName',this.recipient,function(err,res){
@@ -76,7 +81,7 @@ Template.notificationsModal.events({
 		});
 	},
 	'click #friendRequestReject' : function(){
-		$('#notifications_modal').modal('hide');
+		Session.set("notificationModalVisible",false);
 		var self = this;
 		Meteor.call('reply',this._id);
 		Meteor.call('getUserName',this.recipient,function(err,res){
@@ -87,6 +92,9 @@ Template.notificationsModal.events({
 			var title = "friend request rejected";
 			Meteor.call('sendInternalMessage',sender,recipient,title,message);
 		});
+	},
+	'click .close' : function(){
+		Session.set("notificationModalVisible",false);
 	}
 });
 
