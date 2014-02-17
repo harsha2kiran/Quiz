@@ -4,6 +4,8 @@ Meteor.startup(function(){
     });
 });
 
+var previousValues = [];
+
 var deleteButton = function(id){
     console.log(id);
     return '<button name="'+id+'"class="delete btn btn-danger" >'+
@@ -117,10 +119,18 @@ var prepareDataSet = function(){
             }
         },
         changed: function(id,question){
-
+            
         },
         removed : function(id,question){
 
+        }
+    });
+}
+Template.editQuestionModal.rendered = function(){
+
+    $('input.form-control').each(function(i,field){
+        if(previousValues[i]){
+            $(field).val(previousValues[i]);
         }
     });
 }
@@ -128,6 +138,7 @@ Template.question_table.rendered = function () {
 
     $('#edit-question-modal').on('hidden.bs.modal', function() {
         similarQuestions = [];
+        previousValues =[];
         questionsDep.changed();
         _.each($('input'),function(field){
             $(field).val("");
@@ -237,6 +248,7 @@ Template.question_table.events({
     'click .edit': function(evt){
         var name = evt.target.parentNode.name+evt.target.name;
         name = name.replace("undefined","");
+        console.log(name);
         Session.set("currentStage","editQuestion");
         var oTable = $('#question-table').dataTable();
         var rowIndex = oTable.fnGetPosition( $(evt.target).closest('tr')[0] ); 
@@ -246,10 +258,14 @@ Template.question_table.events({
         $('#edit-question-modal').modal('show');
     }, 
     'click .create-category' : function(){
+        $('input.form-control').each(function(i,element){
+            previousValues[i]=$(element).val();
+        });
+        Session.set("previousStage",Session.get("currentStage"));
         Session.set("currentStage","addCategory");
     }, 
     'click .back': function(){
-        Session.set("currentStage","editQuestion");
+        Session.set("currentStage",Session.get("previousStage"));
     }, 
     'click .move-question' : function(){
         var selectedCategoryId = $("#move-question-" + this._id).val();
@@ -285,7 +301,6 @@ Template.question_table.helpers({
 
 Template.modalbody.helpers({
     'editedQuestion' : function(){
-        console.log(Questions.findOne({_id:Session.get("edited")}));
         return Questions.findOne({_id:Session.get("edited")});
     },
     'question' : function(){
@@ -300,5 +315,9 @@ Template.modalbody.helpers({
 Template.modalfooter.helpers({
     'category' : function(){
         return Session.get("currentStage")=="addCategory";
-    }  
+    },
+    'addQuestion':function(){
+ 
+        return Session.get("currentStage") == "addQuestion";
+    }
 });

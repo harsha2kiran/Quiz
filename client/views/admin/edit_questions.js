@@ -274,6 +274,8 @@ Template.question_edit_fields.events({
 });
 
 Handlebars.registerHelper('isAdmin',function(){
+		if(!Meteor.user())
+			return;
 		return Meteor.user().isAdmin;
 });
 

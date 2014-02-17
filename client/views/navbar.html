@@ -2,6 +2,7 @@
   {{>emailVerificationInfo}}
   {{>notificationsModal}}
   {{>quick_game}}
+  {{>confirm_game_break}}
 	<div class="navbar navbar-default" role="navigation">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -10,34 +11,69 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/">Quiz</a>
+          {{#if is_busy}}
+            <a class="navbar-brand busy" href="#" name="/">Quiz</a>
+          {{else}}
+            <a class="navbar-brand" href="/">Quiz</a>
+          {{/if}}
         </div>
         <div class="navbar-collapse collapse">
         	{{#if currentUser}}
 	        	<ul class="nav navbar-nav">
+              {{#if is_busy}}
+              <li><a class="busy" name="/my-account" href="#">My Account</a></li>
+              {{else}}
 	            <li><a href="/my-account">My Account</a></li>
+              {{/if}}
 	          </ul>
             <ul class="nav navbar-nav">
-              <li><a href="/badges">Badges</a></li>
+              {{#if is_busy}}
+              <li><a class="busy" name="/badges" href="#">Badges</a></li>
+              {{else}}
+              <li><a  href="/badges">Badges</a></li>
+              {{/if}}
             </ul>
             <ul class="nav navbar-nav">
+              {{#if is_busy}}
+              <li><a class="busy" name="/hall_of_fame" href="#">Hall of fame</a></li>
+              {{else}}
               <li><a href="/hall_of_fame">Hall of fame</a></li>
+              {{/if}}
             </ul>
             <ul class="nav navbar-nav">
-            {{#if is_admin}}
-              <li><a href="/admin">Admin</a></li>
+            {{#if is_busy}}
+              {{#if is_admin}}
+                <li><a class="busy" name="/admin" href="#">Admin</a></li>
+              {{else}}
+                <li><a class="busy" name="/question" href="#">Questions</a></li>
+              {{/if}}
             {{else}}
-              <li><a href="/user/questions">Questions</a></li>
+              {{#if is_admin}}
+                <li><a href="/admin">Admin</a></li>
+              {{else}}
+                <li><a href="/user/questions">Questions</a></li>
+              {{/if}}
             {{/if}}
           </ul>
           {{/if}}
           <ul class="nav navbar-nav navbar-right">
           	{{#if currentUser}}
-              <li><a href="#" class="quick">quick game </a></li>
-            	<li><a href="#">{{username}} - {{points}} points</a></li>
-            	<li><a href="#" class="logout">Logout</a></li>
-              <li><a href="/friends" class="friends">Friends</a></li>
-              <li>
+
+              {{#if is_busy}}
+            	 <li><a href="#" class="busy" name="logout">Logout</a></li>
+              {{else}}
+                <li><a href="#" class="quick">quick game </a></li>
+                <li><a href="#">{{username}} - {{points}} points</a></li>
+                <li><a href="#" class="logout">Logout</a></li>
+              {{/if}}
+              {{#if is_busy}}
+                <li><a class="busy" name="/friends" href="#" class="friends">Friends</a></li>
+              {{else}}
+                <li><a href="/friends" class="friends">Friends</a></li>
+              {{/if}}
+                <li>
+              {{#if is_busy}}
+              {{else}}
               <div class="btn-group messages-button">
                   <button data-toggle="dropdown" class="btn navbar-btn dropdown-toggle"><span class="glyphicon glyphicon-envelope"></span> Messages({{numberOfUnread}})<span class="caret"></span></button>
                  
@@ -52,6 +88,7 @@
                   </ul>
                   
               </div>
+              {{/if}}
               </li>
             {{/if}}
           </ul>
@@ -94,4 +131,18 @@
     </div>
 
   {{/with}}
+</template>
+
+<template name="confirm_game_break">
+    <div class="modalHidden" id="confirm_break_game">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+            Are you you want to break the quiz ? 
+            <button id="break-game" class="btn btn-warning">Yes</button>
+            <button id="stay-in-game" class="btn btn-success">No</button>
+          </div>
+        </div>
+      </div>
+    </div>
 </template>

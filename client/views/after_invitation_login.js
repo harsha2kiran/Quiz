@@ -2,12 +2,12 @@
 Template.after_invitation_login.rendered = function(){
 	$('#loginModal').modal('show');
 }
-function submiLoginForm() {
+function submitLoginForm() {
     user={};
     $.each($('#loginForm').serializeArray(), function() {
         user[this.name] = this.value;
     });
-    if(!Meteor.user())
+    if(!Meteor.user()){
     	console.log("inside");
 		Accounts.createUser(user,function(err){
 			if(!err){
@@ -18,12 +18,17 @@ function submiLoginForm() {
 				Router.go("/");
 			}
 		});
+    }else{
+    	$('#loginModal').modal('hide');
+    	Router.go("/");
+    }
+
 
 }
 
 Template.after_invitation_login.events({
 	'click #create-account' : function(){
 		console.log("click");
-		submiLoginForm();
+		submitLoginForm();
 	}
 });

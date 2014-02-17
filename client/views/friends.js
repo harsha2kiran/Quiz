@@ -49,6 +49,8 @@ Template.friends.helpers({
 		return this.state == "online";
 	},
 	'friends': function(){
+		if(!Meteor.user())
+			return;
 		var status = Session.get("friendFilter");
 		var friends = Meteor.subscribe('friends',status);	
 		Meteor.users.find({_id:{$ne : Meteor.user()._id}});
@@ -59,7 +61,7 @@ Template.friends.helpers({
 			Meteor.call("getFacebookFriendsNames",function(err,res){
 				return res;			
 			});
-			//$('#invite_facebook_modal').modal('show'); 
+			$('#invite_facebook_modal').modal('show'); 
 		}		
 	},
 });

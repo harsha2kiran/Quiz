@@ -42,15 +42,21 @@
     {{else}}
       {{#if addQuestion}}
         {{>add_new_question}}
+
       {{else}}
         {{>edit_categories_modal}} 
       {{/if}}
     {{/if}}
 </template>
 <template name="modalfooter">
-    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    {{#if addQuestion}}
+      {{#if isAdmin}}
+        <button class="btn btn-primary create-category">add category</button>
+      {{/if}}
+    {{/if}}   
     {{#if category}}
     <button type="button" class="btn btn-primary back">Back to question</button>
     {{/if}}
-          
+
 </template>

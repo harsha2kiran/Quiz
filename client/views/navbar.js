@@ -6,6 +6,11 @@ Meteor.startup(function(){
 });
 
 Template.navbar.helpers({
+	is_busy: function(){
+		if (!Meteor.user())
+			return;
+		return Meteor.user().state == "busy";
+	},
 	is_admin: function() {
 		if (!Meteor.user())
 			return;
@@ -41,6 +46,12 @@ Template.navbar.helpers({
 });
 
 Template.navbar.events({
+	'click .busy' : function(evt){
+		Session.set("currently_clicked",evt.target.name);
+		$('#confirm_break_game').addClass('modalActive');
+		$('#confirm_break_game').removeClass('modalHidden');
+
+	},
 	'click .message' : function(){
 		Session.set('currentlySelectedMessage',this);
 		Session.set("notificationModalVisible",true);
@@ -97,7 +108,23 @@ Template.notificationsModal.events({
 		Session.set("notificationModalVisible",false);
 	}
 });
-
+Template.confirm_game_break.events({
+	'click #break-game':function(){
+		$('#confirm_break_game').addClass('modalHidden');
+		$('#confirm_break_game').removeClass('modalActive');
+		if(Session.get("currently_clicked")!="logout"){
+			Router.go(Session.get("currently_clicked"));
+		}else{
+			Meteor.logout();
+		}
+		
+	},
+	'click #stay-in-game' : function(){
+		console.log("test");
+		$('#confirm_break_game').addClass('modalHidden');
+		$('#confirm_break_game').removeClass('modalActive');
+	}
+});
 
 Handlebars.registerHelper('isFriendRequest',function(){
 	return this.sender != "system" && this.title !="friend request rejected" 

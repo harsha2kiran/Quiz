@@ -220,9 +220,7 @@ Meteor.methods({
 		Meteor.users.update(userId, {$set: update});
 	}, 
 	makeFriends: function(first,second,oneWay){
-		console.log("ok");
 		if(oneWay){
-			console.log("okok");
 			console.log(first);
 			console.log(second);
 			Meteor.users.update({_id:first},{$push:{friends: second}}); 	

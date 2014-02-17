@@ -1,3 +1,5 @@
+
+
 Template.quiz_lobby.helpers({
 	noFriendhip : function(){
 		var quiz = Quizzes.findOne({});
@@ -19,7 +21,6 @@ Template.quiz_lobby.helpers({
 			});
 			return result;
 		}
-
 	},
 	prequiz: function()  {
 		var quiz = Quizzes.findOne({});
@@ -30,26 +31,24 @@ Template.quiz_lobby.helpers({
 		return category.name;
 	},
 	lobby: function() {
-		console.log(Lobbys.findOne({}));
 		return Lobbys.findOne({});
 	},
 	current_question: function() {
 		var quiz = Quizzes.findOne({});
 		return quiz.userQuestion;
 	},
-	question_clock: function() {
-		var quiz = Quizzes.findOne({});
-		return quiz.clock;
-	},
+
 	question_results: function() {
 		var quiz = Quizzes.findOne({});
 		return (quiz.state === 'questionresults' || quiz.state === 'quizfinished' || quiz.state === 'quizfinishedearly');
 	},
 	quiz_finished: function() {
+		
 		var quiz = Quizzes.findOne({});
 		return (quiz.state === 'quizfinished');
 	},
 	quiz_finished_early: function() {
+
 		var quiz = Quizzes.findOne({});
 		return (quiz.state === 'quizfinishedearly');
 	},
@@ -357,3 +356,11 @@ Template.opponentPlayerResults.helpers({
 		}
 	}
 });
+
+Template.questionClock.helpers({
+	question_clock: function() {
+		var quiz = Quizzes.findOne({});
+		return quiz.clock;
+	},	
+});
+

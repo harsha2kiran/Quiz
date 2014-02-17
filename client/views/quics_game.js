@@ -1,4 +1,4 @@
-
+test = "test";
 var NOT_FOUND = 1 ;
 var BUSY = 2;
 var res = ""; 
@@ -7,6 +7,8 @@ var choosenCategory = "choose category";
 var categoryDep = new Deps.Dependency;
 
 invitationDep = new Deps.Dependency();
+
+quickGameDep = new Deps.Dependency();
 
 Meteor.startup(function(){
 	Deps.autorun(function(){
@@ -27,12 +29,13 @@ Meteor.startup(function(){
 		}, 
 		changed: function(id,inv){
 			if(inv.state == 'accepted'){
-
-				var quiz = '/lobby/'+Categories.findOne({name:choosenCategory})._id;
+				var id = Categories.findOne({name:choosenCategory})._id;
+				var quiz = '/lobby/'+id;
 				console.log(Router._currentController.path.indexOf("/lobby"));
 				if(Router._currentController.path.indexOf("/lobby")>-1){
 					$('#quick-game-modal').removeClass('modalActive');
 					$('#quick-game-modal').addClass('modalHidden');
+					quickGameDep.changed();
 				}else{
 					$('#quick-game-modal').removeClass('modalActive');
 					$('#quick-game-modal').addClass('modalHidden');
@@ -43,7 +46,8 @@ Meteor.startup(function(){
 			}
 		},
 		removed: function(id,inv){
-	
+			$('#quick-game-modal').removeClass('modalActive');
+			$('#quick-game-modal').addClass('modalHidden');
 		}
 	});
 });
@@ -59,18 +63,23 @@ Template.quick_game.events({
 	},
 	'click #invite': function(){
 		var input = $('.invite'); 
-		Meteor.call('invite',input.val(),choosenCategory,function(err,result){
-			switch(result){
-				case NOT_FOUND:
-					res = "User Not Found"
-					resDep.changed();
-					break; 
-				case BUSY:
-					res = "User are busy at the moment"
-					resDep.changed();
-					break; 
-			} 
-		});
+		if(choosenCategory == "choose category"){
+			$("#invitation-errors").html("<strong>Error: </strong>" + "please choose category");
+		}else{
+			Meteor.call('invite',input.val(),choosenCategory,function(err,result){
+				switch(result){
+					case NOT_FOUND:
+						res = "User Not Found"
+						resDep.changed();
+						break; 
+					case BUSY:
+						res = "User are busy at the moment"
+						resDep.changed();
+						break; 
+				} 
+			});			
+		}
+
 	}
 });
 
@@ -127,10 +136,13 @@ Template.quick_game_modal_body.events({
 		var cateogryId = Categories.findOne({name:choosenCategory})._id;
 		var pl1 = Invitations.findOne().invitator; 
 		var pl2 = Invitations.findOne().invited;
-			$('#quick-game-modal').removeClass('modalActive');
-			$('#quick-game-modal').addClass('moadlHidden');		
+		$('#quick-game-modal').removeClass('modalActive');
+		$('#quick-game-modal').addClass('moadlHidden');		
 		Meteor.call('quickGame',cateogryId,pl1,pl2,function(err,response){
-			Meteor.call('acceptInvitation',Invitations.findOne({})._id);
+			quickGameDep.changed();
+			Meteor.call('acceptInvitation',Invitations.findOne({})._id,function(err,res){
+				
+			});
 		});
 	},
 	'click .category' : function(evt){
@@ -140,7 +152,7 @@ Template.quick_game_modal_body.events({
 	'click #reject' : function(){
 		Meteor.call('rejectInvitation',Invitations.findOne({})._id,function(err,recponse){
 			$('#quick-game-modal').removeClass('modalActive');
-			$('#quick-game-modal').addClass('moadlHidden');			
+			$('#quick-game-modal').addClass('modalHidden');			
 		});
 	}
 });

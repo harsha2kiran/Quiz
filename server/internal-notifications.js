@@ -1,6 +1,4 @@
 Meteor.publish("messages",function(){
-	console.log("in publish");
-	console.log(this.userId);
 	return Messages.find({recipient:this.userId});
 });
 

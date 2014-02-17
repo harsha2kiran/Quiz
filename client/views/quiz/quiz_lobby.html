@@ -16,7 +16,10 @@
 		<div class="question-container">
 		{{> currentPlayerStats}}
 		{{> opponentPlayerStats}}
-		<span style="display:block;width:100px;margin: 0 auto;"><strong>Clock: {{question_clock}}</strong></span>
+		{{#isolate}}
+		{{> questionClock}}
+		{{/isolate}}
+
 		<br>
 		<br>
 		<br>
@@ -128,4 +131,7 @@
 				<p>{{username}} did not answer this question.</p>
 			{{/if}}
 	</div>
+</template>
+<template name="questionClock">
+	<span style="display:block;width:100px;margin: 0 auto;"><strong>Clock: {{question_clock}}</strong></span>
 </template>

@@ -93,7 +93,7 @@ Meteor.publish('currentQuiz', function(lobbyId) {
 });
 
 Meteor.methods({
-	quickGame: function(categoryId,player_1_id,player_2_id){
+	/*quickGame: function(categoryId,player_1_id,player_2_id){
 		var players =  [
 				{
 					username: Meteor.users.findOne({_id:player_1_id}).username,
@@ -109,12 +109,11 @@ Meteor.methods({
 			categoryId: categoryId,
 			players : players,
 			playerCount: 2,
-			playing: true
+			//playing: true
 		});
-		console.log(Quiz);
 		Quiz.createNewQuiz(categoryId, newLobby);
 		return newLobby;
-	},
+	},*/
 	answerQuestion: function(quizId, answerIdx) {
 		check(quizId, String);
 		check(answerIdx, Number);
@@ -263,6 +262,7 @@ Quiz.doQuestion = function(quizId) {
 		var lobby = Lobbys.findOne(quiz.lobbyId);
 		if (lobby.players.length === 1) {
 			Quizzes.update(quizId, {$set: { state: 'quizfinishedearly' } } );
+			Meteor.call('setUserState','online',lobby.players[0].userId);
 			var playerLeft = true;
 		}
 		

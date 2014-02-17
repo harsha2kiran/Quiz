@@ -31,7 +31,9 @@ Router.map(function() {
 			path: 'lobby/:_id',
 			waitOn: function() {
 				var categoryId = this.params._id;
+				quickGameDep.depend();
 				lobbySub = Meteor.subscribe('lobbyForCategory', categoryId);
+				console.log(Lobbys.findOne());
 				var lobby = Lobbys.findOne({});
 				if (lobby) {
 					var quizSub = Meteor.subscribe('currentQuiz', lobby._id);
@@ -41,6 +43,11 @@ Router.map(function() {
 			data: function() {
 				return {
 					categoryId: this.params._id
+				}
+			},
+			after: function(){
+				if(!Meteor.user()){
+					Router.go("/");
 				}
 			}
 		});
@@ -112,7 +119,11 @@ Router.map(function() {
 		});
 		this.route('after_invitation_login', {
 			path : '/invite/:_id',
-			//controller: 'InvitationController'
+			after: function(){
+				if(Meteor.user()){
+					Router.go("/");
+				}
+			}
 		});
 
 		this.route('user_page', {

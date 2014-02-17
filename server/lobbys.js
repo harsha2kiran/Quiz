@@ -17,8 +17,6 @@ Meteor.publish('lobbyForCategory', function(categoryId) {
 
 	if (userId) {
 		var lobbyId = addToLobby(userId, categoryId);
-		console.log("lobby");
-		console.log(lobbyId);
 	}
 	else
 		return;
@@ -37,7 +35,15 @@ Meteor.publish('lobbyForCategory', function(categoryId) {
 
 //function for managing the lobbies.
 var addToLobby = function(userId, categoryId) {
+	console.log("publishing lobby");
 	var user = Meteor.users.findOne(userId);
+	console.log(user.username);
+	Lobbys.find().forEach(function(lob){
+		console.log(lob);
+	});
+	var lobbyFromInvitation = Lobbys.findOne({categoryId:categoryId,playerCount:2,'players.userId': userId});
+	if(lobbyFromInvitation)
+		return lobbyFromInvitation._id;	
 
 	var alreadyInLobby = Lobbys.findOne({ categoryId: categoryId, 'players.userId': userId });
 
