@@ -151,10 +151,15 @@ var prepareDataSet = function(){
                         var categoryName = Categories.findOne({_id:question.categoryId}).name;
                         oTable.fnUpdate(categoryName,rowIndex,1);
                         oTable.fnUpdate(begin,rowIndex,2);
-                        oTable.fnUpdate(question.answer[0].option,rowIndex,3);
-                        oTable.fnUpdate(question.answer[1].option,rowIndex,4);
-                        oTable.fnUpdate(question.answer[2].option,rowIndex,5);
-                        oTable.fnUpdate(question.answer[3].option,rowIndex,6);
+                        for(var i = 0; i<4; i++){
+                            if(i == question.correctAnswer){
+                                oTable.fnUpdate('<FONT COLOR="green">'+question.answer[i].option+'</FONT>',rowIndex,3+i);
+                            }
+                            else{
+                                oTable.fnUpdate(question.answer[i].option,rowIndex,3+i)
+                            }
+    
+                        }
                     }
                 }
             });
