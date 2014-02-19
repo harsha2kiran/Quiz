@@ -13,7 +13,7 @@ Meteor.startup(function(){
 								if(badge._id == userBadge._id)
 									hasUserBadge = true;
 							});
-							if(!hasUserBadge && current>badge.points)
+							if(!hasUserBadge && !(current<badge.points))
 								Meteor.call('giveBadge',badge);
 						});
 					}

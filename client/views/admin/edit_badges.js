@@ -27,7 +27,9 @@ Template.edit_badges.events({
 	'click .edit-badge' : function(){
 		currentlyEditedBadge = this; 
 		badgeDep.changed();
-		$('#edit-badge-modal').modal('show');
+		Deps.afterFlush(function(){
+			$('#edit-badge-modal').modal('show');
+		});
 	}
 }); 
 
