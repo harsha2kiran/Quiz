@@ -1,7 +1,7 @@
 pathDependency = new Deps.Dependency; 
 var userDep = new Deps.Dependency();
 Meteor.startup(function(){
-	UserSession.set("emailInfoShowed",false);
+	Session.set("emailInfoShowed",false);
 	console.log(Session.get("emailInfoShowed"));
 	Session.set("emailInfoModalVisibility",false);
 });
@@ -20,11 +20,11 @@ Deps.autorun(function(){
 				}
 			});
 		}
-		if(result && !UserSession.get("emailInfoShowed")){
+		if(result && !Session.get("emailInfoShowed")){
 				Meteor.setTimeout(function(){
 					Session.set("emailInfoModalVisibility",true);
 				},1000);
-			UserSession.set("emailInfoShowed",true);
+			Session.set("emailInfoShowed",true);
 		}	
 	};
 });

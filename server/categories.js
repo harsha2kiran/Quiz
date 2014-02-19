@@ -42,7 +42,6 @@ Meteor.methods({
 		check(removeQuestions, Boolean);
 
 		//XX check not root category
-		console.log('yo');
 		var thisCategory = Categories.findOne(categoryId);
 
 		if (!thisCategory)

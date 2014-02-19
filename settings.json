@@ -2,6 +2,7 @@
   "public" : {
     "characters" : 100,
   },
+  
 	"facebook":{
     "redirectUri": "facebook",
     "clientId": "250844995088258", 

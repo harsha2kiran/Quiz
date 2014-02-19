@@ -8,7 +8,6 @@ function submitLoginForm() {
         user[this.name] = this.value;
     });
     if(!Meteor.user()){
-    	console.log("inside");
 		Accounts.createUser(user,function(err){
 			if(!err){
 				console.log(err);

@@ -19,7 +19,17 @@ Router.map(function() {
 		this.route('homepage', {
 			path: '/',
 			waitOn: [categorySub, currentUserSub],
-			controller: 'SimpleController'
+			after: function(){
+				if(Meteor.user()){
+					if(!Meteor.user().username || !Meteor.user().emails){
+						pathDependency.changed();
+						console.log("user");
+						console.log(Meteor.user());
+						console.log(Meteor.user().username);
+						Router.go("/missing_data");
+					}
+				}
+			}
 		});
 		this.route('user', {
 			path: '/user',

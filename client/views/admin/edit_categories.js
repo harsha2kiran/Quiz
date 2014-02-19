@@ -37,7 +37,7 @@ Template.category_in_modal.events({
 			}else{
 				$("#add-category-" + categoryId).html('');
 				$("#add-category-" + categoryId).html('<span>Subcategory name: <input type="text" id="subcategory-name-' + categoryId + '"></span>' +
-			'<div style="color:#a94442;">'+'category exist'+'</div>' +' <button type="button" class="btn btn-success add-category-button">Add</button>' +
+			'<div style="color:#a94442;">'+'category exists'+'</div>' +' <button type="button" class="btn btn-success add-category-button">Add</button>' +
 			' <button type="button" class="btn btn-danger cancel-category-button">Cancel</button>');
 				
 			}

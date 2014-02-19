@@ -7,7 +7,6 @@ var periodDep = new Deps.Dependency;
 
 Meteor.startup(function(){
 	Deps.autorun(function(){
-		console.log("run");
 		var hall_of_fame = Meteor.subscribe('hallOfFame');
 	});
 });
