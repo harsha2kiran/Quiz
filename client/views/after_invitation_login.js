@@ -19,8 +19,7 @@ function submitLoginForm() {
 			}
 		});
     }else{
-    	$('#loginModal').modal('hide');
-    	Router.go("/");
+
     }
 
 

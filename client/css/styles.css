@@ -97,3 +97,17 @@ tfoot th, tfoot td {
 .messages-button{
 	float: bottom;
 }
+.remove-from-friends{
+	float: left;
+}
+.friends-search{
+	position:relative;
+	margin-top: 8px;
+	width: 250px;
+}
+.has-error{
+	color:red;
+}
+.has-success{
+	color:green;
+}

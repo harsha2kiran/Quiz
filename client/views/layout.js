@@ -33,38 +33,13 @@ Template.layout.helpers({
 	'displayNavbar': function(){
 		pathDependency.depend();
 		var path = Router._currentController.path;
-		q = (path !="/username");
+		q = (path !="/missing_data");
 		console.log(false);
 		return q;
 	}
 });
 
-Template.username.events({
-	'click .btn' : function(){
-		var newName = $('input[name=name]').val();
-		var email = $('input[name=email]').val();
-		Meteor.call('setUserMissingData',newName,email,function(err,res){
-			if(res['usernameFound'] == true){
-				$('#username-errors').html("<strong>username already use</strong> <ul>");
-			}else if(res['emailFound'] == true){
-				$('#email-errors').html("<strong>username already use</strong> <ul>");				
-			}else{
-				pathDependency.changed();
-				afterEnterDetailDep.changed();
-				Router.go("/");
-			}
-		});
-	}
-});
 
-Template.username.helpers({
-	'emailMissing' : function(){
-		return !Meteor.user().hasOwnProperty('emails'); 
-	},
-	'usernameMissing': function(){
-		return !Meteor.user().hasOwnProperty('username');
-	}
-});
 
 Template.emailVerificationInfo.events({
 	'click #closeEmailVerificationInfo' : function(){

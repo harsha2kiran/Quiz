@@ -5,6 +5,7 @@ Accounts.onCreateUser(function(options, user) {
 	if (Meteor.users.find({}).count() === 0) {
 		user.isAdmin = true;
 	}
+	user.avatar="/empty.jpg";
 	user.friends = [];
 	user.stats = {
 		'points' : {
@@ -64,24 +65,57 @@ Meteor.publish('allUsers', function() {
 	 }
 });
 
-Meteor.publish('friends', function(userState){
-	if(userState == "all"){
-		if(this.userId){
-			var user = Meteor.users.findOne({_id:this.userId}); 
-			var friends =  Meteor.users.find({_id:{$in: user.friends }},{fields:{_id :1,username:1,state:1}});
-		 	return friends;
-		}		
-	}else{
-		if(this.userId){
-			var user = Meteor.users.findOne({_id:this.userId}); 
-			var friends =  Meteor.users.find({$and:[{_id:{$in: user.friends }},{state: userState}]},{fields:{_id :1,username:1,state:1}});
-		 	return friends;
-		}		
-	}
-
-});
 
 Meteor.methods({
+	searchForUser : function(input){
+		var result = 3;
+		var recipient = null;
+		if(Meteor.user().username == input ||  _.contains(Meteor.user().emails.address,input)){
+			return 4;
+		}
+		Meteor.users.find().forEach(function(user){
+			if(user.username == input || _.contains(user.emails.address,input)){
+				recipient = user;
+				if(_.contains(Meteor.user().friends,user._id)){
+					result=1;
+				}
+				else if(_.contains(Meteor.user().requested,user._id)){
+					result=2;
+				}else{
+					result=0;
+				}
+				return;
+			}
+		});
+
+		if(!result){
+			var sender = Meteor.user()._id;
+			var recipient = recipient._id;
+			var message = "user " + Meteor.user().username + " send you friend request ";
+			var title = "friend request";
+			Meteor.call('sendInternalMessage',sender,recipient,title,message);
+		}
+		return result;
+		
+	},
+	doUserHaveSocialServices : function(username){
+		
+		var user = Meteor.users.findOne({username:username}); 
+		if(user){
+			if(user.services.twitter){
+				return "twitter";
+			}
+			if(user.services.google){
+				return "google";
+			}
+			if(user.services.facebook){
+				if(!user.services.facebook.forInvite){
+					return "facebook";
+				}
+			}
+		}
+		return false;
+	},
 	getUserName : function(id){
 		return Meteor.users.findOne({_id:id}).username;
 	},
@@ -105,6 +139,7 @@ Meteor.methods({
 			result['emailFound'] = false;
 		Meteor.users.find().forEach(function(user){
 			if(result.hasOwnProperty('usernameFound')){
+				console.log("username");
 				console.log(user.username);
 				if(user.username == name){
 					result['usernameFound'] = true;
@@ -113,7 +148,9 @@ Meteor.methods({
 			if(result.hasOwnProperty('emailFound')){
 				if(user.emails){
 					_.each(user.emails,function(mail){
-						if(mail == email){
+						console.log("email");
+						console.log(mail);
+						if(mail.address == email){
 							result['emailFound'] = true;
 						}
 					});
@@ -225,6 +262,15 @@ Meteor.methods({
 			console.log(second);
 			Meteor.users.update({_id:first},{$push:{friends: second}}); 	
 		}else{
+			Messages.find().forEach(function(message){
+				if(message.title == "friend request" && 
+					((message.sender == first && message.recipient == second)
+					|| (message.sender == second && message.recipient == first))){
+					Meteor.call('readMessage',message._id);
+					Meteor.call('reply',message._id);
+				}
+			});
+
 			Meteor.users.update({_id:first},{$push:{friends: second}}); 
 			Meteor.users.update({_id:second},{$push:{friends: first}}); 			
 		}

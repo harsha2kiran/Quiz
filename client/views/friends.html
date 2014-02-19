@@ -2,9 +2,11 @@
  	{{#constant}}
 		<div id="fb-root"></div>
 	{{/constant}}
+ 
 	{{>invite_email_modal}}
 	{{>invite_facebook_modal}}
   {{>facebookConnectModal}}
+  <div id="alert_placeholder"></div>
 	<div class="navbar navbar-default" role="navigation">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -18,24 +20,31 @@
 			<ul class="nav navbar-nav navbar-right">
 				<li><a class="invite" name="facebook" href="#">Invite from facebook</a></li>
 				<li><a class="invite" name="email" href="#">Invite by email</a></li>
+        <li><div id="search-friend-form"class="form-group"><input type="text" id="search-for-friend" class="form-control friends-search " placeholder="enter fiend name or email.."></input></div>
+          <div id="search-errors eff" ></div></li>
+        <li><button class="btn " id="search-button"style="position:relative; margin-top:8px"><span class="glyphicon glyphicon-search "> </span>Search and invite</button></li>
 			</ul>
         </div><!--/.nav-collapse -->
   	</div>
-  <div class="btn-group">
+  <div class="btn-group" style="width: 30%">
     <button type="button" name="all" class="btn btn-primary sort-friends">All</button>
     <button type="button" name="online" class="btn btn-success sort-friends">Online</button>
     <button type="button" name="busy" class="btn btn-warning sort-friends">Busy</button>
     <button type="button" name="offline" class="btn btn-danger sort-friends">Offline</button>
   </div>
-	<table class="table table-bordered">
+
+	<table class="table">
         <thead>
         <tr>
-        	<th>
+        	<th style="width: 30%">
 				    <label>username</label>
         	</th>
-        	<th>
+        	<th style="width: 30%">
 				    <label>state</label>
         	</th>
+          <th style="width: 30%">
+            <label>actions</label>
+          </th>
         </tr>
         </thead>
         <tbody>
@@ -47,11 +56,16 @@
         	<th>
 				    <label>{{state}}</label>
         	</th>
-        	<th>
+        	
+            
+            <th>
+            <button class="btn btn-danger remove-from-friends"><span  class="glyphicon glyphicon-remove-circle"></button>
             {{#if $eq state "online"}}
 				    <button class="btn btn-primary game-invite">invite</button>
             {{/if}}
-        	</th>
+            </th>
+            
+        	
         </tr>
         {{/each}}
         </tbody>
@@ -67,16 +81,9 @@
           <h4 class="modal-title">Invite Friends</h4>
         </div>
         <div class="modal-body">
-          <table class="table table-condensed">
-            <tr>
-              <th>
                 <label>Please Type your friend email</label>
-              </th>
-              <th>
-                <input name="email" id="email-input" >
-              </th>
-            </tr>
-          </table>
+                <input name="email" class="form-control" id="email-input" >
+                <div id="invite-modal-errors" style="color:red"></div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

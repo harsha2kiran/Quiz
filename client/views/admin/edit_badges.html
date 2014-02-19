@@ -6,17 +6,18 @@
     <button  class="btn btn-danger add"> add badge</button>
     <table class="table-bordered">
     <tr>
-      <th>Name</th>
-      <th>Poits Required</th>
-      <th>icon</th> 
+      <th style="width: 20%">Name</th>
+      <th style="width: 20%">Poits Required</th>
+      <th style="width: 20%">icon</th> 
     </tr>
     {{#each badges}}
       <tr>
-        <td>{{name}}</td>
-        <td>{{points}}</td>
-        <td>{{icon}}</td>
-        <td><button class="btn btn-danger delete-badge"> delete badge</button></td>
-        <td><button class="btn btn-primary edit-badge"> edit badge</button></td>
+        <td style="width: 20%">{{name}}</td>
+        <td style="width: 20%">{{points}}</td>
+        <td style="width: 20%"><img class="badgeicon" src="{{icon}}"></td>
+        <td style="width: 20%"><button class="btn btn-danger delete-badge"><span  class="glyphicon glyphicon-remove-circle"> </button></td>
+        <td style="width: 20%"><button class="btn btn-primary edit-badge"><span class="glyphicon glyphicon-edit"> </button></td>
+    </td>
       </tr>
     {{/each}}
     </table>

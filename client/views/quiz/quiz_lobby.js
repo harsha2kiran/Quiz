@@ -1,7 +1,7 @@
 
 
 Template.quiz_lobby.helpers({
-	noFriendhip : function(){
+	noFriendship : function(){
 		var quiz = Quizzes.findOne({});
 		if (Meteor.user()) {
 			var players = quiz.players;
@@ -15,12 +15,64 @@ Template.quiz_lobby.helpers({
 			});
 			var result = true;
 			_.each(Meteor.user().friends,function(friend){
-				if(friend == opponentPlayer){
+				if(friend == opponentPlayer.userId){
 					result = false;
 				}
 			});
 			return result;
 		}
+	},
+	invitation : function(){
+		var quiz = Quizzes.findOne({});
+		if (Meteor.user()) {
+			var players = quiz.players;
+
+			var currentPlayer = _.find(quiz.players, function(plyr) {
+				return plyr.userId === Meteor.user()._id;
+			});
+
+			var opponentPlayer = _.find(quiz.players, function(plyr) {
+				return plyr.userId !== Meteor.user()._id;
+			});
+			var result = false;
+			_.each(Meteor.user().invitators,function(inv){
+				console.log("inv");
+				console.log(inv);
+				console.log(opponentPlayer);
+				if(inv == opponentPlayer.userId){
+					result = true;
+				}
+			});
+			_.each(Meteor.user().friends,function(friend){
+				if(friend == opponentPlayer.userId){
+					result = false;
+				}
+			});
+			console.log("result");
+			console.log(result);
+			return result;
+		}
+	},
+	invitationSend : function(){
+		var quiz = Quizzes.findOne({});
+		if (Meteor.user()) {
+			var players = quiz.players;
+
+			var currentPlayer = _.find(quiz.players, function(plyr) {
+				return plyr.userId === Meteor.user()._id;
+			});
+
+			var opponentPlayer = _.find(quiz.players, function(plyr) {
+				return plyr.userId !== Meteor.user()._id;
+			});
+			var result = false;
+			_.each(Meteor.user().requested,function(inv){
+				if(inv == opponentPlayer.userId){
+					result = true;
+				}
+			});
+			return result;
+		}		
 	},
 	prequiz: function()  {
 		var quiz = Quizzes.findOne({});
@@ -169,6 +221,65 @@ Template.answer_option.helpers({
 });
 
 Template.quiz_lobby.events({
+	'click .accept-friend' : function(){
+		console.log("clicked");
+		var quiz = Quizzes.findOne({});
+		if (Meteor.user()) {
+			var players = quiz.players;
+
+			var currentPlayer = _.find(quiz.players, function(plyr) {
+				return plyr.userId === Meteor.user()._id;
+			});
+
+			var opponentPlayer = _.find(quiz.players, function(plyr) {
+				return plyr.userId !== Meteor.user()._id;
+			});
+		}		
+		
+		var sender = currentPlayer.userId;
+		var recipient = opponentPlayer.userId;
+		var name = currentPlayer.username;
+		var message = "user " + name + " accepted your friend request ";
+		var title = "friend request accepted";
+		console.log("sender");
+		console.log(sender);
+		console.log("recipient");
+		console.log(recipient);
+		Meteor.call('sendInternalMessage',sender,recipient,title,message);
+		Meteor.call('makeFriends',sender,recipient);
+
+	},
+	'click .reject-friend' : function(){
+
+		var quiz = Quizzes.findOne({});
+		if (Meteor.user()) {
+			var players = quiz.players;
+
+			var currentPlayer = _.find(quiz.players, function(plyr) {
+				return plyr.userId === Meteor.user()._id;
+			});
+
+			var opponentPlayer = _.find(quiz.players, function(plyr) {
+				return plyr.userId !== Meteor.user()._id;
+			});
+			var result = false;
+			_.each(Meteor.user().requested,function(inv){
+				if(inv == opponentPlayer.userId){
+					result = true;
+				}
+			});
+			return result;
+		}		
+		var self = this;
+
+		var sender = currentPlayer.userId;
+		var recipient = opponentPlayer.userId;
+		var name = currentPlayer.username;
+		var message = "user " + name + " reject your friend request ";
+		var title = "friend request rejected";
+		Meteor.call('sendInternalMessage',sender,recipient,title,message);
+
+	},
 	'click .question-option': function(evt) {
 		var quizId = Quizzes.findOne({})._id;
 		Meteor.call('answerQuestion', quizId, this.id, function(err, res) {
@@ -206,8 +317,7 @@ Template.quiz_lobby.events({
 			var opponentPlayer = _.find(quiz.players, function(plyr) {
 				return plyr.userId !== Meteor.user()._id;
 			});
-
-			Meteor.call('makeFriends',Meteor.user()._id,opponentPlayer.userId,true);
+			Meteor.call('sendFriendRequest',Meteor.user()._id,opponentPlayer.userId);
 		} 
 	}
 });

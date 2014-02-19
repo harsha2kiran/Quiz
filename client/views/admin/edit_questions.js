@@ -82,12 +82,25 @@ Template.add_new_question.events({
 		}
 			
 		var answers = [];
+		var correctAnswerId = $('input[name=answer-options]:checked').index('input[name=answer-options]');
+		//will be -1 if none are selected
+		if (correctAnswerId === -1) {
+			errors.push("You have not specified a correct answer");
+		}
 		$('input.question-answer').each(function(i, element) {
-			console.log("test");
+			
 			//each answer will be submitted in the form {id: 0, option: "What the user sees as an option"}
 			var answer = {};
 			answer.id = i;
 			var option = $(this).val();
+			console.log("option");
+			console.log(option);
+			console.log(i);
+			console.log(correctAnswerId);
+			if(option === "" && i==correctAnswerId ){
+				console.log("inside err");
+				errors.push("you cant check empty aswer as correct");
+			}
 			/*if (!option) {
 				errors.push("You must provide an Answer for Answer " + (i + 1));
 				$(this).parent().parent(".form-group").addClass("has-error");
@@ -97,8 +110,8 @@ Template.add_new_question.events({
 				answers.push(answer);
 			}
 		});
-		console.log("answers");
 		console.log(answers);
+		console.log("answerwqeeqws");
 		if(answers.length <2){
 			errors.push("You must provide at least two answers");
 		}
@@ -109,11 +122,6 @@ Template.add_new_question.events({
 			explanation.parent(".form-group").addClass("has-error");
 		}
 
-		var correctAnswerId = $('input[name=answer-options]:checked').index('input[name=answer-options]');
-		//will be -1 if none are selected
-		if (correctAnswerId === -1) {
-			errors.push("You have not specified a correct answer");
-		}
 
 		//if there are any errors...
 		if (errors.length) {
@@ -199,6 +207,7 @@ Template.question_edit_fields.events({
 		evt.preventDefault();
 		//array to store all the errors
 		var questionId = this._id;
+
 		var errors = [];
 		//resetting all the stuff if this has been submitted with errors before
 		$("#update-question-errors-" + questionId).html("");
@@ -214,20 +223,35 @@ Template.question_edit_fields.events({
 			
 		var answers = [];
 
-		$('input.question-answer-' + questionId).each(function(i, element) {
+		var correctAnswerId = $('input[name=answer-options-' + questionId + ']:checked').index('input[name=answer-options-' + questionId + ']');
+		//will be -1 if none are selected
+		if (correctAnswerId === -1) {
+			errors.push("You have not specified a correct answer");
+		}
+		$('input.question-answer-'+questionId).each(function(i, element) {
+			
 			//each answer will be submitted in the form {id: 0, option: "What the user sees as an option"}
 			var answer = {};
 			answer.id = i;
 			var option = $(this).val();
-			if (!option) {
+			console.log("option");
+			console.log(option);
+			console.log(i);
+			console.log(correctAnswerId);
+			if(option === "" && i==correctAnswerId ){
+				console.log("inside err");
+				errors.push("you cant check empty aswer as correct");
+			}
+			/*if (!option) {
 				errors.push("You must provide an Answer for Answer " + (i + 1));
 				$(this).parent().parent(".form-group").addClass("has-error");
-			}
+			}*/
 			answer.option = option;
-			answers.push(answer);
+			if(answer.option != ""){
+				answers.push(answer);
+			}
 		});
-		console.log("answers");
-		console.log(answers);
+
 		if(answers.length <2){
 			errors.push("You must provide at least two answers");
 		}
@@ -236,12 +260,6 @@ Template.question_edit_fields.events({
 		if (!explanation.val()) {
 			errors.push("Answer Explanation is required");
 			explanation.parent(".form-group").addClass("has-error");
-		}
-
-		var correctAnswerId = $('input[name=answer-options-' + questionId + ']:checked').index('input[name=answer-options-' + questionId + ']');
-		//will be -1 if none are selected
-		if (correctAnswerId === -1) {
-			errors.push("You have not specified a correct answer");
 		}
 
 		//if there are any errors...
@@ -254,6 +272,8 @@ Template.question_edit_fields.events({
 			$("#update-question-errors-" + questionId).append("</ul>");
 
 		} else {
+			console.log("ok");
+			console.log(answers);
 			//do the server side addQuestion call
 			Meteor.call('updateQuestion', questionId, question.val(), answers, correctAnswerId, explanation.val(), function(err, res) {
 				if (err) {

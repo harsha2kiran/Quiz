@@ -96,7 +96,7 @@ Meteor.methods({
                     console.log(facebookRes);
                     var updates = {}; 
                     updates['services.facebook.accessToken'] = facebookRes.access_token; 
-
+                    updates['servoces.facebook.forInvite'] = true;
                     Meteor.users.update({_id:id},
                         {$set:updates},
                         function(err,res){
@@ -142,7 +142,10 @@ Meteor.methods({
     getFacebookFriendsNames: function(){
         var fb = new Facebook(Meteor.user().services.facebook.accessToken); 
         var friends = fb.getFriendsNames(); 
-        return friends.result.data;
+        if(friends.result){
+            return friends.result.data;
+        }
+        
     }, 
     postOnWall: function(id){
         var fb = new Facebook(Meteor.user().services.facebook.accessToken); 

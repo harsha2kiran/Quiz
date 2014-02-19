@@ -5,9 +5,8 @@ Meteor.startup(function(){
 });
 
 var previousValues = [];
-
+var previousRadioValues =[];
 var deleteButton = function(id){
-    console.log(id);
     return '<button name="'+id+'"class="delete btn btn-danger" >'+
     '<span  class="glyphicon glyphicon-remove-circle"></button>';
 }
@@ -28,9 +27,18 @@ var statusChangeButton = function(id,status){
 }
 
 var buttons = function(id,status){
-    return deleteButton(id)+editButton(id)+statusChangeButton(id,status);
+    if(Meteor.user().isAdmin || Meteor.user().isModerator){
+        return deleteButton(id)+editButton(id)+statusChangeButton(id,status);
+    }else{
+        if(status == "pending"){
+            return (deleteButton(id)+editButton(id));
+        }else{
+            return '<button style="display : none" name="'+id+'"></button>';
+        }
+    }
+    
 }
-var rendered;
+var rendered = false;
 
 
 
@@ -41,6 +49,9 @@ var prepareDataSet = function(){
     var query = Questions.find();
     var handle = query.observeChanges({
         added: function(id,question){
+            console.log("added");
+            console.log(id);
+            console.log(rendered);
             if(Meteor.user().isAdmin || Meteor.user().isModerator){
                 var record = []; 
                 record.push(question.status); 
@@ -79,19 +90,22 @@ var prepareDataSet = function(){
                         }else{
                             record.push(answer.option);
                         }
-                    });                    
+                    });
+                    if(question.answer.length <4){
+                        for(var i=0;i<4-question.answer;i++){
+                            record.push('');
+                        }
+                    }                    
                     if(question.status == "pending"){
-                        record.push(deleteButton(id)+editButton(id));
-                        record.push('<input name="'+id+'"type="checkbox">');
+                        record.push(deleteButton(id)+editButton(id));   
                     }else{
-                        record.push('');
-                        record.push('');
+                        record.push('<button style="display : none" name="'+id+'"></button>');
                     }
                     tableData.push(record);                   
                     counter++;
                 }     
             }
-            if(rendered && question.author != Meteor.user()._id){
+            if(rendered && question.author != Meteor.user()._id && (Meteor.user().isAdmin || Meteor.user().isModerator)){
                 console.log("test0");
                 var record = []; 
                 record.push(question.status); 
@@ -108,20 +122,54 @@ var prepareDataSet = function(){
                         record.push(answer.option);
                     }
                 });
-                var editPanel = '<button name="'+id+'"class="delete btn btn-danger" >delete</button>';
-                editPanel= editPanel + '<button name="'+id+'"class="edit btn btn-primary" >edit</button>';
+                var editPanel = deleteButton(id)+editButton(id);
                 if(Meteor.user().isAdmin || Meteor.user().isModerator)
-                    editPanel = editPanel +'<button name="'+id+'"class="change btn btn-warning">change state</button>';
+                    editPanel = editPanel +statusChangeButton(id,question.status);
                 console.log(editPanel);
                 record.push(editPanel);
                 record.push('<input name="'+id+'"type="checkbox">');
                 $('#question-table').dataTable().fnAddData(record);
             }
         },
-        changed: function(id,question){
-            
+        changed: function(id,field){
+            Deps.afterFlush(function(){
+                var question = Questions.findOne({_id:id});
+                var oTable = $('#question-table').dataTable(); 
+                console.log("changed"+field.status);
+                console.log($('button[name='+id+']').closest('tr')[0]);
+                if($('button[name='+id+']').closest('tr')[0]){
+                    var rowIndex = oTable.fnGetPosition($('button[name='+id+']').closest('tr')[0]);
+                    console.log(rowIndex);
+                
+                    if(field.status){
+                        oTable.fnUpdate( field.status, rowIndex , 0); 
+                        oTable.fnUpdate( buttons(id,field.status), rowIndex , 7);                
+                    }else{
+                        var begin = question.question.substring(0,20); 
+                        if(question.question.length > 20)
+                             begin += "...";
+                        var categoryName = Categories.findOne({_id:question.categoryId}).name;
+                        oTable.fnUpdate(categoryName,rowIndex,1);
+                        oTable.fnUpdate(begin,rowIndex,2);
+                        oTable.fnUpdate(question.answer[0].option,rowIndex,3);
+                        oTable.fnUpdate(question.answer[1].option,rowIndex,4);
+                        oTable.fnUpdate(question.answer[2].option,rowIndex,5);
+                        oTable.fnUpdate(question.answer[3].option,rowIndex,6);
+                    }
+                }
+            });
+
         },
-        removed : function(id,question){
+        removed : function(id){
+            Deps.afterFlush(function(){
+                var question = Questions.findOne({_id:id});
+                var oTable = $('#question-table').dataTable(); 
+                if($('button[name='+id+']').closest('tr')[0]){
+                    var oTable = $('#question-table').dataTable();
+                    var rowIndex = oTable.fnGetPosition($('button[name='+id+']').closest('tr')[0] );
+                    oTable.fnDeleteRow(rowIndex); 
+                }
+            });
 
         }
     });
@@ -129,22 +177,34 @@ var prepareDataSet = function(){
 Template.editQuestionModal.rendered = function(){
 
     $('input.form-control').each(function(i,field){
+
         if(previousValues[i]){
+ 
             $(field).val(previousValues[i]);
         }
     });
+    $('input[type="radio"]').each(function(i,radio){
+        if(previousRadioValues[i]){
+
+            radio.checked = previousRadioValues[i];
+        }
+
+    });
+
 }
 Template.question_table.rendered = function () {
 
     $('#edit-question-modal').on('hidden.bs.modal', function() {
+        Session.set("rerender",false);
+        Session.set("rerender",true);
         similarQuestions = [];
         previousValues =[];
+        previousRadioValues=[];
         questionsDep.changed();
         _.each($('input'),function(field){
             $(field).val("");
         });
     });  
-    rendered = false;
     try{
         var oTable = $('#question-table').dataTable();
         rendered = true; 
@@ -172,6 +232,7 @@ Template.question_table.rendered = function () {
                 ],
                 sPaginationType: "full_numbers"
             } ); 
+            rendered = true; 
         }else{
             $('#question-table').dataTable( {
                 "aaData": tableData,
@@ -184,10 +245,11 @@ Template.question_table.rendered = function () {
                     { "sTitle": "answer" },
                     { "sTitle": "answer" },
                     { "sWidth": "20%", "bSortable": false, "sTitle": "" },
-                    { "sWidth": "5%", "bSortable": false, "sTitle": "" },
+     
                 ],
                 sPaginationType: "full_numbers"
-            } );             
+            } ); 
+            rendered = true;             
         }
     }
 };
@@ -258,9 +320,14 @@ Template.question_table.events({
         $('#edit-question-modal').modal('show');
     }, 
     'click .create-category' : function(){
-        $('input.form-control').each(function(i,element){
-            previousValues[i]=$(element).val();
+        $('input.form-control').each(function(i,field){
+            previousValues[i]=$(field).val();
         });
+
+        $('input[type="radio"]').each(function(i,radio){
+            previousRadioValues[i] = radio.checked;
+        });
+
         Session.set("previousStage",Session.get("currentStage"));
         Session.set("currentStage","addCategory");
     }, 
@@ -309,6 +376,9 @@ Template.modalbody.helpers({
     'addQuestion':function(){
  
         return Session.get("currentStage") == "addQuestion";
+    },
+    'rerender':function(){
+        return Session.get("rerender");
     }
 });
 
@@ -319,5 +389,9 @@ Template.modalfooter.helpers({
     'addQuestion':function(){
  
         return Session.get("currentStage") == "addQuestion";
+    },
+    'rerender':function(){
+    
+        return Session.get("rerender");
     }
 });

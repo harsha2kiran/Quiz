@@ -23,7 +23,13 @@ Template.user_page.helpers({
 	},
 	'defeats' : function(){
 		return this.stats.defeats.all;
-	}
+	},
+	'points' : function(){
+		return this.stats.points.all;
+	},
+	'avatar' : function(){
+		return this.avatar;
+	} 
 });
 
 Template.user_badges.badges = function(){

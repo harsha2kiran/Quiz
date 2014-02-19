@@ -41,7 +41,13 @@ Template.navbar.helpers({
 		return this.state == "unread";
 	},
 	messages: function(){
-		return Messages.find();
+		var messagesArray = Messages.find().fetch();
+		messagesArray.sort(function(a,b){
+			return ((a.state == "read" && b.state == "unread") || 
+					(a.state == "replied" 	  && b.state == "unread") || 
+					(a.state == "replied" && b.state == "read"));
+		});
+		return messagesArray;
 	}
 });
 

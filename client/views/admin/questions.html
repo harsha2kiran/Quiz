@@ -17,7 +17,9 @@
   {{/isolate}}
 </template>
 <template name="editQuestionModal">
+
   <div class="modal fade" id="edit-question-modal">
+
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -35,6 +37,8 @@
   </div>
 </template>
 <template name="modalbody">
+    {{#if rerender}}
+    {{/if}}
     {{#if question}}
       {{#with editedQuestion}}
          {{>question_edit}}
@@ -49,6 +53,8 @@
     {{/if}}
 </template>
 <template name="modalfooter">
+    {{#if rerender}}
+    {{/if}}
       <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
     {{#if addQuestion}}
       {{#if isAdmin}}

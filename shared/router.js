@@ -93,8 +93,8 @@ Router.map(function() {
 			path: '/admin/badges',
 			controller: 'AdminController',
 		});
-		this.route('username',{
-			path: '/username',
+		this.route('missing_data',{
+			path: '/missing_data',
 		});
 
 		this.route('badges', {
@@ -174,7 +174,7 @@ SimpleController = RouteController.extend({
 			console.log("user");
 			console.log(Meteor.user());
 			console.log(Meteor.user().username);
-			Router.go("/username");
+			Router.go("/missing_data");
 		}
 	}
 });

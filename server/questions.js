@@ -98,20 +98,31 @@ Meteor.methods({
 		//XX validate answers
 		check(correctAnswer, Number);
 		check(explanation, String);
-		var question = Questions.findOne(questionId);
-
+		var qu = Questions.findOne(questionId);
+		while(answers.length<4){
+			var answer = {};
+			answer.id = answers.lenght;
+			var option = "";
+			answer.option  = option;
+			answers.push(answer);
+		}
 		if (!(Users.isAdmin(this.userId) || Users.isModerator(this.userId)
-		 	|| question.author == this.userId))
+		 	|| qu.author == this.userId))
 			throw new Meteor.Error(500, "User cant edit this question");
 
 		//checking question exists
 		if (!Questions.findOne(questionId))
 			throw new Meteor.Error(500, "This question does not exist");
 
+		var q = question.split(" ");
+		var questionWords =[];
+		_.each(q,function(word){
+			_.contains(questionWords,word) ? null : questionWords.push(word);
+		});
 		Questions.update(questionId, 
 			{$set: {
-
-				question: question.question,
+				questionWords : questionWords,
+				question: question,
 				answer: answers,
 				correctAnswer: correctAnswer,
 				explanation: explanation	

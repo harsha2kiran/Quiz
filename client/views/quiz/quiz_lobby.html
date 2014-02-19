@@ -40,8 +40,17 @@
 			<div>
 				{{#if opponent_in_lobby}}
 					{{#if noFriendship}}
-					<button class="btn btn-primary make-friend">Make {{opponent_name}} friend</button>
+					{{#if invitation}}
+					<button class="btn btn-success accept-friend">Accept {{opponent_name}} friend request</button>
+					<button class="btn btn-dander reject-friend">Reject {{opponent_name}} friend request</button>
+					{{else}}
+						{{#if invitationSend}}
+						{{else}}
+						<button class="btn btn-primary make-friend">invite {{opponent_name}} to become friend</button>
+						{{/if}}
 					{{/if}}
+					{{/if}}
+
 					{{#if rematch_me}}
 						Waiting on {{opponent_name}} to choose to do a rematch...
 					{{else}}

@@ -29,21 +29,13 @@ Meteor.publish('lobbyForCategory', function(categoryId) {
 			removeFromLobby(userId, lobbyId);
 		}
 	});
-
 	return Lobbys.find({_id: lobbyId});
 });
 
 //function for managing the lobbies.
 var addToLobby = function(userId, categoryId) {
-	console.log("publishing lobby");
+
 	var user = Meteor.users.findOne(userId);
-	console.log(user.username);
-	Lobbys.find().forEach(function(lob){
-		console.log(lob);
-	});
-	var lobbyFromInvitation = Lobbys.findOne({categoryId:categoryId,playerCount:2,'players.userId': userId});
-	if(lobbyFromInvitation)
-		return lobbyFromInvitation._id;	
 
 	var alreadyInLobby = Lobbys.findOne({ categoryId: categoryId, 'players.userId': userId });
 
