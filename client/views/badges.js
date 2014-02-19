@@ -1,3 +1,5 @@
+var current = 0;
+
 Meteor.startup(function(){
 	Meteor.subscribe('badges');
 	Deps.autorun(function(){
@@ -34,5 +36,5 @@ Template.badges.haveUserBadge = function(){
 Template.badges.percentage = function(){
 	return Meteor.user().stats.points.all*100/this.points;
 };
-var current = 0;
+
 
