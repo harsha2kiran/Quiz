@@ -78,7 +78,7 @@
 </template>
 
 <template name="invite_email_modal">
-  <div class="modal fade" id="invite_email_modal">
+  <div class="modalHidden" id="invite_email_modal">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -86,12 +86,9 @@
           <h4 class="modal-title">Invite Friends</h4>
         </div>
         <div class="modal-body">
-                <label>Please Type your friend email</label>
-                <input name="email" class="form-control" id="email-input" >
-                <div id="invite-modal-errors" style="color:red"></div>
+          {{>invite_email_body}}
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           <button type="button" class="btn btn-primary" id="send-invitation">Send Invitation</button>
         </div>
       </div>
@@ -111,7 +108,7 @@
         	{{>facebook_friends}}
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-default close">Close</button>
         </div>
       </div>
     </div>
@@ -138,28 +135,28 @@
 
 <template name="facebookConnectModal">
     <div class="modal fade" id="facebook-connect-modal">
-    <div class="modal-dialog">
+    <div class="modal-dialog" style="width:350px">
     <div class="modal-content">
       <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
       </div>
         {{>facebook_modal_body}}
-      <div class="modal-footer">
-      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
     </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
     </div>
 
 </template>
 <template name="facebook_modal_body">
-    <div>
+<div class="alert alert-info">
       Your account is not connected with your facebook account. 
       Connect to facebook if you want to publish image on your wall 
-      after completion. 
-    </div>
+      after completion.
+</div> 
     <div>
-      <button class="btn btn-primary confirm-facebook">Connect </button>
+      <button class="btn btn-primary confirm-facebook">Connect
+            <span class="social-login-icon">
+          <i class="fa fa-facebook-square"></i>
+      </button>
     </div>
 </template>
 
@@ -168,4 +165,11 @@
     <a class="stat" style="margin-top: 5px; margin-left:10px" name="points" href="/user/{{_id}}">{{username}}</a>
     <img class="avatar-thumb" src="{{avatar}}"></img>
   </div>
+</template>
+<template name="invite_email_body">
+    <label>Please Type your friend email</label>
+    <input name="email" class="form-control" id="email-input" >
+    <div id="email-invitatio-alert-box" class="alert alert-danger hidden">
+      {{error}}
+    </div>
 </template>

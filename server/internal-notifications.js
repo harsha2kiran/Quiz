@@ -9,7 +9,7 @@ Meteor.methods({
 				var userSender = Meteor.users.findOne({_id:sender});
 				if(sender != "system"){
 					if(_.contains(userSender.requested,recipient)){
-						console.log("invitation already sent");
+			
 					}else{
 						Messages.insert(message);
 						Meteor.users.update({_id:sender},{$push:{requested:recipient}});
@@ -28,8 +28,7 @@ Meteor.methods({
 		}
 	},
 	'reply' : function(id){
-		console.log("replied");
-		console.log(id);
+
 		Messages.update({_id:id},{$set:{state: 'replied'}});
 	}
 });

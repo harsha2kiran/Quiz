@@ -18,18 +18,8 @@ Router.map(function() {
 		  });
 		this.route('homepage', {
 			path: '/',
-			waitOn: [categorySub, currentUserSub],
-			after: function(){
-				if(Meteor.user()){
-					if(!Meteor.user().username || !Meteor.user().emails){
-						pathDependency.changed();
-						console.log("user");
-						console.log(Meteor.user());
-						console.log(Meteor.user().username);
-						Router.go("/missing_data");
-					}
-				}
-			}
+			waitOn: [currentUserSub, categorySub],
+			controller : 'HomepageController'
 		});
 		this.route('user', {
 			path: '/user',
@@ -54,11 +44,7 @@ Router.map(function() {
 					categoryId: this.params._id
 				}
 			},
-			before: function(){
-				if(!Meteor.user()){
-					Router.go("/");
-				}
-			}
+			controller : 'UserLoginController',
 		});
 
 		this.route('admin', {
@@ -75,14 +61,13 @@ Router.map(function() {
 		});
 
 		this.route('question_table', {
-			path: '/admin/question',
+			path: '/admin/questions',
 			waitOn: [categorySub, currentUserSub],
 			controller: 'AdminController',			
 		});
 		this.route('question_table', {
 			path: '/user/questions',
-			waitOn: [categorySub, currentUserSub],
-			controller: 'SimpleController',			
+			waitOn: [categorySub, currentUserSub],	
 		});
 
 		this.route('edit_questions', {
@@ -108,23 +93,18 @@ Router.map(function() {
 
 		this.route('badges', {
 			path: '/badges',
-			controller: 'SimpleController'
+			controller: 'UserLoginController'
 		});
 		this.route('hall_of_fame', {
 			path: '/hall_of_fame',
-			controller: 'SimpleController'
+			controller: 'UserLoginController'
 		});
 		this.route('friends',{
 			path : '/friends',
-			controller: 'SimpleController',
+			controller: 'UserLoginController',
 		    waitOn: function () {
       			return Meteor.subscribe('friends');
     		},
-			before: function(){
-				if(!Meteor.user()){
-					Router.go("/");
-				}
-			}
 		});
 
 		this.route('edit_users', {
@@ -133,7 +113,7 @@ Router.map(function() {
 		});
 		this.route('after_invitation_login', {
 			path : '/invite/:_id',
-			after: function(){
+			action: function(){
 				if(Meteor.user()){
 					Router.go("/");
 				}
@@ -148,17 +128,13 @@ Router.map(function() {
 			data : function(){
 				return HallOfFameData.findOne({_id:this.params._id});
 			},
-			after : function(){
-				if(!Meteor.user()._id){
-					Router.go("/");
-				}
-			}
+
 		});
 
 		this.route('my_account', {
 			path: '/my-account',
 			waitOn: [categorySub, currentUserSub],
-			controller: 'SimpleController',
+			controller: 'UserLoginController',
 		});	
 	}
 
@@ -182,24 +158,36 @@ AdminController = RouteController.extend({
 	}
 });
 
-SimpleController = RouteController.extend({
+UserLoginController = RouteController.extend({
 	after: function(){
 		if(!Meteor.user()){
 			if(Router._currentController.path != "/"){
 				Router.go("/");
+			}else{
+				this.render();
 			}
 		}else if(!Meteor.user().username || !Meteor.user().emails){
+			console.log("test");
 			pathDependency.changed();
-			console.log("user");
-			console.log(Meteor.user());
-			console.log(Meteor.user().username);
 			Router.go("/missing_data");
 		}
 	}
 });
 
-InvitationController = RouteController.extend({
-	action: function(){
-
+HomepageController = RouteController.extend({
+	after: function(){
+		if(!Meteor.user()){
+			if(Router._currentController.path != "/"){
+				Router.go("/");
+			}else{
+				this.render();
+			}
+		}else if(!Meteor.user().username || !Meteor.user().emails){
+			console.log("test");
+			pathDependency.changed();
+			Router.go("/missing_data");
+		}else{
+			this.render();
+		}
 	}
-})
+});

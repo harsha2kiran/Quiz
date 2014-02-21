@@ -54,7 +54,11 @@ Accounts.onCreateUser(function(options, user) {
 Meteor.publish('currentUser', function() {
 	//this is necessary so a user will get the isAdmin field if they are
 	//XX remove services exclusion once we add them
-	return Meteor.users.find(this.userId, { services: 0, createdAt: 0 });
+	if(this.userId){
+		return Meteor.users.find(this.userId, { services: 0, createdAt: 0 });
+	}else{
+		return Meteor.users.find(0);
+	}
 });
 
 //all users are published to an admin
@@ -167,7 +171,6 @@ Meteor.methods({
 				Accounts.sendVerificationEmail(self.userId);
 			});
 		}
-		console.log(result);
 		return result;
 	},
 	setUserState : function(state,userId){

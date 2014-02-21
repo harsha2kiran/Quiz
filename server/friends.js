@@ -24,6 +24,9 @@ Meteor.publish('friends',function(){
 			}
 		});
 		self.ready();
+	}else{
+		console.log("waiting");
+		this.ready();
 	}
 });
 

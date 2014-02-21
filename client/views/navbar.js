@@ -74,7 +74,11 @@ Template.navbar.events({
 		Meteor.call('readMessage',this._id);
 	},
 	'click .logout': function() {
-		Meteor.logout();
+		Meteor.logout(function(){
+			userDep.changed();
+			console.log("afterlogut");
+			console.log(Meteor.userId());
+		});
 	}, 
 	'click .quick': function(){
 		Session.set("invitedFriend","");
@@ -133,7 +137,9 @@ Template.confirm_game_break.events({
 		if(Session.get("currently_clicked")!="logout"){
 			Router.go(Session.get("currently_clicked"));
 		}else{
-			Meteor.logout();
+			Meteor.logout(function(){
+				userDep.changed();
+			});
 		}
 		
 	},

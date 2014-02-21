@@ -77,7 +77,6 @@ Meteor.methods({
 
 	},
 	getQ: function() {
-		console.log(Questions.find().fetch());
 	},
 	'changeCategoryName' : function(id,newName){
 		Categories.update({_id:id},{$set:{name:newName}});

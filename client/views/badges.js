@@ -21,10 +21,6 @@ Meteor.startup(function(){
 								if(!hasUserBadge && !(current<badge.points))
 									badgesShouldBeGive.push(badge);
 							});
-							console.log("codochuja");
-							console.log(current);
-							console.log(Meteor.user().badges);
-							console.log(badgesShouldBeGive);
 							_.each(badgesShouldBeGive,function(badge){
 								Meteor.call('giveBadge',badge);
 							});
@@ -41,10 +37,14 @@ Template.badges.badges = function(){
 };
 
 Template.badges.haveUserBadge = function(){
+	if(!Meteor.user())
+		return;
 	return !(Meteor.user().stats.points.all < this.points);
 }
 
 Template.badges.percentage = function(){
+	if(!Meteor.user())
+		return;
 	return Meteor.user().stats.points.all*100/this.points;
 };
 

@@ -15,6 +15,9 @@ var emailPhraseDep = new Deps.Dependency;
 var emailFound = false;
 var userId ;
 var userAvatar;
+var emailError;
+var emailErrorDep = new Deps.Dependency;
+
 Meteor.startup(function(){
 	Meteor.subscribe('usernames');
 	Session.setDefault("friendFilter","all");
@@ -51,7 +54,9 @@ Meteor.startup(function(){
 });
 Template.friends.rendered = function(){
 	$('#invite_email_modal').on('hidden.bs.modal', function(){
-		$('#invite-modal-errors').html("");
+		emailError = "";
+		emailErrorDep.changed();
+		$('#email-invitatio-alert-box').addClass('hidden');
 		$('#email-input').val("");
 	});
 
@@ -62,7 +67,19 @@ Template.friends.rendered = function(){
 		},500);
 	});
 }
+Template.invite_email_body.helpers({
+	error : function(){
+		emailErrorDep.depend();
+		return emailError;
+	}
+});
 
+Template.invite_email_modal.events({
+	'click .close' : function(){
+		$('#invite_email_modal').removeClass('modalActive');
+		$('#invite_email_modal').addClass('modalHidden');		
+	} 
+});
 Template.friends.events({
 	'click .userPill' : function(){
 		var path = "/user/"+this._id;
@@ -75,8 +92,12 @@ Template.friends.events({
 	'keyup .search-area' : function(){
 		phrase = $('#search-friends-box').val();
 		emailPhraseDep.changed();
-		if(!keyPressed){
+		if(!keyPressed && phrase.length>2){
 			keyPressed = true;
+			keyPressedDep.changed();
+		}
+		if(keyPressed && phrase.length<3){
+			keyPressed = false;
 			keyPressedDep.changed();
 		}
 	},
@@ -91,7 +112,8 @@ Template.friends.events({
 	},
 	'click .invite' : function(evt){
 		if(evt.target.name == "email"){
-			$('#invite_email_modal').modal('show');
+			$('#invite_email_modal').removeClass('modalHidden');
+			$('#invite_email_modal').addClass('modalActive');
 		}
 		if(evt.target.name == "facebook"){
 			if(Meteor.user().services.facebook){
@@ -108,13 +130,21 @@ Template.friends.events({
 		var friend = $('#email-input').val();
 		var send = true;
 		if(friend.indexOf("@") == -1){
-			$('#invite-modal-errors').html('bad email format');
+			emailError = "bad email format";
+			emailErrorDep.changed();
+			Deps.afterFlush(function(){
+				$('#email-invitatio-alert-box').removeClass('hidden');
+			});
 			send = false;
 		}
 			_.each(Meteor.user().emails,function(email){
 				console.log(email);
 				if(email.address == friend){
-					$('#invite-modal-errors').html('You cant invite yourself');
+					emailError = "you cant invite yourself";
+					emailErrorDep.changed();
+					Deps.afterFlush(function(){
+						$('#email-invitatio-alert-box').removeClass('hidden');
+					});
 					send = false;
 				}
 			});
@@ -122,9 +152,14 @@ Template.friends.events({
 			Meteor.call('sendMail',friend,function(err,res){
 				console.log(res);
 				if(res == 1){
-					$('#invite-modal-errors').html('User already exists');
+					emailError = "user already exists";
+					emailErrorDep.changed();
+					Deps.afterFlush(function(){
+						$('#email-invitatio-alert-box').removeClass('hidden');
+					});
 				}else{
-					$('#invite_email_modal').modal('hide');	
+					$('#invite_email_modal').removeClass('modalActive');
+					$('#invite_email_modal').addClass('modalHidden');
 				}
 				
 			}); 
@@ -228,8 +263,6 @@ Template.friends.helpers({
 				});
 				result = result.sort();
 				result = _.first(result,5);
-				console.log("result");
-				console.log(result);
 				return result;
 			}
 		}
@@ -278,7 +311,10 @@ Template.facebook_friends.events({
 		if(!FB){
 			fbSdkLoader();
 		}else{
+			console.log("here");
 			FB.getLoginStatus(function(response) {
+				console.log("response");
+				console.log(response);
 			  if (response.status === 'connected') {
 			  	FB.ui({
 			  		from:response.authResponse.userID,

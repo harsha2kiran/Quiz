@@ -64,7 +64,6 @@ Facebook.prototype.postOnWall = function(id){
 
     this.fb.post(id + "/feed", wallPost, function(err, res) {
       // returns the post id
-      console.log(res); // { id: xxxxx}
     });
 }
 
@@ -82,8 +81,7 @@ Meteor.methods({
         return authUrl;
     },
     getFacebookAccessToken: function(query,id){
-        console.log("id");
-        console.log(id);
+
         var self = this; 
         var graph = Meteor.require('fbgraph'); 
             graph.authorize({
@@ -93,7 +91,6 @@ Meteor.methods({
                 "code":           query
             }, Meteor.bindEnvironment(
                 function (err, facebookRes) {
-                    console.log(facebookRes);
                     var updates = {}; 
                     updates['services.facebook.accessToken'] = facebookRes.access_token; 
                     updates['servoces.facebook.forInvite'] = true;
@@ -102,8 +99,7 @@ Meteor.methods({
                         function(err,res){
                             if(err)
                                 console.log("an error"+err+"occured");
-
-                    }); 
+                        }); 
                 },
                 function(e){
                     console.log('bind failure');
