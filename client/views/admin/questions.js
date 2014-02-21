@@ -49,9 +49,7 @@ var prepareDataSet = function(){
     var query = Questions.find();
     var handle = query.observeChanges({
         added: function(id,question){
-            console.log("added");
-            console.log(id);
-            console.log(rendered);
+    
             if(Meteor.user().isAdmin || Meteor.user().isModerator){
                 var record = []; 
                 record.push(question.status); 
@@ -106,7 +104,7 @@ var prepareDataSet = function(){
                 }     
             }
             if(rendered && question.author != Meteor.user()._id && (Meteor.user().isAdmin || Meteor.user().isModerator)){
-                console.log("test0");
+
                 var record = []; 
                 record.push(question.status); 
                 var categoryName = Categories.findOne({_id:question.categoryId}).name;
@@ -125,7 +123,7 @@ var prepareDataSet = function(){
                 var editPanel = deleteButton(id)+editButton(id);
                 if(Meteor.user().isAdmin || Meteor.user().isModerator)
                     editPanel = editPanel +statusChangeButton(id,question.status);
-                console.log(editPanel);
+
                 record.push(editPanel);
                 record.push('<input name="'+id+'"type="checkbox">');
                 $('#question-table').dataTable().fnAddData(record);
@@ -133,15 +131,13 @@ var prepareDataSet = function(){
         },
         changed: function(id,field){
              var question = Questions.findOne({_id:id});
-             console.log("question");
-             console.log(question);
-             console.log("quest");
+
             Deps.afterFlush(function(){
                 //var question = Questions.findOne({_id:id});
                 var oTable = $('#question-table').dataTable(); 
                 if($('button[name='+id+']').closest('tr')[0]){
                     var rowIndex = oTable.fnGetPosition($('button[name='+id+']').closest('tr')[0]);
-                    console.log(rowIndex);
+
                 
                     if(field.status){
                         oTable.fnUpdate( field.status, rowIndex , 0); 
@@ -214,9 +210,9 @@ Template.question_table.rendered = function () {
     });  
     try{
         var oTable = $('#question-table').dataTable();
-        rendered = true; 
     }catch(err){
         console.log("err");
+        rendered =false;
     }
     if(!rendered){
         prepareDataSet();
@@ -318,15 +314,14 @@ Template.question_table.events({
     'click .edit': function(evt){
         var name = evt.target.parentNode.name+evt.target.name;
         name = name.replace("undefined","");
-        console.log(name);
+
         Session.set("currentStage","editQuestion");
         var oTable = $('#question-table').dataTable();
         var rowIndex = oTable.fnGetPosition( $(evt.target).closest('tr')[0] ); 
         Session.set("selectedRow",rowIndex);
         Session.set("edited",name);
         Session.set('editing-question-' + name, true);
-        console.log("Session");
-        console.log(Questions.findOne({_id:Session.get("edited")}));
+
         Deps.afterFlush(function(){
             $('#new-question-title-' + name).val(
                 Questions.findOne({_id:Session.get("edited")}).question);

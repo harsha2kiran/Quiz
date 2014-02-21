@@ -103,9 +103,11 @@
 
 <template name="answer_option">
 	<div>
-		{{#if myChoice}}<span class="glyphicon glyphicon-star"></span>{{/if}} 
-		<button type="button" class="btn btn-{{button_color}} question-option" {{disabled}}>{{option}}</button>
-		{{#if opponentChoice}} <span class="glyphicon glyphicon-star"></span>{{/if}}
+		{{#if no_empty}}
+			{{#if myChoice}}<span class="glyphicon glyphicon-star"></span>{{/if}} 
+			<button type="button" class="btn btn-{{button_color}} question-option" {{disabled}}>{{option}}</button>
+			{{#if opponentChoice}} <span class="glyphicon glyphicon-star"></span>{{/if}}
+		{{/if}}
 	</div>
 </template>
 

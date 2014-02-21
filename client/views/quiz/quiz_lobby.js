@@ -170,6 +170,9 @@ Template.quiz_lobby.helpers({
 });
 
 Template.answer_option.helpers({
+	no_empty : function(){
+		return this.option != "";
+	},
 	disabled: function() {
 		var quiz = Quizzes.findOne({});
 		if (Meteor.user()) {

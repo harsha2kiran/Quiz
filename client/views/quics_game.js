@@ -66,7 +66,7 @@ Meteor.startup(function(){
 			}
 		},
 		removed: function(id,inv){
-			Meteor.setTimeour(function(){
+			Meteor.setTimeout(function(){
 				$('#quick-game-modal').removeClass('modalActive');
 				$('#quick-game-modal').addClass('modalHidden');
 			},3000);
