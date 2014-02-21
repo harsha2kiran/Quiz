@@ -5,7 +5,7 @@ Accounts.onCreateUser(function(options, user) {
 	if (Meteor.users.find({}).count() === 0) {
 		user.isAdmin = true;
 	}
-	user.avatar="/empty.jpg";
+	user.avatar = "/empty.jpg";
 	user.friends = [];
 	user.stats = {
 		'points' : {
@@ -44,8 +44,7 @@ Accounts.onCreateUser(function(options, user) {
 			'year'  : 0			
 		},
 	}
-	console.log("user created");
-	console.log(user);
+
 	if(user.services.facebook){
 		Meteor.call('checkUserFriends',user);
 	}
@@ -132,7 +131,7 @@ Meteor.methods({
 	},
 	setUserMissingData : function(name,email){
 		var id = Meteor.user()._id;
-		console.log(id);
+
 		var result = {};
 		if(!Meteor.user().username)
 			result['usernameFound'] = false;
@@ -140,8 +139,7 @@ Meteor.methods({
 			result['emailFound'] = false;
 		Meteor.users.find().forEach(function(user){
 			if(result.hasOwnProperty('usernameFound')){
-				console.log("username");
-				console.log(user.username);
+
 				if(user.username == name){
 					result['usernameFound'] = true;
 				}
@@ -149,8 +147,6 @@ Meteor.methods({
 			if(result.hasOwnProperty('emailFound')){
 				if(user.emails){
 					_.each(user.emails,function(mail){
-						console.log("email");
-						console.log(mail);
 						if(mail.address == email){
 							result['emailFound'] = true;
 						}
@@ -166,8 +162,7 @@ Meteor.methods({
 				'emails' : emails,
 			}
 			var self = this;
-			console.log("self");
-			console.log(self);
+
 			Meteor.users.update({_id:id},{$set: update},function(){
 				Accounts.sendVerificationEmail(self.userId);
 			});
@@ -176,14 +171,11 @@ Meteor.methods({
 		return result;
 	},
 	setUserState : function(state,userId){
-		console.log(state);
-		console.log(userId);
+
 		Meteor.users.update({_id:userId},{$set:{state:state}});
 	},
 	makeAdmin: function(newAdminUserId) {
 		check(newAdminUserId, String)
-		console.log(this.userId);t
-		console.log(Users.isAdmin(this.userId));
 		if (!Users.isAdmin(this.userId))
 			throw new Meteor.Error(500, "Only admins can do this");
 
@@ -261,8 +253,6 @@ Meteor.methods({
 	}, 
 	makeFriends: function(first,second,oneWay){
 		if(oneWay){
-			console.log(first);
-			console.log(second);
 			Meteor.users.update({_id:first},{$push:{friends: second}}); 	
 		}else{
 			Messages.find().forEach(function(message){

@@ -132,11 +132,13 @@ var prepareDataSet = function(){
             }
         },
         changed: function(id,field){
+             var question = Questions.findOne({_id:id});
+             console.log("question");
+             console.log(question);
+             console.log("quest");
             Deps.afterFlush(function(){
-                var question = Questions.findOne({_id:id});
+                //var question = Questions.findOne({_id:id});
                 var oTable = $('#question-table').dataTable(); 
-                console.log("changed"+field.status);
-                console.log($('button[name='+id+']').closest('tr')[0]);
                 if($('button[name='+id+']').closest('tr')[0]){
                     var rowIndex = oTable.fnGetPosition($('button[name='+id+']').closest('tr')[0]);
                     console.log(rowIndex);
@@ -323,9 +325,13 @@ Template.question_table.events({
         Session.set("selectedRow",rowIndex);
         Session.set("edited",name);
         Session.set('editing-question-' + name, true);
+        console.log("Session");
+        console.log(Questions.findOne({_id:Session.get("edited")}));
         Deps.afterFlush(function(){
             $('#new-question-title-' + name).val(
                 Questions.findOne({_id:Session.get("edited")}).question);
+            $('#question-explanation-'+name).val(
+                Questions.findOne({_id:Session.get("edited")}).explanation);
             $('#edit-question-modal').modal('show');
         });
     }, 
@@ -354,8 +360,10 @@ Template.question_table.events({
     'click .update-from-edit': function(){
         var oTable = $('#question-table').dataTable();
         var update = $('.form-control')[0].value;
-        update = (update.length >20) ? update.substring(0,20)+"..." : update;
-        oTable.fnUpdate( update, Session.get("selectedRow") , 2);   
+        if(update){
+            update = (update.length >20) ? update.substring(0,20)+"..." : update;
+            oTable.fnUpdate( update, Session.get("selectedRow") , 2); 
+        }  
     },
     'click .add-question': function(){
         Session.set("currentStage","addQuestion");

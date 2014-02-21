@@ -93,10 +93,6 @@ Template.add_new_question.events({
 			var answer = {};
 			answer.id = i;
 			var option = $(this).val();
-			console.log("option");
-			console.log(option);
-			console.log(i);
-			console.log(correctAnswerId);
 			if(option === "" && i==correctAnswerId ){
 				console.log("inside err");
 				errors.push("you cant check empty aswer as correct");
@@ -106,15 +102,20 @@ Template.add_new_question.events({
 				$(this).parent().parent(".form-group").addClass("has-error");
 			}*/
 			answer.option = option;
-			if(answer.option != ""){
-				answers.push(answer);
+			answers.push(answer);
+
+		});
+
+		var emptyCounter = 0;
+		_.each(answers,function(answer){
+			if(answer.option == ""){
+				emptyCounter ++;
 			}
 		});
-		console.log(answers);
-		console.log("answerwqeeqws");
-		if(answers.length <2){
-			errors.push("You must provide at least two answers");
+		if(emptyCounter > 2){
+			errors.push("You must provide at least two answers");	
 		}
+
 
 		var explanation = $("#question-explanation");
 		if (!explanation.val()) {
@@ -253,12 +254,9 @@ Template.question_edit_fields.events({
 			var answer = {};
 			answer.id = i;
 			var option = $(this).val();
-			console.log("option");
-			console.log(option);
-			console.log(i);
-			console.log(correctAnswerId);
+
 			if(option === "" && i==correctAnswerId ){
-				console.log("inside err");
+
 				errors.push("you cant check empty aswer as correct");
 			}
 			/*if (!option) {
@@ -266,13 +264,18 @@ Template.question_edit_fields.events({
 				$(this).parent().parent(".form-group").addClass("has-error");
 			}*/
 			answer.option = option;
-			if(answer.option != ""){
-				answers.push(answer);
+			answers.push(answer);
+
+		});
+		var emptyCounter = 0;
+		_.each(answers,function(answer){
+			if(answer.option == ""){
+				emptyCounter ++;
 			}
 		});
 
-		if(answers.length <2){
-			errors.push("You must provide at least two answers");
+		if(emptyCounter > 2){
+			errors.push("You must provide at least two answers");	
 		}
 
 		var explanation = $("#question-explanation-" + questionId);
@@ -291,8 +294,7 @@ Template.question_edit_fields.events({
 			$("#update-question-errors-" + questionId).append("</ul>");
 
 		} else {
-			console.log("ok");
-			console.log(answers);
+
 			//do the server side addQuestion call
 			Meteor.call('updateQuestion', questionId, question.val(), answers, correctAnswerId, explanation.val(), function(err, res) {
 				if (err) {
@@ -346,8 +348,6 @@ Template.add_new_question.helpers({
 Template.similarQuestions.helpers({
 	'similarQuestions' : function(){
 		questionsDep.depend(); 
-		console.log("similarity");
-		console.log(similarQuestions);
 		return similarQuestions;
 	}
 });

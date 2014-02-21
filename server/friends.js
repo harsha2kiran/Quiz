@@ -16,8 +16,6 @@ Meteor.publish('friends',function(){
 					}	
 				}
 				if(field.state){
-					console.log(id);
-					console.log(field.state);
 					var friend = Meteor.users.findOne({_id:id});
 					if(_.contains(friend.friends,user._id)){
 						self.changed('friends',id,{"username":friend.username,"state":friend.state});

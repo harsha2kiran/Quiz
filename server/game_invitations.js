@@ -1,8 +1,4 @@
 Meteor.publish('myInvitations',function(user){
-	console.log("inside");
-	console.log(user);
-	console.log(Invitations.find().fetch());
-	console.log(Invitations.find({$or : [{invited:user},{invitator:user}]}).fetch())
 	return Invitations.find({$or : [{invited:user},{invitator:user}]});
 });
 
@@ -14,10 +10,7 @@ Meteor.startup(function(){
 
 Meteor.methods({
 	'game-invite':function(invited,category){
-		console.log("ivited");
-		console.log(invited);
 		var invited = Meteor.users.findOne({username: invited}); 
-		console.log(invited);
 		var invitation;
 		if(!invited){
 			return 1;
@@ -46,7 +39,6 @@ Meteor.methods({
 		var current = Invitations.findOne({_id:inv});
 		Meteor.call('setUserState',"online",invitation.invited);
 		Meteor.setTimeout(function(){
-			console.log("remove inv");
 			Invitations.remove({_id:inv});
 			Meteor.call('setUserState',"online",invitation.invitator);
 		},3000);

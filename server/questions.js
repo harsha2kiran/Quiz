@@ -93,6 +93,7 @@ Meteor.methods({
 
 	},
 	updateQuestion: function(questionId, question, answers, correctAnswer, explanation) {
+
 		check(questionId, String);
 		check(question, String);
 		//XX validate answers
@@ -106,6 +107,7 @@ Meteor.methods({
 			answer.option  = option;
 			answers.push(answer);
 		}
+
 		if (!(Users.isAdmin(this.userId) || Users.isModerator(this.userId)
 		 	|| qu.author == this.userId))
 			throw new Meteor.Error(500, "User cant edit this question");
@@ -119,6 +121,7 @@ Meteor.methods({
 		_.each(q,function(word){
 			_.contains(questionWords,word) ? null : questionWords.push(word);
 		});
+
 		Questions.update(questionId, 
 			{$set: {
 				questionWords : questionWords,
@@ -132,8 +135,9 @@ Meteor.methods({
 	moveQuestion: function(questionId, toCategoryId) {
 		check(questionId, String);
 		check(toCategoryId, String);
-
-		if (!(Users.isAdmin(this.userId) || Users.isModerator(this.userId)))
+		var qu = Questions.findOne(questionId);
+		if (!(Users.isAdmin(this.userId) || Users.isModerator(this.userId)
+			||qu.author == this.userId))
 			throw new Meteor.Error(500, "Only Admins can move questions");
 
 		var question = Questions.findOne(questionId);
@@ -173,7 +177,7 @@ Meteor.methods({
 		result = _.filter(result,function(question){
 			return question.percentage > 0.4;
 		});
-		console.log(result);
+
 		return result;
 	}
 });
