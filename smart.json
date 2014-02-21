@@ -13,7 +13,9 @@
     "accounts-ui-bootstrap-3": {
       "git": "https://github.com/mangasocial/meteor-accounts-ui-bootstrap-3.git",
       "branch": "dev"
-    }
-
+    },
+    "font-awesome": {},
+    "autocomplete": {},
+    "jquery-ui-bootstrap": {}
   }
 }

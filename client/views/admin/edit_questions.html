@@ -14,7 +14,7 @@
 	  		<div class="row">
 					<div class="form-group col-lg-8">
 					<label class="control-label" for="code">Question Title:</label>
-					  <input type="text" class="question-contents form-control" placeholder="Enter a Question Title" id="new-question-title"/>
+					  <input type="text" class="question-contents form-control" placeholder="Enter a Question Title" id="new-question-title" class="question-title"/>
 					</div>
 				</div>
 				{{>similarQuestions}}
@@ -111,7 +111,8 @@
 	<div class="row">
 		<div class="form-group col-lg-8">
 		<label class="control-label" for="code">Question Title:</label>
-		  <input type="text" class="form-control" placeholder="Enter a Question Title" id="new-question-title-{{_id}}" value="{{question}}"/>
+		  <input type="text" class="form-control question-contents" placeholder="Enter a Question Title" id="new-question-title-{{_id}}" value="{{question}}" />
+		  {{>similarQuestions}}
 		</div>
 	</div>
 

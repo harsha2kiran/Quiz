@@ -28,3 +28,35 @@ Meteor.publish('friends',function(){
 		self.ready();
 	}
 });
+
+
+
+Meteor.publish('usernames',function(){
+	if(this.userId){
+		var user = Meteor.users.findOne({_id:this.userId});
+		var self = this;
+		var handle = Meteor.users.find().observeChanges({
+			added : function(id,user){
+				self.added('usernames',id,{"username":user.username,"avatar" : user.avatar});
+			},
+		});
+		self.ready();
+	}
+});
+
+Meteor.methods({
+	'emailExists' : function(phrase) {
+		var result = null;
+		Meteor.users.find().forEach(function(user){
+			_.each(user.emails,function(mail){
+				console.log(mail);
+				console.log(phrase);
+				if(mail.address == phrase){
+					console.log("ok");
+					result = {"userId" : user._id, "avatar": user.avatar};
+				}
+			});
+		});
+		return result;
+	}
+});

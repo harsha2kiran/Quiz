@@ -33,9 +33,7 @@ Template.layout.helpers({
 	'displayNavbar': function(){
 		pathDependency.depend();
 		var path = Router._currentController.path;
-		q = (path !="/missing_data");
-		console.log(false);
-		return q;
+		return (path !="/missing_data" && path.indexOf('invite') == -1);
 	}
 });
 

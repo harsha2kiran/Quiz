@@ -1,38 +1,41 @@
 <template name="after_invitation_login">
-  <div class="modal fade" id="loginModal">
-    <div class="modal-dialog">
+  <div class="modalActive" id="loginModal">
+    <div class="modal-dialog " style="width:350px">
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title">Login</h4>
         </div>
         <div class="modal-body">
 	    	<form id="loginForm">
-		<table class="table table-condensed">
-            <tr>
-				<th>
-					<label>username</label>
-				</th>
-				<th>
-					<input name="username" >
-				</th>
-            </tr>
-            <tr>
-				<th>
-					<label>email</label>
-				</th>
-				<th>
-					<input type="email" name="email">
-				</th>
-            </tr>
-            <tr>
-				<th>
-					<label>password</label>
-				</th>
-				<th>
-					<input type="password" name="password">
-				</th>
-            </tr>
-      	</table>
+	    		<div class="btn btn-primary social-login-field button-facebook">
+	    			Sign in with Facebook
+	    			<span class="social-login-icon">
+					<i class="fa fa-facebook-square"></i>
+	    			</span>
+	    		</div>
+	    		<div class="btn btn-primary social-login-field button-twitter">
+	    			Sign in with Google
+	    			<span class="social-login-icon">
+					<i class="fa fa-google-plus-square"></i>
+	    			</span>
+	    		</div>
+	    		<div class="btn btn-primary social-login-field button-google">
+	    			Sign in with Twitter
+	    			<span class="social-login-icon">
+					<i class="fa fa-twitter-square"></i>
+	    			</span>
+	    		</div> 
+	    		<div id="login-alert-box" class="alert alert-danger hidden">{{error}}</div>
+	    		<div class="social-login-field">or</div>
+	    		<div>
+					<input class="social-login-field form-control"  name="username" placeholder="username" >
+				</div>
+				<div>
+					<input class="social-login-field form-control"  type="email" name="email" placeholder="email">
+				</div>
+				<div>
+					<input class="social-login-field form-control" type="password" name="password" placeholder="password">
+				</div>
 			</form>
         </div>
         <div class="modal-footer">

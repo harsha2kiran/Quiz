@@ -7,17 +7,28 @@ Meteor.startup(function(){
 			Meteor.users.find({_id:Meteor.user()._id},{fields:{'stats.points.all':1}}).observeChanges({
 				changed : function(id,doc){
 					console.log("changed");
-					if((doc.stats.points.all-current) > 0){
-						current = doc.stats.points.all;
-						Badges.find().forEach(function(badge){
-							var hasUserBadge = false;
-							_.each(Meteor.user().badges,function(userBadge){
-								if(badge._id == userBadge._id)
-									hasUserBadge = true;
+					console.log(id);
+					if(id == Meteor.user()._id){
+						if((doc.stats.points.all-current) > 0){
+							current = doc.stats.points.all;
+							var badgesShouldBeGive =[];
+							Badges.find().forEach(function(badge){
+								var hasUserBadge = false;
+								_.each(Meteor.user().badges,function(userBadge){
+									if(badge._id == userBadge._id)
+										hasUserBadge = true;
+								});
+								if(!hasUserBadge && !(current<badge.points))
+									badgesShouldBeGive.push(badge);
 							});
-							if(!hasUserBadge && !(current<badge.points))
+							console.log("codochuja");
+							console.log(current);
+							console.log(Meteor.user().badges);
+							console.log(badgesShouldBeGive);
+							_.each(badgesShouldBeGive,function(badge){
 								Meteor.call('giveBadge',badge);
-						});
+							});
+						}
 					}
 				}
 			});

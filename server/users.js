@@ -131,7 +131,8 @@ Meteor.methods({
 		return found;
 	},
 	setUserMissingData : function(name,email){
-
+		var id = Meteor.user()._id;
+		console.log(id);
 		var result = {};
 		if(!Meteor.user().username)
 			result['usernameFound'] = false;
@@ -157,7 +158,7 @@ Meteor.methods({
 				}
 			}
 		});
-		if(result['usernameFound'] == false && result['emailFound'] == false){
+		if(!result['usernameFound'] && !result['emailFound']){
 			var emails = []; 
 			emails[0] = {'address' : email, 'verified' : false};
 			var update = {
@@ -165,7 +166,9 @@ Meteor.methods({
 				'emails' : emails,
 			}
 			var self = this;
-			Meteor.users.update({_id:this.userId},{$set: update},function(){
+			console.log("self");
+			console.log(self);
+			Meteor.users.update({_id:id},{$set: update},function(){
 				Accounts.sendVerificationEmail(self.userId);
 			});
 		}
@@ -275,7 +278,17 @@ Meteor.methods({
 			Meteor.users.update({_id:second},{$push:{friends: first}}); 			
 		}
 	},
-
+	makeUser : function(user) {
+	    var usernameExists = Meteor.users.findOne({username:user.username});
+	    var emailExists = Meteor.users.findOne({email:user.email});
+	    if(usernameExists){
+	      	return 1;
+	    }else if(emailExists){
+	      	return 2;
+	    }else{
+      		return 0;
+	    }
+ 	}
 });
 
 Users = {};

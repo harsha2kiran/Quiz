@@ -43,7 +43,6 @@ Router.map(function() {
 				var categoryId = this.params._id;
 				quickGameDep.depend();
 				lobbySub = Meteor.subscribe('lobbyForCategory', categoryId);
-				console.log(Lobbys.findOne());
 				var lobby = Lobbys.findOne({});
 				if (lobby) {
 					var quizSub = Meteor.subscribe('currentQuiz', lobby._id);
@@ -55,7 +54,7 @@ Router.map(function() {
 					categoryId: this.params._id
 				}
 			},
-			after: function(){
+			before: function(){
 				if(!Meteor.user()){
 					Router.go("/");
 				}
@@ -120,7 +119,12 @@ Router.map(function() {
 			controller: 'SimpleController',
 		    waitOn: function () {
       			return Meteor.subscribe('friends');
-    		}
+    		},
+			before: function(){
+				if(!Meteor.user()){
+					Router.go("/");
+				}
+			}
 		});
 
 		this.route('edit_users', {
@@ -144,6 +148,11 @@ Router.map(function() {
 			data : function(){
 				return HallOfFameData.findOne({_id:this.params._id});
 			},
+			after : function(){
+				if(!Meteor.user()._id){
+					Router.go("/");
+				}
+			}
 		});
 
 		this.route('my_account', {

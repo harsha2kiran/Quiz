@@ -75,7 +75,7 @@
               {{#if is_busy}}
               {{else}}
               <div class="btn-group messages-button">
-                  <button data-toggle="dropdown" class="btn navbar-btn dropdown-toggle"><span class="glyphicon glyphicon-envelope"></span> Messages({{numberOfUnread}})<span class="caret"></span></button>
+                  <button data-toggle="dropdown" id="mes-button"class="btn navbar-btn dropdown-toggle "><span class="glyphicon glyphicon-envelope"></span> Messages({{numberOfUnread}})<span class="caret"></span></button>
                  
                   <ul class="dropdown-menu">
                       {{#each messages}}

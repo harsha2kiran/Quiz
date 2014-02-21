@@ -1,9 +1,8 @@
 <template name="quick_game"> 
   <div class="modalHidden" id="quick-game-modal">
-    <div class="modal-dialog">
+    <div class="modal-dialog " style="width:350px">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" id="closeQuickGameModal"class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
           <h4 class="modal-title">Invite</h4>
           {{#if invited}}
           Choose a quiz (note a category must have 5 questions to appear here):
@@ -40,7 +39,7 @@
     
     <div>
         <div class="btn-group">
-            <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+            <a class="btn dropdown-toggle" id="dropdown-button" data-toggle="dropdown" href="#">
                 {{category}}
                  <span class="caret"></span>
             </a>
@@ -51,13 +50,11 @@
             </ul>
         </div>
     </div>
-    <div id="invitation-errors" style="color:#a94442;"></div>
-        <input class="invite" value="{{userInvited}}" type="text"></input>
-        <div>
-          {{communique}}
-        </div>
+        
+        <input class="invite form-control" value="{{userInvited}}" type="text"></input>
+        <div id="game-invite-alert-box" class="alert alert-danger hidden"> {{communique}}</div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" id="invite">invite</button>
+          <button type="button" class="btn btn-primary" id="game-invite">invite</button>
     
         </div>
     {{/if}}

@@ -263,7 +263,7 @@ Template.question_table.events({
     'click .bulk-delete':function(){
         _.each($('input[type=checkbox]'),function(checkbox){
             if($(checkbox).prop('checked')){
-                console.log(checkbox.name);
+                $(checkbox).attr('checked', false);
                 var oTable = $('#question-table').dataTable();
                 var rowIndex = oTable.fnGetPosition( $(checkbox).closest('tr')[0] );
                 oTable.fnDeleteRow(rowIndex); 
@@ -274,6 +274,7 @@ Template.question_table.events({
     'click .bulk-approve':function(){
         _.each($('input[type=checkbox]'),function(checkbox){
             if($(checkbox).prop('checked')){
+                $(checkbox).attr('checked', false);
                 var oTable = $('#question-table').dataTable();
                 var rowIndex = oTable.fnGetPosition( $(checkbox).closest('tr')[0] ); 
                 var value = oTable.fnGetData($(checkbox).closest('tr')[0])[0];  
@@ -322,7 +323,11 @@ Template.question_table.events({
         Session.set("selectedRow",rowIndex);
         Session.set("edited",name);
         Session.set('editing-question-' + name, true);
-        $('#edit-question-modal').modal('show');
+        Deps.afterFlush(function(){
+            $('#new-question-title-' + name).val(
+                Questions.findOne({_id:Session.get("edited")}).question);
+            $('#edit-question-modal').modal('show');
+        });
     }, 
     'click .create-category' : function(){
         $('input.form-control').each(function(i,field){

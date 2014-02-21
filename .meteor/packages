@@ -23,3 +23,6 @@ event-hooks
 handlebar-helpers
 user-session
 accounts-ui-bootstrap-3
+font-awesome
+autocomplete
+jquery-ui-bootstrap

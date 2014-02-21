@@ -1,35 +1,21 @@
 <template name="missing_data">
 
   <div class="modalActive" id="username-modal">
-    <div class="modal-dialog">
+    <div class="modal-dialog" style="width:350px">
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title">Please choose your username</h4>
+          <h4 class="modal-title">Please complete your data</h4>
         </div>
         <div class="modal-body">
-          <table class="table table-condensed">
-            <tr>
+          <form id="missingDataForm">
+              <div id="data-alert-box" class="alert alert-danger hidden">{{error}}</div>
               {{#if usernameMissing}}
-              <th>
-                <label>username</label>
-              </th>
-              <th>
-                <input name="name">
-                <div id="username-errors" style="color:#a94442;">
-              </th>
+                <input class="form-control" name="username" placeholder="username">
               {{/if}}
               {{#if emailMissing}}
-              <th>
-                <label>email</label>
-              </th>
-              <th>
-                <input name="email" >
-                <div id="email-errors" style="color:#a94442;">
-              </th>
+                <input class="form-control" name="email" placeholder="email" >
               {{/if}}
-            </tr>
-          </table>
-
+          <form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" >Confirm</button>

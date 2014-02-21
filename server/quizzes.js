@@ -262,7 +262,7 @@ Quiz.doQuestion = function(quizId) {
 		var lobby = Lobbys.findOne(quiz.lobbyId);
 		if (lobby.players.length === 1) {
 			Quizzes.update(quizId, {$set: { state: 'quizfinishedearly' } } );
-			Meteor.call('setUserState','online',lobby.players[0].userId);
+			
 			var playerLeft = true;
 		}
 		
@@ -363,5 +363,6 @@ Quiz.checkPlayerLeft = function(quizId) {
 
 	if (lobby.players.length === 1) {
 		var winner = lobby.players[0];
+		Meteor.call('setUserState','online',lobby.players[0].userId);
 	}
 }

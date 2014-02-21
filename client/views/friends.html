@@ -20,19 +20,17 @@
 			<ul class="nav navbar-nav navbar-right">
 				<li><a class="invite" name="facebook" href="#">Invite from facebook</a></li>
 				<li><a class="invite" name="email" href="#">Invite by email</a></li>
-        <li><div id="search-friend-form"class="form-group"><input type="text" id="search-for-friend" class="form-control friends-search " placeholder="enter fiend name or email.."></input></div>
-          <div id="search-errors eff" ></div></li>
-        <li><button class="btn " id="search-button"style="position:relative; margin-top:8px"><span class="glyphicon glyphicon-search "> </span>Search and invite</button></li>
 			</ul>
         </div><!--/.nav-collapse -->
   	</div>
-  <div class="btn-group" style="width: 30%">
-    <button type="button" name="all" class="btn btn-primary sort-friends">All</button>
-    <button type="button" name="online" class="btn btn-success sort-friends">Online</button>
-    <button type="button" name="busy" class="btn btn-warning sort-friends">Busy</button>
-    <button type="button" name="offline" class="btn btn-danger sort-friends">Offline</button>
-  </div>
-
+  <div>
+  <div class="friends-list">
+    <div class="btn-group" style="width: 30%; display:inline">
+      <button type="button" name="all" class="btn btn-primary sort-friends">All</button>
+      <button type="button" name="online" class="btn btn-success sort-friends">Online</button>
+      <button type="button" name="busy" class="btn btn-warning sort-friends">Busy</button>
+      <button type="button" name="offline" class="btn btn-danger sort-friends">Offline</button>
+    </div>
 	<table class="table">
         <thead>
         <tr>
@@ -70,6 +68,13 @@
         {{/each}}
         </tbody>
   	</table>
+  </div>
+  <div class = "search-area">
+        <input class="form-control" id="search-friends-box" placeholder="enter user mail or email">
+        {{#each result}}
+          {{>userPill}}
+        {{/each}}
+  </div>
 </template>
 
 <template name="invite_email_modal">
@@ -156,4 +161,11 @@
     <div>
       <button class="btn btn-primary confirm-facebook">Connect </button>
     </div>
+</template>
+
+<template name="userPill">
+  <div class="userPill">
+    <a class="stat" style="margin-top: 5px; margin-left:10px" name="points" href="/user/{{_id}}">{{username}}</a>
+    <img class="avatar-thumb" src="{{avatar}}"></img>
+  </div>
 </template>

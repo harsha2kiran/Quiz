@@ -200,6 +200,25 @@ Template.question_edit_fields.helpers({
 });
 
 Template.question_edit_fields.events({
+	'keydown .question-contents' : function(evt){
+		console.log("key" + evt.keyCode);
+		if(evt.keyCode == 32 && evt.target.value.length>10){
+			Meteor.call('findSimilarQuestions',evt.target.value,function(err,res){
+				similarQuestions = res;
+				console.log(similarQuestions);
+				questionsDep.changed();
+			});
+		}
+	},
+	'keyup .question-contents' : function(evt){
+		if(evt.keyCode == 8 ){
+			Meteor.call('findSimilarQuestions',evt.target.value,function(err,res){
+				similarQuestions = res;
+				console.log(similarQuestions);
+				questionsDep.changed();
+			});
+		}
+	},
 	'click .update-from-edit': function(evt) {
 		//XX yeah it's really bad to be copy and pasting this from the above funciton, in retrospect they should have been the same,
 		//but implementing it this way is faster

@@ -1,8 +1,39 @@
+.hidden {
+	display: none;
+}
+.friends-list{
+	display:inline-block;
+}
+.search-area{
+	display:inline-block;
+	float : right;
+	float:top;
+}
+.userPill{
+	border-style: solid;
+	border-width: 1px;
+	border-color: #888888;
+	height:40px;
+	margin:2px;
+	border-radius: 10px;
+	box-shadow: 5px 5px 2px #888888;
+}
+.avatar-thumb{
+
+	border-radius: 10px;
+	width: 35px;
+	height: 35px;
+	margin: top:2px;
+	float: right;
+}
 .question-container {
-	width:800px;
+	position: absolute;
+	width: 80%;
 	text-align:center;
 }
-
+.social-login-icon{
+	float: right;
+}
 .question-option {
 	width:200px;
 	margin-bottom:10px;
@@ -13,6 +44,13 @@
 }
 .table { 
 	width: auto;
+}
+
+.social-login-field {
+	margin-top: 1%;
+	margin-bottom: 1%;
+	width: 100%;
+	text-align: center;
 }
 .sort-friends{
 	width: 78px !important
@@ -110,4 +148,7 @@ tfoot th, tfoot td {
 }
 .has-success{
 	color:green;
+}
+.body{
+	width: 100%;
 }

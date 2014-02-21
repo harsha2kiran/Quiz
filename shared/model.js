@@ -8,6 +8,7 @@ Lobbys = new Meteor.Collection('lobbys');
 Quizzes = new Meteor.Collection('quizzes');
 HallOfFameData = new Meteor.Collection('hallOfFameData');
 Friends = new Meteor.Collection('friends');
+Usernames = new Meteor.Collection('usernames');
 Invitations = new Meteor.Collection('invitations');
 lobbySub = null;
 Messages = new Meteor.Collection("messages");

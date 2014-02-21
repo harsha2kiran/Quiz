@@ -24,11 +24,21 @@
 		<br>
 		<br>
 		{{#with current_question}}
+			{{#if quiz_finished_early}}
+				{{#if $neq question_number 1}}
+					<h3>Question {{question_number}} of 5</h3>
+					<h3>{{question}}</h3>
+					{{#each answer}}
+						{{> answer_option}}
+					{{/each}}
+				{{/if}}
+			{{else}}
 				<h3>Question {{question_number}} of 5</h3>
 				<h3>{{question}}</h3>
 				{{#each answer}}
 					{{> answer_option}}
 				{{/each}}
+			{{/if}}
 			
 		{{/with}}
 		{{#if question_results}}
@@ -41,13 +51,17 @@
 				{{#if opponent_in_lobby}}
 					{{#if noFriendship}}
 					{{#if invitation}}
+					<div>
 					<button class="btn btn-success accept-friend">Accept {{opponent_name}} friend request</button>
 					<button class="btn btn-dander reject-friend">Reject {{opponent_name}} friend request</button>
+					</div>
 					{{else}}
 						{{#if invitationSend}}
 						{{else}}
+						<div>
 						<button class="btn btn-primary make-friend">invite {{opponent_name}} to become friend</button>
 						{{/if}}
+						</div>
 					{{/if}}
 					{{/if}}
 
@@ -116,8 +130,16 @@
 </template>
 
 <template name="question_result">
-	<h3>Explanation:</h3>
-	<p>{{explanation}}</p>
+	
+	{{#if quiz_finished_early}}
+		{{#if $neq question_number 1}}
+		<h3>Explanation:</h3>
+		<p>{{explanation}}</p>
+		{{/if}}
+	{{else}}
+		<h3>Explanation:</h3>
+		<p>{{explanation}}</p>
+	{{/if}}
 	{{> currentPlayerResults}}
 	{{> opponentPlayerResults}}
 </template>

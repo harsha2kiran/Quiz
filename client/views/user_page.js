@@ -2,11 +2,12 @@
 
 Template.user_page.helpers({
 	'inviteBox' : function(){
-		if(_.contains(Meteor.user().requested,this._id)){
-			return new Handlebars.SafeString('<h4>friend request sent</h4>');
-		}else if(_.contains(Meteor.user().friends,this._id)){
+		if(_.contains(Meteor.user().friends,this._id)){
 			return new Handlebars.SafeString('');
-		}else if(Meteor.user()._id == this._id){
+		}else if(_.contains(Meteor.user().requested,this._id)){
+			return new Handlebars.SafeString('<h4>friend request sent</h4>');
+		}
+		else if(Meteor.user()._id == this._id){
 			return new Handlebars.SafeString('');
 		}else{
 			return new Handlebars.SafeString('<button class="btn btn-primary invite">send friend request</button>'); 
@@ -36,7 +37,7 @@ Template.user_badges.badges = function(){
 	var result = []; 
 	var points = this.stats.points.all;
 	Badges.find().forEach(function(badge){
-		if(badge.points < points){
+		if(!(badge.points > points)){
 			result.push(badge); 
 		}
 	});

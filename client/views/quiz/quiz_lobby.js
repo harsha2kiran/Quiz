@@ -1,6 +1,7 @@
 
 
 Template.quiz_lobby.helpers({
+
 	noFriendship : function(){
 		var quiz = Quizzes.findOne({});
 		if (Meteor.user()) {
@@ -102,6 +103,9 @@ Template.quiz_lobby.helpers({
 	quiz_finished_early: function() {
 
 		var quiz = Quizzes.findOne({});
+		if(quiz.state === 'quizfinishedearly'){
+			Meteor.call('setUserState','online',Meteor.user()._id);
+		}
 		return (quiz.state === 'quizfinishedearly');
 	},
 	winner_string: function() {
@@ -374,6 +378,14 @@ Template.opponentPlayerStats.helpers({
 });
 
 Template.question_result.helpers({
+	quiz_finished_early: function() {
+
+		var quiz = Quizzes.findOne({});
+		if(quiz.state === 'quizfinishedearly'){
+			Meteor.call('setUserState','online',Meteor.user()._id);
+		}
+		return (quiz.state === 'quizfinishedearly');
+	},
 	explanation: function() {
 		var quiz = Quizzes.findOne({});
 		if (quiz)
@@ -385,7 +397,15 @@ Template.question_result.helpers({
 			return quiz.players;
 		}
 			
-	}
+	},
+	question_number: function() {
+		console.log("quiz");
+		console.log(quiz);
+		var quiz = Quizzes.findOne({});
+		console.log("quiz");
+		console.log(quiz);
+		return quiz.currentQuestion + 1;
+	},
 });
 
 Template.currentPlayerResults.helpers({

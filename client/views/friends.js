@@ -1,17 +1,52 @@
-
+Emails = new Meteor.Collection('emails');
 var USER_NOT_FOUND = 3; 
 var OK = 0;
 var ALREADY_FRIEND = 1; 
 var REQUESTED = 2;
 var FOR_MY_SELF = 4;
 var autoDep = new Deps.Dependency;
+var friendsArray;
+var friendsFilterDep = new Deps.Dependency;
+var changeRulesDep = new Deps.Dependency;
+var keyPressed = false;
+var keyPressedDep = new Deps.Dependency;
+var phrase ="";
+var emailPhraseDep = new Deps.Dependency;
+var emailFound = false;
+var userId ;
+var userAvatar;
 Meteor.startup(function(){
+	Meteor.subscribe('usernames');
 	Session.setDefault("friendFilter","all");
 	Session.set("facebookFriends",false);
 	Deps.autorun(function(){
-		var status = Session.get("friendFilter");
-		console.log(status);
-		var friends = Meteor.subscribe('friends',status);
+		emailPhraseDep.depend();
+		Meteor.call('emailExists',phrase,function(err,res){
+			if(res){
+				changeRulesDep.changed();
+				emailFound = true;
+				userId = res.userId;
+				userAvatar = res.avatar;
+			}else if(emailFound){
+				changeRulesDep.changed();
+				emailFound = false;
+
+			}
+		});
+		var state = Session.get("friendFilter");
+		var friends = Meteor.subscribe('friends');	
+		friendsArray = Friends.find().fetch();
+		friendsArray.sort(function(a,b){
+			return ((a.state == "offline" && b.state == "online") || 
+					(a.state == "busy" 	  && b.state == "online") || 
+					(a.state == "offline" && b.state == "busy"));
+		});
+		if(state != "all"){
+			friendsArray = _.filter(friendsArray,function(friend){
+				return friend.state == state;
+			});
+		}
+		friendsFilterDep.changed();
 	});
 });
 Template.friends.rendered = function(){
@@ -19,11 +54,33 @@ Template.friends.rendered = function(){
 		$('#invite-modal-errors').html("");
 		$('#email-input').val("");
 	});
+
+	$('#search-friends-box').on("blur",function(){
+		Meteor.setTimeout(function(){
+			keyPressed = false;
+			keyPressedDep.changed();
+		},500);
+	});
 }
 
 Template.friends.events({
+	'click .userPill' : function(){
+		var path = "/user/"+this._id;
+		Router.go(path);
+	},
+	'click .avatar-thumb' :function(){
+		var path = "/user/"+this._id;
+		Router.go(path);		
+	},
+	'keyup .search-area' : function(){
+		phrase = $('#search-friends-box').val();
+		emailPhraseDep.changed();
+		if(!keyPressed){
+			keyPressed = true;
+			keyPressedDep.changed();
+		}
+	},
 	'click .sort-friends' : function(evt){
-		console.log("click");
 		Session.set("friendFilter",evt.target.name);
 	},
 	'click .game-invite' : function(evt){
@@ -54,16 +111,22 @@ Template.friends.events({
 			$('#invite-modal-errors').html('bad email format');
 			send = false;
 		}
-		_.each(Meteor.user().emails,function(email){
-			console.log(email);
-			if(email.address == friend){
-				$('#invite-modal-errors').html('You can invite yourself');
-				send = false;
-			}
-		});
+			_.each(Meteor.user().emails,function(email){
+				console.log(email);
+				if(email.address == friend){
+					$('#invite-modal-errors').html('You cant invite yourself');
+					send = false;
+				}
+			});
 		if(send){
 			Meteor.call('sendMail',friend,function(err,res){
-				$('#invite_email_modal').modal('hide');	
+				console.log(res);
+				if(res == 1){
+					$('#invite-modal-errors').html('User already exists');
+				}else{
+					$('#invite_email_modal').modal('hide');	
+				}
+				
 			}); 
 		}
 	}
@@ -148,21 +211,37 @@ Template.friends.events({
 });
 
 Template.friends.helpers({
+	'result' : function(){
+		emailPhraseDep.depend();
+		changeRulesDep.depend();
+		keyPressedDep.depend();
+		if(keyPressed){
+			if(emailFound){
+				var result =[{"username" : phrase,_id : userId,avatar:userAvatar}];
+				return result;
+			}else{
+				var result =[] ;
+				Usernames.find().forEach(function(user){
+					if(user.username.indexOf(phrase)>-1){
+						result.push(user);
+					}
+				});
+				result = result.sort();
+				result = _.first(result,5);
+				console.log("result");
+				console.log(result);
+				return result;
+			}
+		}
+	},
 	'online' : function(){
 		console.log(this);
 		return this.state == "online";
 	},
 	'friends': function(){
+		friendsFilterDep.depend();
 		if(!Meteor.user())
 			return;
-		var status = Session.get("friendFilter");
-		var friends = Meteor.subscribe('friends',status);	
-		var friendsArray = Friends.find().fetch();
-		friendsArray.sort(function(a,b){
-			return ((a.state == "offline" && b.state == "online") || 
-					(a.state == "busy" 	  && b.state == "online") || 
-					(a.state == "offline" && b.state == "busy"));
-		});
 		return friendsArray;
 	},
 	'facebookFriends' : function(){
@@ -196,19 +275,21 @@ Template.facebook_friends.helpers({
 Template.facebook_friends.events({
 	'click .invite-button' : function(){
 		var self = this;
-
-		FB.getLoginStatus(function(response) {
-		  if (response.status === 'connected') {
-		  	FB.ui({
-		  		from:response.authResponse.userID,
-				to: self.id,
-				method: 'feed',
-				link: 'http://ourSuperApp.com',
-			}, function(response){});
-		    
-		  }
-		});
-
+		if(!FB){
+			fbSdkLoader();
+		}else{
+			FB.getLoginStatus(function(response) {
+			  if (response.status === 'connected') {
+			  	FB.ui({
+			  		from:response.authResponse.userID,
+					to: self.id,
+					method: 'feed',
+					link: 'http://ourSuperApp.com',
+				}, function(response){});
+			    
+			  }
+			});
+		}
 	}
 
 });

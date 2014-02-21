@@ -52,6 +52,16 @@ Template.navbar.helpers({
 });
 
 Template.navbar.events({
+	'click #mes-button' : function(evt){
+		var counter =0;
+		Messages.find().forEach(function(message){
+			counter ++;
+		});
+		if(counter == 0){
+			evt.stopPropagation();
+			evt.stopImmediatePropagation();
+		}
+	},
 	'click .busy' : function(evt){
 		Session.set("currently_clicked",evt.target.name);
 		$('#confirm_break_game').addClass('modalActive');
@@ -67,8 +77,10 @@ Template.navbar.events({
 		Meteor.logout();
 	}, 
 	'click .quick': function(){
+		Session.set("invitedFriend","");
 		$('#quick-game-modal').addClass('modalActive');
 		$('#quick-game-modal').removeClass('modalHidden');
+
 
 	}, 
 	'click .friends': function(){
