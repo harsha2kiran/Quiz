@@ -32,11 +32,8 @@ Router.map(function() {
 			waitOn: function() {
 				var categoryId = this.params._id;
 
-				Deps.autorun(function(){
-					quickGameDep.depend();
-					console.log("inside");
-					lobbySub = Meteor.subscribe('lobbyForCategory', categoryId);
-				});
+				lobbySub = Meteor.subscribe('lobbyForCategory', categoryId);
+				
 				var lobby = Lobbys.findOne({});
 				if (lobby) {
 					var quizSub = Meteor.subscribe('currentQuiz', lobby._id);
@@ -94,6 +91,11 @@ Router.map(function() {
 		});
 		this.route('missing_data',{
 			path: '/missing_data',
+			after: function(){
+				if(Meteor.user().username && Meteor.user().emails){
+					Router.go('/');
+				}
+			}
 		});
 
 		this.route('badges', {

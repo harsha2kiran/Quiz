@@ -7,8 +7,7 @@ Meteor.publish('hallOfFame', function(){
 			self.added("hallOfFameData",id,{"badges":user.badges,"avatar":user.avatar,"username":user.username,"stats" : user.stats});	
 		},
 		changed : function(id,field){
-			console.log("field");
-			console.log(field);
+
 			if(field.stats){
 				self.changed("hallOfFameData",id,{"stats":field.stats});
 			}if(field.avatar){

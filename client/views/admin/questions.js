@@ -362,7 +362,9 @@ Template.question_table.events({
     },
     'click .add-question': function(){
         Session.set("currentStage","addQuestion");
-        $('#edit-question-modal').modal('show');
+        Deps.afterFlush(function(){
+            $('#edit-question-modal').modal('show');
+        });
     },
 });
 

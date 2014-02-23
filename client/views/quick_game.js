@@ -76,12 +76,9 @@ Meteor.startup(function(){
 		},
 		removed: function(doc){
 			if(Invitations.find().fetch().length == 0) {
-				Meteor.setTimeout(function(){
-					$('#quick-game-modal').removeClass('modalActive');
-					$('#quick-game-modal').addClass('modalHidden');
-				},3000);
+				$('#quick-game-modal').removeClass('modalActive');
+				$('#quick-game-modal').addClass('modalHidden');
 			}	
-
 		}
 	});
 });
