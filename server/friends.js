@@ -20,6 +20,8 @@ Meteor.publish('friends',function(){
 					if(_.contains(friend.friends,user._id)){
 						self.changed('friends',id,{"username":friend.username,"state":friend.state});
 					}	
+				}if(field.username){
+					self.changed("friends",id,{"username":field.username});
 				}		
 			}
 		});

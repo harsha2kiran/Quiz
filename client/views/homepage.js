@@ -6,7 +6,7 @@ Template.homepage.helpers({
 		//a category must have at least 5 questions associated with it before someone can take a quiz in it
 		return Categories.find({ questionCount: {$gte: 5 }});
 	},
-	user : function(){
+	user:function(){
 		userDep.depend();
 		console.log("user");
 		console.log(Meteor.userId());

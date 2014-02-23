@@ -1,7 +1,6 @@
 pathDependency = new Deps.Dependency; 
 var userDep = new Deps.Dependency();
 Meteor.startup(function(){
-	
 	Session.set("emailInfoModalVisibility",false);
 });
 

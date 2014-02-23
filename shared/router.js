@@ -31,13 +31,17 @@ Router.map(function() {
 			path: 'lobby/:_id',
 			waitOn: function() {
 				var categoryId = this.params._id;
-				quickGameDep.depend();
-				lobbySub = Meteor.subscribe('lobbyForCategory', categoryId);
+
+				Deps.autorun(function(){
+					quickGameDep.depend();
+					console.log("inside");
+					lobbySub = Meteor.subscribe('lobbyForCategory', categoryId);
+				});
 				var lobby = Lobbys.findOne({});
 				if (lobby) {
 					var quizSub = Meteor.subscribe('currentQuiz', lobby._id);
 				}
-				return [categorySub, currentUserSub, lobbySub, quizSub];
+				return [categorySub, currentUserSub];
 			},
 			data: function() {
 				return {
@@ -65,6 +69,7 @@ Router.map(function() {
 			waitOn: [categorySub, currentUserSub],
 			controller: 'AdminController',			
 		});
+
 		this.route('question_table', {
 			path: '/user/questions',
 			waitOn: [categorySub, currentUserSub],	
@@ -116,6 +121,8 @@ Router.map(function() {
 			action: function(){
 				if(Meteor.user()){
 					Router.go("/");
+				}else{
+					this.render();
 				}
 			}
 		});
@@ -164,7 +171,7 @@ UserLoginController = RouteController.extend({
 			if(Router._currentController.path != "/"){
 				Router.go("/");
 			}else{
-				this.render();
+				//this.render();
 			}
 		}else if(!Meteor.user().username || !Meteor.user().emails){
 			console.log("test");

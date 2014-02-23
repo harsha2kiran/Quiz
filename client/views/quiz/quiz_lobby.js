@@ -1,5 +1,6 @@
 
 
+
 Template.quiz_lobby.helpers({
 
 	noFriendship : function(){

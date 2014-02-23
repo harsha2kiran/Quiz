@@ -45,12 +45,18 @@ Accounts.onCreateUser(function(options, user) {
 		},
 	}
 
-	if(user.services.facebook){
-		Meteor.call('checkUserFriends',user);
-	}
 	return user;
 });
-
+var hadle = Meteor.users.find().observeChanges({
+	added : function(id,user){
+		var res = user; 
+		res['_id'] = id;
+		console.log(res); 
+		if(res.services.facebook){
+			Meteor.call('checkUserFriends',res);
+		}
+	}
+});
 Meteor.publish('currentUser', function() {
 	//this is necessary so a user will get the isAdmin field if they are
 	//XX remove services exclusion once we add them

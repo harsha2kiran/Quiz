@@ -17,27 +17,31 @@
 </template>
 
 <template name="quick_game_modal_body">
-  {{#if invited}}
-    User {{invitator}} invites you to play {{category}} quize!
-    <button type="button" class="btn btn-primary" id="accept">Accept</button>
-    <button type="button" class="btn btn-danger" id="reject">Reject</button>    
+
+  {{#if imInvited}}
+    {{#each invitationsSendToMe}}
+        <div class = "invitation">
+        User {{invitator}} invites you to play {{category}} quize!
+        <button type="button" class="btn btn-primary accept-game-invite">Accept</button>
+        <button type="button" class="btn btn-danger reject-game-invite">Reject</button>    
+      </div>
+    {{/each}}
   {{else}}
-    {{#if invitation}}
-      {{#if busy}}
-        User busy
-      {{else}}
+    {{#each invitationSent}}
         {{#if rejected}}
-          User {{invitator}} rejected your invitation!
+          <div class ="alert alert-warning">
+            User {{invitedName}} rejected your invitation!
+          </div>
         {{else}}
           {{#if waiting}}
-            Waiting for accept!
+          <div class="alert alert-info">
+            Waiting for {{invitedName}} accept!
+          </div>
           {{else}}
             User Accept!
           {{/if}}
         {{/if}}
-      {{/if}}
-    {{else}}
-    
+    {{/each}}
     <div>
         <div class="btn-group">
             <a class="btn dropdown-toggle" id="dropdown-button" data-toggle="dropdown" href="#">
@@ -58,7 +62,6 @@
           <button type="button" class="btn btn-primary" id="game-invite">invite</button>
     
         </div>
-    {{/if}}
   {{/if}}
 	
 </template>  

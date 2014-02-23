@@ -11,10 +11,12 @@
 
 
 Meteor.publish('lobbyForCategory', function(categoryId) {
+	console.log("inside subscripiton")
 
 	var userId = this.userId;
 	//if a non logged in user goes into a lobby we do nothing
-
+	var user = Meteor.users.findOne(userId);
+	console.log(user.username);
 	if (userId) {
 		var lobbyId = addToLobby(userId, categoryId);
 	}
@@ -34,17 +36,45 @@ Meteor.publish('lobbyForCategory', function(categoryId) {
 
 //function for managing the lobbies.
 var addToLobby = function(userId, categoryId) {
-
 	var user = Meteor.users.findOne(userId);
+	var lobbyFromInvitation;
 
+	Lobbys.find().forEach(function(lobby){
+		if(lobby.playerCount == -1){
+			Lobbys.remove({_id:lobby._id});
+		}
+		if(lobby.playerCount == 2){
+			var player = {
+				'username': user.username,
+				'userId' : userId
+			}
+			/*console.log("player found");
+			console.log(player);
+			console.log(lobby);*/
+			_.each(lobby.players,function(pl){
+				console.log("player");
+				console.log(player);
+				console.log("pl");
+				console.log(pl);
+				if(pl.username == player.username){
+					console.log("hit");
+					lobbyFromInvitation = lobby._id;
+				}
+			});
+		}
+	});
+	if(lobbyFromInvitation){
+		return lobbyFromInvitation;
+	}
 	var alreadyInLobby = Lobbys.findOne({ categoryId: categoryId, 'players.userId': userId });
+
 
 	if (alreadyInLobby)
 		return alreadyInLobby._id;
-
 	var currentLobby = Lobbys.findOne({ categoryId: categoryId, playing: false });
 
 	//a non-active lobby does not exist for this category so we create one.
+
 	if (!currentLobby) {
 		var newLobby = Lobbys.insert({
 			categoryId: categoryId,
@@ -57,10 +87,9 @@ var addToLobby = function(userId, categoryId) {
 			playerCount: 1,
 			playing: false
 		});
-		
+
 		return newLobby;
 	}
-
 	//a empty lobby exists so we put this player into it and have them wait for another player.
 	if (currentLobby.playerCount === 0) {
 		Lobbys.update(currentLobby._id,

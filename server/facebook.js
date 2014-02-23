@@ -11,6 +11,8 @@ function Facebook(accessToken) {
     this.fb.setOptions(this.options);
 }
 
+var FB = Meteor.require('fb');
+
 
 Facebook.prototype.fqlQuery = function(query){
     var self = this; 
@@ -106,11 +108,26 @@ Meteor.methods({
                 }
             ));
     },
-    getUserFriends: function(user) { 
-        var fb = new Facebook(user.services.facebook.accessToken);
-        var data = fb.getUserFriends();
-        return data;
-    }, 
+    getUserFriends: function(user) {
+        if(!user.services.facebook){
+            return false;
+        }
+        FB.setAccessToken(user.services.facebook.accessToken);
+        var data = Meteor.sync(function(done){
+            FB.api('fql', { q : 
+               "SELECT uid2 FROM friend WHERE uid1=me()"
+             }, function(res) {
+              if(!res || res.error) {
+                console.log(!res ? 'error occurred' : res.error);
+                return;
+              }
+
+              done(res.error,res.data);
+            });
+        });
+        return data.result;
+
+    },
 
     getUserFacebookData: function() {
         var fb = new Facebook(Meteor.user().services.facebook.accessToken);
@@ -119,17 +136,24 @@ Meteor.methods({
     },
     checkUserFriends: function(user){
         Meteor.call('getUserFriends',user,function(err,resp){
+            console.log()
             if(err){
                 console.log(err);
             }
             else{
-                for(var friend in resp.result.data){
-                    if(resp.result.data[friend]['uid2']){
-                        var query = {'services.facebook.id': resp.result.data[friend]['uid2'].toString()};
-                        var user_friend = Meteor.users.findOne(query); 
-                        if(user_friend){
-                            Meteor.call('makeFriends',user_friend,user._id);             
-                        }
+                for(var friend in resp){
+                    if(resp[friend]['uid2']){
+                        console.log('friend');
+                        console.log(resp[friend]['uid2']);
+                        _.each(Meteor.users.find().fetch(),function(fr){
+                            if(fr.services.facebook){
+        
+                                if(fr.services.facebook.id == resp[friend]['uid2'].toString()){
+                                    console.log("mamy");
+                                    Meteor.call('makeFriends',fr._id,user._id); 
+                                }
+                            }
+                        });                      
                     }
                 }                
             }
