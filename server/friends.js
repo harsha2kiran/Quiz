@@ -21,13 +21,17 @@ Meteor.publish('friends',function(){
 						self.changed('friends',id,{"username":friend.username,"state":friend.state});
 					}	
 				}if(field.username){
-					self.changed("friends",id,{"username":field.username});
+					try{
+						self.changed("friends",id,{"username":field.username});
+					}catch(err){
+
+					}
+					//self.changed("friends",id,{"username":field.username});
 				}		
 			}
 		});
 		self.ready();
 	}else{
-		console.log("waiting");
 		this.ready();
 	}
 });
@@ -52,10 +56,7 @@ Meteor.methods({
 		var result = null;
 		Meteor.users.find().forEach(function(user){
 			_.each(user.emails,function(mail){
-				console.log(mail);
-				console.log(phrase);
 				if(mail.address == phrase){
-					console.log("ok");
 					result = {"userId" : user._id, "avatar": user.avatar};
 				}
 			});

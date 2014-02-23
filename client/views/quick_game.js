@@ -7,6 +7,7 @@ var res = "";
 var resDep = new Deps.Dependency;
 var choosenCategory = "choose category";
 var categoryDep = new Deps.Dependency;
+var shouldBeClose = false;
 
 invitationDep = new Deps.Dependency();
 
@@ -75,10 +76,12 @@ Meteor.startup(function(){
 			}
 		},
 		removed: function(doc){
-			if(Invitations.find().fetch().length == 0) {
-				$('#quick-game-modal').removeClass('modalActive');
-				$('#quick-game-modal').addClass('modalHidden');
-			}	
+			if(shouldBeClose){
+				if(Invitations.find().fetch().length == 0) {
+					$('#quick-game-modal').removeClass('modalActive');
+					$('#quick-game-modal').addClass('modalHidden');
+				}	
+			}
 		}
 	});
 });

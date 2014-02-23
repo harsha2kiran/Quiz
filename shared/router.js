@@ -31,14 +31,12 @@ Router.map(function() {
 			path: 'lobby/:_id',
 			waitOn: function() {
 				var categoryId = this.params._id;
-
 				lobbySub = Meteor.subscribe('lobbyForCategory', categoryId);
-				
 				var lobby = Lobbys.findOne({});
 				if (lobby) {
 					var quizSub = Meteor.subscribe('currentQuiz', lobby._id);
 				}
-				return [categorySub, currentUserSub];
+				return [categorySub, currentUserSub,lobbySub,quizSub];
 			},
 			data: function() {
 				return {
@@ -87,6 +85,7 @@ Router.map(function() {
 		});
 		this.route('edit_badges', {
 			path: '/admin/badges',
+			waitOn: [currentUserSub, categorySub],
 			controller: 'AdminController',
 		});
 		this.route('missing_data',{
@@ -100,10 +99,15 @@ Router.map(function() {
 
 		this.route('badges', {
 			path: '/badges',
+			waitOn: [currentUserSub, categorySub],
 			controller: 'UserLoginController'
 		});
 		this.route('hall_of_fame', {
 			path: '/hall_of_fame',
+			waitOn : function() {
+				var hallOfFameSub = Meteor.subscribe('hallOfFame');
+				return [hallOfFameSub,currentUserSub];
+			},
 			controller: 'UserLoginController'
 		});
 		this.route('friends',{
@@ -132,7 +136,8 @@ Router.map(function() {
 		this.route('user_page', {
 			path : '/user/:_id',
 			waitOn : function() {
-				return Meteor.subscribe('hallOfFame');
+				var hallOfFameSub = Meteor.subscribe('hallOfFame');
+				return [hallOfFameSub,currentUserSub];
 			},
 			data : function(){
 				return HallOfFameData.findOne({_id:this.params._id});

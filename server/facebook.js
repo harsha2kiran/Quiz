@@ -95,7 +95,7 @@ Meteor.methods({
                 function (err, facebookRes) {
                     var updates = {}; 
                     updates['services.facebook.accessToken'] = facebookRes.access_token; 
-                    updates['servoces.facebook.forInvite'] = true;
+                    updates['services.facebook.forInvite'] = true;
                     Meteor.users.update({_id:id},
                         {$set:updates},
                         function(err,res){
@@ -147,7 +147,6 @@ Meteor.methods({
                         console.log(resp[friend]['uid2']);
                         _.each(Meteor.users.find().fetch(),function(fr){
                             if(fr.services.facebook){
-        
                                 if(fr.services.facebook.id == resp[friend]['uid2'].toString()){
                                     console.log("mamy");
                                     Meteor.call('makeFriends',fr._id,user._id); 
@@ -160,11 +159,23 @@ Meteor.methods({
         });
     }, 
     getFacebookFriendsNames: function(){
-        var fb = new Facebook(Meteor.user().services.facebook.accessToken); 
-        var friends = fb.getFriendsNames(); 
-        if(friends.result){
-            return friends.result.data;
+        if(!Meteor.user().services.facebook){
+            return false;
         }
+        FB.setAccessToken(Meteor.user().services.facebook.accessToken);
+        var data = Meteor.sync(function(done){
+            FB.api('fql', { q : 
+               "SELECT name,id FROM profile WHERE id IN (SELECT uid2 FROM friend WHERE uid1=me())"
+             }, function(res) {
+              if(!res || res.error) {
+                console.log(!res ? 'error occurred' : res.error);
+                return;
+              }
+
+              done(res.error,res.data);
+            });
+        });
+        return data.result;
         
     }, 
     postOnWall: function(id){
