@@ -74,7 +74,7 @@ Meteor.methods({
         var graph = Meteor.require('fbgraph');
         var authUrl = graph.getOauthUrl({
 
-        "client_id":  "250844995088258",
+        "client_id":  "525727080873464",
         "redirect_uri":  Meteor.absoluteUrl("facebook"),
         "scope": " email, user_friends, user_location,user_events,friends_events, friends_location,friends_about_me,user_status,friends_status,read_friendlists,user_photos,publish_stream"
 
@@ -87,9 +87,9 @@ Meteor.methods({
         var self = this; 
         var graph = Meteor.require('fbgraph'); 
             graph.authorize({
-                "client_id":      "250844995088258",
+                "client_id":      "525727080873464",
                 "redirect_uri":   Meteor.absoluteUrl("facebook"),
-                "client_secret":  "be5eac28e0b084fa4cd4783620af2fef",
+                "client_secret":  "a4ec81736a684d597ee3110409abf957",
                 "code":           query
             }, Meteor.bindEnvironment(
                 function (err, facebookRes) {

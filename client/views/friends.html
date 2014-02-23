@@ -80,7 +80,7 @@
 </template>
 
 <template name="invite_email_modal">
-  <div class="modalHidden" id="invite_email_modal">
+  <div class="{{inviteEmailModalClass}}" id="invite_email_modal">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -99,11 +99,11 @@
 </template>
 
 <template name="invite_facebook_modal">
-  <div class="modal fade" id="invite_facebook_modal">
+  <div class="{{inviteFacebookModalClass}}" id="invite_facebook_modal">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <button type="button" class="close"  aria-hidden="true">&times;</button>
           <h4 class="modal-title">Invite Friends</h4>
         </div>
         <div class="modal-body">
@@ -136,11 +136,11 @@
 </template>
 
 <template name="facebookConnectModal">
-    <div class="modal fade" id="facebook-connect-modal">
+    <div class="{{conntectFacebookModalClass}}" id="facebook-connect-modal">
     <div class="modal-dialog" style="width:350px">
     <div class="modal-content">
       <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <button type="button" class="close" aria-hidden="true">&times;</button>
       </div>
         {{>facebook_modal_body}}
     </div><!-- /.modal-content -->

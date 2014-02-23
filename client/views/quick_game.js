@@ -8,7 +8,8 @@ var resDep = new Deps.Dependency;
 var choosenCategory = "choose category";
 var categoryDep = new Deps.Dependency;
 var shouldBeClose = false;
-
+quickGameModalClass = 'modalHidden';
+quickGameModalClassDep = new Deps.Dependency();
 invitationDep = new Deps.Dependency();
 
 quickGameDep = new Deps.Dependency();
@@ -22,23 +23,20 @@ Meteor.startup(function(){
 	var query = Invitations.find();
 	var handle = query.observe({
 		added: function(inv){
-			console.log("inv added");
-			console.log(inv.invited);
-			console.log(inv.invitator);
+
 			choosenCategory = inv.category;
-			console.log(inv.invited);
-			console.log(inv.invitator);
+
 			if(inv.invited = Meteor.user()._id){
 				Deps.afterFlush(function(){
-					$('#quick-game-modal').removeClass('modalHidden');
-					$('#quick-game-modal').addClass('modalActive');
+					quickGameModalClass = 'modalActive';
+					quickGameModalClassDep.changed();
 				});
 				Meteor.setTimeout(function(){
 					var inv = Invitations.findOne({});
 					if(inv){
 						if(inv.state != "accepted" && inv.invited == Meteor.user()._id){
-							$('#quick-game-modal').removeClass('modalActive');
-							$('#quick-game-modal').addClass('modalHidden');	
+								quickGameModalClass = 'modalHidden';
+								quickGameModalClassDep.changed();
 							Meteor.call('rejectInvitation',Invitations.findOne({})._id,function(err,recponse){		
 							});		
 						}
@@ -58,16 +56,16 @@ Meteor.startup(function(){
 				console.log(quiz);
 				console.log(Router._currentController.path.indexOf("/lobby"));
 				if(Router._currentController.path.indexOf("/lobby")>-1){
-					$('#quick-game-modal').removeClass('modalActive');
-					$('#quick-game-modal').addClass('modalHidden');
+					quickGameModalClass = 'modalHidden';
+					quickGameModalClassDep.changed();
 					Router.go('/');
 					Meteor.setTimeout(function() {
 						Router.go(quiz);
 					},100);
 
 				}else{
-					$('#quick-game-modal').removeClass('modalActive');
-					$('#quick-game-modal').addClass('modalHidden');
+					quickGameModalClass = 'modalHidden';
+					quickGameModalClassDep.changed();
 					Router.go('/');
 					Meteor.setTimeout(function() {
 						Router.go(quiz);
@@ -78,8 +76,8 @@ Meteor.startup(function(){
 		removed: function(doc){
 			if(shouldBeClose){
 				if(Invitations.find().fetch().length == 0) {
-					$('#quick-game-modal').removeClass('modalActive');
-					$('#quick-game-modal').addClass('modalHidden');
+					quickGameModalClass = 'modalHidden';
+					quickGameModalClassDep.changed();
 				}	
 			}
 		}
@@ -88,8 +86,8 @@ Meteor.startup(function(){
 
 Template.quick_game.events({
 	'click #closeQuickGameModal' : function(){
-			$('#quick-game-modal').addClass('modalHidden');
-			$('#quick-game-modal').removeClass('modalActive');	
+		quickGameModalClass = 'modalHidden';
+		quickGameModalClassDep.changed();
 	},
 
 	'click #game-invite': function(){
@@ -181,8 +179,9 @@ Template.quick_game_modal_body.helpers({
 		return false;
 	}, 
 	'rejected' : function(){
-		if(Invitations.findOne())
+		if(Invitations.findOne()){
 			return this.state == 'rejected';
+		}
 		return false;
 	},
 	'invitation': function(){
@@ -207,8 +206,8 @@ Template.quick_game_modal_body.helpers({
 Template.quick_game_modal_body.events({
 	'click .accept-game-invite' : function(){
 		var categoryId = this.categoryId;
-		$('#quick-game-modal').addClass('moadlHidden');		
-		$('#quick-game-modal').removeClass('modalActive');
+		quickGameModalClass = 'modalHidden';
+		quickGameModalClassDep.changed();
 		quickGameDep.changed();
 		Meteor.call('acceptInvitation',this._id,categoryId,function(err,res){
 			
@@ -227,10 +226,17 @@ Template.quick_game_modal_body.events({
 	'click .reject-game-invite' : function(){
 		Meteor.call('rejectInvitation',Invitations.findOne({})._id,function(err,response){
 			if(Invitations.find().fetch().length == 1) {
-				$('#quick-game-modal').removeClass('modalActive');
-				$('#quick-game-modal').addClass('modalHidden');	
+				quickGameModalClass = 'modalHidden';
+				quickGameModalClassDep.changed();	
 			}		
 		});
 	},
 
+});
+
+Template.quick_game.helpers({
+	'quickGameModalClass' : function(){
+		quickGameModalClassDep.depend();
+		return quickGameModalClass;
+	}
 });

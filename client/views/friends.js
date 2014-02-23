@@ -18,6 +18,53 @@ var userAvatar;
 var emailError;
 var emailErrorDep = new Deps.Dependency;
 
+var inviteFacebookModalClass = 'modalHidden';
+var inviteFacebookModalClassDep = new Deps.Dependency;
+var conntectFacebookModalClass = 'modalHidden';
+var conntectFacebookModalClassDep = new Deps.Dependency;
+var inviteEmailModalClass = 'modalHidden';
+var inviteEmailModalClassDep = new Deps.Dependency;
+
+
+
+// because bootstrap modal doesnt work proerly 
+// in meteor this is the best way. 
+
+var closeInviteEmailModal = function(){
+	console.log("test");
+	inviteEmailModalClass = 'modalHidden';
+	inviteEmailModalClassDep.changed();
+	emailError = "";
+	emailErrorDep.changed();
+	$('#email-invitatio-alert-box').addClass('hidden');
+	$('#email-input').val("");
+}
+
+var openInviteEmailModal = function(){
+	inviteEmailModalClass = 'modalActive';
+	inviteEmailModalClassDep.changed();
+}
+
+var closeConnectFacebookModal = function(){
+	conntectFacebookModalClass = 'modalHidden';
+	conntectFacebookModalClassDep.changed();	
+};
+
+var openConnectFacebookModal = function(){
+	conntectFacebookModalClass = 'modalActive';
+	conntectFacebookModalClassDep.changed();	
+}
+
+var closeInviteFacebookModal = function(){
+	inviteFacebookModalClass = 'modalHidden';
+	inviteFacebookModalClassDep.changed();	
+};
+
+var openInviteFacebookModal = function(){
+	inviteFacebookModalClass = 'modalActive';
+	inviteFacebookModalClassDep.changed();	
+}
+
 Meteor.startup(function(){
 	Meteor.subscribe('usernames');
 	Session.setDefault("friendFilter","all");
@@ -52,13 +99,10 @@ Meteor.startup(function(){
 		friendsFilterDep.changed();
 	});
 });
+
+
+
 Template.friends.rendered = function(){
-	$('#invite_email_modal').on('hidden.bs.modal', function(){
-		emailError = "";
-		emailErrorDep.changed();
-		$('#email-invitatio-alert-box').addClass('hidden');
-		$('#email-input').val("");
-	});
 
 	$('#search-friends-box').on("blur",function(){
 		Meteor.setTimeout(function(){
@@ -71,13 +115,18 @@ Template.invite_email_body.helpers({
 	error : function(){
 		emailErrorDep.depend();
 		return emailError;
+	},
+});
+Template.invite_email_modal.helpers({
+	inviteEmailModalClass : function(){
+		console.log(inviteEmailModalClass);
+		inviteEmailModalClassDep.depend();
+		return inviteEmailModalClass;
 	}
 });
-
 Template.invite_email_modal.events({
 	'click .close' : function(){
-		$('#invite_email_modal').removeClass('modalActive');
-		$('#invite_email_modal').addClass('modalHidden');		
+		closeInviteEmailModal();
 	} 
 });
 Template.friends.events({
@@ -91,6 +140,8 @@ Template.friends.events({
 	},
 	'keyup .search-area' : function(){
 		phrase = $('#search-friends-box').val();
+		console.log("press");
+		console.log(keyPressed);
 		emailPhraseDep.changed();
 		if(!keyPressed && phrase.length>2){
 			keyPressed = true;
@@ -112,14 +163,13 @@ Template.friends.events({
 	},
 	'click .invite' : function(evt){
 		if(evt.target.name == "email"){
-			$('#invite_email_modal').removeClass('modalHidden');
-			$('#invite_email_modal').addClass('modalActive');
+			openInviteEmailModal();
 		}
 		if(evt.target.name == "facebook"){
 			if(Meteor.user().services.facebook){
-				$('#invite_facebook_modal').modal('show'); 
+				openInviteFacebookModal();
 			}else{
-				$('#facebook-connect-modal').modal('show');
+				openConnectFacebookModal();
 			}
 		}
 		if(evt.target.name == "search"){
@@ -158,8 +208,7 @@ Template.friends.events({
 						$('#email-invitatio-alert-box').removeClass('hidden');
 					});
 				}else{
-					$('#invite_email_modal').removeClass('modalActive');
-					$('#invite_email_modal').addClass('modalHidden');
+					closeInviteEmailModal();
 				}
 				
 			}); 
@@ -238,8 +287,6 @@ bootstrap_alert.warning = function(result) {
 Template.friends.events({
 	'click #search-button' : function(){
 		Meteor.call('searchForUser',$('#search-for-friend').val(),function(err,res){
-			console.log("res");
-			console.log(res);
 			bootstrap_alert.warning(res);
 		});
 	}
@@ -247,9 +294,11 @@ Template.friends.events({
 
 Template.friends.helpers({
 	'result' : function(){
+
 		emailPhraseDep.depend();
 		changeRulesDep.depend();
 		keyPressedDep.depend();
+
 		if(keyPressed){
 			if(emailFound){
 				var result =[{"username" : phrase,_id : userId,avatar:userAvatar}];
@@ -282,7 +331,6 @@ Template.friends.helpers({
 			Meteor.call("getFacebookFriendsNames",function(err,res){
 				return res;			
 			});
-			$('#invite_facebook_modal').modal('show'); 
 		}		
 	},
 });
@@ -305,6 +353,20 @@ Template.facebook_friends.helpers({
 	return Session.get("facebook_friends");			
 	}
 });
+
+Template.invite_facebook_modal.events({
+	'click .close' : function(){
+		closeInviteFacebookModal();
+	}
+});
+
+Template.invite_facebook_modal.helpers({
+	'inviteFacebookModalClass' : function(){
+		inviteFacebookModalClassDep.depend();
+		return inviteFacebookModalClass;
+	}
+});
+
 Template.facebook_friends.events({
 	'click .invite-button' : function(){
 		var self = this;
@@ -334,14 +396,23 @@ Template.facebookConnectModal.events({
       Meteor.call('getFacebookCode',function(err,res){
       	console.log("res");
       	console.log(res);
-      	$('#facebook-connect-modal').modal('hide');
+      	closeConnectFacebookModal();
         var x = screen.width/2 - 700/2;
         var y = screen.height/2 - 450/2;
         window.location.replace(res);
       }); 
+	},
+	'click .close' : function(){
+		closeConnectFacebookModal();
 	}
 });
 
+Template.facebookConnectModal.helpers({
+	conntectFacebookModalClass : function(){
+		conntectFacebookModalClassDep.depend();
+		return conntectFacebookModalClass;
+	}
+});
 var fbSdkLoader = function() {
 	if(!Session.get("is Facebook JDK loaded?")) { // Load Facebook JDK only once.
 		Session.set("is Facebook JDK loaded?", true);

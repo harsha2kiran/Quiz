@@ -71,6 +71,8 @@ Template.navbar.events({
 	'click .message' : function(){
 		Session.set('currentlySelectedMessage',this);
 		Session.set("notificationModalVisible",true);
+		console.log('this'); 
+		console.log(this._id);
 		Meteor.call('readMessage',this._id);
 	},
 	'click .logout': function() {
@@ -82,10 +84,8 @@ Template.navbar.events({
 	}, 
 	'click .quick': function(){
 		Session.set("invitedFriend","");
-		$('#quick-game-modal').addClass('modalActive');
-		$('#quick-game-modal').removeClass('modalHidden');
-
-
+		quickGameModalClass = 'modalActive';
+		quickGameModalClassDep.changed();
 	}, 
 	'click .friends': function(){
 	},

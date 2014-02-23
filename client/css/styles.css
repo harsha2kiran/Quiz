@@ -75,7 +75,7 @@ tfoot th, tfoot td {
 }
 .modalActive{
 	position: absolute;
-	opacity:0;
+	opacity:100;
 	z-index: 1000;
 	margin: auto;
 	padding: 20px;

@@ -4,6 +4,29 @@ Meteor.startup(function(){
     });
 });
 
+
+
+
+closeQuestionModal = function(){
+
+        Session.set("rerender",false);
+        Session.set("rerender",true);
+        similarQuestions = [];
+        previousValues =[];
+        previousRadioValues=[];
+        questionsDep.changed();
+        _.each($('input'),function(field){
+            $(field).val("");
+        });
+        Deps.afterFlush(function(){
+            modalClassDep.changed();
+            modalClass = 'modalHidden';
+        });   
+}
+
+var modalClassDep = new Deps.Dependency;
+var modalClass = 'modalHidden';
+Session.set("currentStage","addQuestion");
 var previousValues = [];
 var previousRadioValues =[];
 var deleteButton = function(id){
@@ -49,7 +72,6 @@ var prepareDataSet = function(){
     var query = Questions.find();
     var handle = query.observeChanges({
         added: function(id,question){
-    
             if(Meteor.user().isAdmin || Meteor.user().isModerator){
                 var record = []; 
                 record.push(question.status); 
@@ -196,18 +218,8 @@ Template.editQuestionModal.rendered = function(){
 
 }
 Template.question_table.rendered = function () {
+    console.log("render");
 
-    $('#edit-question-modal').on('hidden.bs.modal', function() {
-        Session.set("rerender",false);
-        Session.set("rerender",true);
-        similarQuestions = [];
-        previousValues =[];
-        previousRadioValues=[];
-        questionsDep.changed();
-        _.each($('input'),function(field){
-            $(field).val("");
-        });
-    });  
     try{
         var oTable = $('#question-table').dataTable();
     }catch(err){
@@ -215,45 +227,48 @@ Template.question_table.rendered = function () {
         rendered =false;
     }
     if(!rendered){
-        prepareDataSet();
-        $('#question-table').remove(); 
-        $('#table-container').append('<div><table cellpadding="1" cellspacing="0" border="5" class="display" id="question-table"></table></div>');
-        if(Meteor.user().isAdmin || Meteor.user().isModerator){
-            $('#question-table').dataTable( {
-                "aaData": tableData,
-                "aoColumns": [
-                    { "sTitle": "status" },
-                    { "sTitle": "category" },
-                    { "sTitle": "question" , "sWidth": "20%"},
-                    { "sTitle": "answer" },
-                    { "sTitle": "answer" },
-                    { "sTitle": "answer" },
-                    { "sTitle": "answer" },
-                    { "sWidth": "20%", "bSortable": false, "sTitle": "" },
-                    { "sWidth": "5%", "bSortable": false, "sTitle": "" },
+        Deps.afterFlush(function(){
+            prepareDataSet();
+            $('#question-table').remove(); 
+            $('#table-container').append('<div><table cellpadding="1" cellspacing="0" border="5" class="display" id="question-table"></table></div>');
+            if(Meteor.user().isAdmin || Meteor.user().isModerator){
+                $('#question-table').dataTable( {
+                    "aaData": tableData,
+                    "aoColumns": [
+                        { "sTitle": "status" },
+                        { "sTitle": "category" },
+                        { "sTitle": "question" , "sWidth": "20%"},
+                        { "sTitle": "answer" },
+                        { "sTitle": "answer" },
+                        { "sTitle": "answer" },
+                        { "sTitle": "answer" },
+                        { "sWidth": "20%", "bSortable": false, "sTitle": "" },
+                        { "sWidth": "5%", "bSortable": false, "sTitle": "" },
 
-                ],
-                sPaginationType: "full_numbers"
-            } ); 
-            rendered = true; 
-        }else{
-            $('#question-table').dataTable( {
-                "aaData": tableData,
-                "aoColumns": [
-                    { "sTitle": "status" },
-                    { "sTitle": "category" },
-                    { "sTitle": "question" , "sWidth": "20%"},
-                    { "sTitle": "answer" },
-                    { "sTitle": "answer" },
-                    { "sTitle": "answer" },
-                    { "sTitle": "answer" },
-                    { "sWidth": "20%", "bSortable": false, "sTitle": "" },
-     
-                ],
-                sPaginationType: "full_numbers"
-            } ); 
-            rendered = true;             
-        }
+                    ],
+                    sPaginationType: "full_numbers"
+                } ); 
+                rendered = true; 
+            }else{
+                $('#question-table').dataTable( {
+                    "aaData": tableData,
+                    "aoColumns": [
+                        { "sTitle": "status" },
+                        { "sTitle": "category" },
+                        { "sTitle": "question" , "sWidth": "20%"},
+                        { "sTitle": "answer" },
+                        { "sTitle": "answer" },
+                        { "sTitle": "answer" },
+                        { "sTitle": "answer" },
+                        { "sWidth": "20%", "bSortable": false, "sTitle": "" },
+         
+                    ],
+                    sPaginationType: "full_numbers"
+                } ); 
+                rendered = true;             
+            }
+        });
+
     }
 };
 
@@ -327,7 +342,9 @@ Template.question_table.events({
                 Questions.findOne({_id:Session.get("edited")}).question);
             $('#question-explanation-'+name).val(
                 Questions.findOne({_id:Session.get("edited")}).explanation);
-            $('#edit-question-modal').modal('show');
+            modalClassDep.changed();
+            modalClass = 'modalActive';
+  
         });
     }, 
     'click .create-category' : function(){
@@ -345,6 +362,9 @@ Template.question_table.events({
     'click .back': function(){
         Session.set("currentStage",Session.get("previousStage"));
     }, 
+    'click .close' : function(){
+            closeQuestionModal();     
+    },
     'click .move-question' : function(){
         var selectedCategoryId = $("#move-question-" + this._id).val();
         var oTable = $('#question-table').dataTable();
@@ -363,7 +383,8 @@ Template.question_table.events({
     'click .add-question': function(){
         Session.set("currentStage","addQuestion");
         Deps.afterFlush(function(){
-            $('#edit-question-modal').modal('show');
+            modalClassDep.changed();
+            modalClass = 'modalActive';
         });
     },
 });
@@ -378,7 +399,8 @@ Template.question_table.helpers({
 	'question' : function(){
 		var end = ((this.question.length < 20) ? "" : "...");
 		return this.question.substring(0,20) + end;
-	}
+	},
+
 });
 
 Template.modalbody.helpers({
@@ -394,7 +416,8 @@ Template.modalbody.helpers({
     },
     'rerender':function(){
         return Session.get("rerender");
-    }
+    },
+
 });
 
 Template.modalfooter.helpers({
@@ -408,5 +431,13 @@ Template.modalfooter.helpers({
     'rerender':function(){
     
         return Session.get("rerender");
+    }
+});
+
+Template.editQuestionModal.helpers({
+    'modalClass' : function(){
+        console.log("inside");
+        modalClassDep.depend(); 
+        return modalClass;
     }
 });
