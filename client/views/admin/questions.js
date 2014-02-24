@@ -72,30 +72,72 @@ var prepareDataSet = function(){
     var query = Questions.find();
     var handle = query.observeChanges({
         added: function(id,question){
-            if(Meteor.user().isAdmin || Meteor.user().isModerator){
-                var record = []; 
-                record.push(question.status); 
-                var categoryName = Categories.findOne({_id:question.categoryId}).name;
-                record.push(categoryName); 
-                var begin = question.question.substring(0,20); 
-                if(question.question.length > 20)
-                    begin += "...";
-                record.push(begin);
+            console.log("added"); 
+            console.log(rendered);
+            var currentlyAdded = $('button[name="'+id+'"]')[0];
+            console.log("curr");
+            console.log(currentlyAdded);
+            console.log(id);
+            if(!currentlyAdded){
+                if(!rendered){
+                    if(Meteor.user().isAdmin || Meteor.user().isModerator){
+                        var record = []; 
+                        record.push(question.status); 
+                        var categoryName = Categories.findOne({_id:question.categoryId}).name;
+                        record.push(categoryName); 
+                        var begin = question.question.substring(0,20); 
+                        if(question.question.length > 20)
+                            begin += "...";
+                        record.push(begin);
 
-                _.each(question.answer,function(answer){
-                    if(question.correctAnswer == answer.id){
-                        record.push('<FONT COLOR="green">'+answer.option+'</FONT>');
+                        _.each(question.answer,function(answer){
+                            if(question.correctAnswer == answer.id){
+                                record.push('<FONT COLOR="green">'+answer.option+'</FONT>');
+                            }else{
+                                record.push(answer.option);
+                            }
+                        });
+                        record.push(deleteButton(id)+editButton(id)+statusChangeButton(id,question.status));
+                        record.push('<input name="'+id+'"type="checkbox">');
+                        tableData.push(record);
+                        counter++;
+           
                     }else{
-                        record.push(answer.option);
+       
+                        if(question.author == Meteor.user()._id){
+                 
+                            var record = []; 
+                            record.push(question.status); 
+                            var categoryName = Categories.findOne({_id:question.categoryId}).name;
+                            record.push(categoryName); 
+                            var begin = question.question.substring(0,20); 
+                            if(question.question.length > 20)
+                                begin += "...";
+                            record.push(begin);
+                            _.each(question.answer,function(answer){
+                                if(question.correctAnswer == answer.id){
+                                    record.push('<FONT COLOR="green">'+answer.option+'</FONT>');
+                                }else{
+                                    record.push(answer.option);
+                                }
+                            });
+                            if(question.answer.length <4){
+                                for(var i=0;i<4-question.answer;i++){
+                                    record.push('');
+                                }
+                            }                    
+                            if(question.status == "pending"){
+                                record.push(deleteButton(id)+editButton(id));   
+                            }else{
+                                record.push('<button style="display : none" name="'+id+'"></button>');
+                            }
+                            tableData.push(record);                   
+                            counter++;
+                        }     
                     }
-                });
-                record.push(deleteButton(id)+editButton(id)+statusChangeButton(id,question.status));
-                record.push('<input name="'+id+'"type="checkbox">');
-                tableData.push(record);
-                counter++;
-   
-            }else{
-                if(question.author == Meteor.user()._id){
+                }
+                if(rendered && (question.author == Meteor.user()._id || Meteor.user().isAdmin || Meteor.user().isModerator)){
+
                     var record = []; 
                     record.push(question.status); 
                     var categoryName = Categories.findOne({_id:question.categoryId}).name;
@@ -111,50 +153,22 @@ var prepareDataSet = function(){
                             record.push(answer.option);
                         }
                     });
-                    if(question.answer.length <4){
-                        for(var i=0;i<4-question.answer;i++){
-                            record.push('');
-                        }
-                    }                    
-                    if(question.status == "pending"){
-                        record.push(deleteButton(id)+editButton(id));   
-                    }else{
-                        record.push('<button style="display : none" name="'+id+'"></button>');
-                    }
-                    tableData.push(record);                   
-                    counter++;
-                }     
-            }
-            if(rendered && question.author != Meteor.user()._id && (Meteor.user().isAdmin || Meteor.user().isModerator)){
+                    var editPanel = deleteButton(id)+editButton(id);
+                    if(Meteor.user().isAdmin || Meteor.user().isModerator)
+                        editPanel = editPanel +statusChangeButton(id,question.status);
 
-                var record = []; 
-                record.push(question.status); 
-                var categoryName = Categories.findOne({_id:question.categoryId}).name;
-                record.push(categoryName); 
-                var begin = question.question.substring(0,20); 
-                if(question.question.length > 20)
-                    begin += "...";
-                record.push(begin);
-                _.each(question.answer,function(answer){
-                    if(question.correctAnswer == answer.id){
-                        record.push('<FONT COLOR="green">'+answer.option+'</FONT>');
-                    }else{
-                        record.push(answer.option);
-                    }
-                });
-                var editPanel = deleteButton(id)+editButton(id);
-                if(Meteor.user().isAdmin || Meteor.user().isModerator)
-                    editPanel = editPanel +statusChangeButton(id,question.status);
+                    record.push(editPanel);
+                    record.push('<input name="'+id+'"type="checkbox">');
+                    $('#question-table').dataTable().fnAddData(record);
+                }
 
-                record.push(editPanel);
-                record.push('<input name="'+id+'"type="checkbox">');
-                $('#question-table').dataTable().fnAddData(record);
+
+
             }
         },
         changed: function(id,field){
              var question = Questions.findOne({_id:id});
 
-            Deps.afterFlush(function(){
                 //var question = Questions.findOne({_id:id});
                 var oTable = $('#question-table').dataTable(); 
                 if($('button[name='+id+']').closest('tr')[0]){
@@ -182,11 +196,10 @@ var prepareDataSet = function(){
                         }
                     }
                 }
-            });
 
         },
         removed : function(id){
-            Deps.afterFlush(function(){
+                console.log("removed");
                 var question = Questions.findOne({_id:id});
                 var oTable = $('#question-table').dataTable(); 
                 if($('button[name='+id+']').closest('tr')[0]){
@@ -194,7 +207,7 @@ var prepareDataSet = function(){
                     var rowIndex = oTable.fnGetPosition($('button[name='+id+']').closest('tr')[0] );
                     oTable.fnDeleteRow(rowIndex); 
                 }
-            });
+
 
         }
     });
@@ -308,9 +321,9 @@ Template.question_table.events({
     'click .delete': function(evt){
         var name = evt.target.parentNode.name+evt.target.name;
         name = name.replace("undefined","");
-        var oTable = $('#question-table').dataTable();
+      /*  var oTable = $('#question-table').dataTable();
         var rowIndex = oTable.fnGetPosition( $(evt.target).closest('tr')[0] );
-        oTable.fnDeleteRow(rowIndex);   
+        oTable.fnDeleteRow(rowIndex);   */
         Meteor.call('removeQuestion',name);
     },
     'click .change': function(evt){
@@ -323,7 +336,6 @@ Template.question_table.events({
         oTable.fnUpdate( update, rowIndex , 0);  
         oTable.fnUpdate( buttons(name,update), rowIndex , 7);
         Meteor.call('changeQuestionStatus',name,update,function(err,res){
-
         });
     },
     'click .edit': function(evt){

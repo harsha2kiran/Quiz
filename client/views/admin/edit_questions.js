@@ -142,8 +142,9 @@ Template.add_new_question.events({
 				}else{
 					$('#new-question-title').val('');
 					$("#question-explanation").val('');
+					closeQuestionModal();
 					if($('#question-table').dataTable()){
-						var question = Questions.findOne({_id:res});
+						/*var question = Questions.findOne({_id:res});
 				        var record = []; 
 				        record.push(question.status); 
 				        var categoryName = Categories.findOne({_id:question.categoryId}).name;
@@ -161,8 +162,8 @@ Template.add_new_question.events({
 		                });
 				        record.push(buttons(question._id,"approved"));
                         record.push('<input name="'+question._id+'"type="checkbox">');
-						$('#question-table').dataTable().fnAddData(record);
-						closeQuestionModal();
+						$('#question-table').dataTable().fnAddData(record);*/
+						
 					}
 				}
 			});
@@ -309,7 +310,7 @@ Template.question_edit_fields.events({
 	},
 	'click .cancel-editing': function() {
 		if($('#edit-question-modal'))
-			$('#edit-question-modal').modal('hide');
+			closeQuestionModal();
 		Session.set('editing-question-' + this._id, false);
 	}
 });

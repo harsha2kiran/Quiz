@@ -46,6 +46,14 @@ Meteor.publish('usernames',function(){
 			added : function(id,user){
 				self.added('usernames',id,{"username":user.username,"avatar" : user.avatar});
 			},
+			changed : function(id,field){
+				if(field.avatar){
+					self.changed('usernames',id,{"avatar":field.avatar});
+				}
+				if(field.username){
+					self.changed('usernames',id,{'username':field.username});
+				}
+			}
 		});
 		self.ready();
 	}
@@ -57,7 +65,7 @@ Meteor.methods({
 		Meteor.users.find().forEach(function(user){
 			_.each(user.emails,function(mail){
 				if(mail.address == phrase){
-					result = {"userId" : user._id, "avatar": user.avatar};
+					result = {"username": user.username, "userId" : user._id, "avatar": user.avatar};
 				}
 			});
 		});

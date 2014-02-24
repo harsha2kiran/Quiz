@@ -17,6 +17,7 @@ var userId ;
 var userAvatar;
 var emailError;
 var emailErrorDep = new Deps.Dependency;
+var userFoundName = "";
 
 var inviteFacebookModalClass = 'modalHidden';
 var inviteFacebookModalClassDep = new Deps.Dependency;
@@ -31,7 +32,6 @@ var inviteEmailModalClassDep = new Deps.Dependency;
 // in meteor this is the best way. 
 
 var closeInviteEmailModal = function(){
-	console.log("test");
 	inviteEmailModalClass = 'modalHidden';
 	inviteEmailModalClassDep.changed();
 	emailError = "";
@@ -73,10 +73,12 @@ Meteor.startup(function(){
 		emailPhraseDep.depend();
 		Meteor.call('emailExists',phrase,function(err,res){
 			if(res){
-				changeRulesDep.changed();
+				
 				emailFound = true;
 				userId = res.userId;
 				userAvatar = res.avatar;
+				userFoundName = res.username;
+				changeRulesDep.changed();
 			}else if(emailFound){
 				changeRulesDep.changed();
 				emailFound = false;
@@ -119,7 +121,6 @@ Template.invite_email_body.helpers({
 });
 Template.invite_email_modal.helpers({
 	inviteEmailModalClass : function(){
-		console.log(inviteEmailModalClass);
 		inviteEmailModalClassDep.depend();
 		return inviteEmailModalClass;
 	}
@@ -263,8 +264,7 @@ bootstrap_alert.warning = function(result) {
 				$('#alert_placeholder').html('<div class="alert alert-warning"><a class="close" data-dismiss="alert">×</a><span>'+"You are friends already"+'</span></div>');
 			});
 			Meteor.setTimeout(function(){
-				console.log("timeout");
-				console.log($('#alert-placeholder'));
+
 				Deps.afterFlush(function(){
 					$('#alert_placeholder').html('');
 				});
@@ -275,8 +275,7 @@ bootstrap_alert.warning = function(result) {
 				$('#alert_placeholder').html('<div class="alert alert-warning"><a class="close" data-dismiss="alert">×</a><span>'+"Friend request already sent"+'</span></div>');
 			});
 			Meteor.setTimeout(function(){
-				console.log("timeout");
-				console.log($('#alert-placeholder'));
+
 				Deps.afterFlush(function(){
 					$('#alert_placeholder').html('');
 				});
@@ -301,7 +300,7 @@ Template.friends.helpers({
 
 		if(keyPressed){
 			if(emailFound){
-				var result =[{"username" : phrase,_id : userId,avatar:userAvatar}];
+				var result =[{"username" : userFoundName,_id : userId,avatar:userAvatar}];
 				return result;
 			}else{
 				var result =[] ;
@@ -419,7 +418,7 @@ var fbSdkLoader = function() {
 		window.fbAsyncInit = function() { // See Facebook JavaScript JDK docs at: https://developers.facebook.com/docs/reference/javascript/
 	// Init the FB JS SDK
 		var initConfig = {
-			appId: '1454909601389839', // App ID from the App Dashboard
+			appId: '525727080873464', // App ID from the App Dashboard
 			status: false, // check the login status upon init?
 			cookie: true, // set sessions cookies to allow your server to access the session?
 			xfbml: false // parse XFBML tags on this page?

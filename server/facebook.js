@@ -94,14 +94,16 @@ Meteor.methods({
             }, Meteor.bindEnvironment(
                 function (err, facebookRes) {
                     var updates = {}; 
-                    updates['services.facebook.accessToken'] = facebookRes.access_token; 
-                    updates['services.facebook.forInvite'] = true;
+                    if(facebookRes.access_token){
+                        updates['services.facebook.accessToken'] = facebookRes.access_token; 
+                        updates['services.facebook.forInvite'] = true;
                     Meteor.users.update({_id:id},
                         {$set:updates},
                         function(err,res){
                             if(err)
                                 console.log("an error"+err+"occured");
                         }); 
+                    }
                 },
                 function(e){
                     console.log('bind failure');
