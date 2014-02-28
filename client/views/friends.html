@@ -151,8 +151,7 @@
 <template name="facebook_modal_body">
 <div class="alert alert-info">
       Your account is not connected with your facebook account. 
-      Connect to facebook if you want to publish image on your wall 
-      after completion.
+      Connect to facebook if you want to invite other users.
 </div> 
     <div>
       <button class="btn btn-primary confirm-facebook">Connect
@@ -173,5 +172,8 @@
     <input name="email" class="form-control" id="email-input" >
     <div id="email-invitatio-alert-box" class="alert alert-danger hidden">
       {{error}}
+      {{#if invitedUserFound}}
+        <button class="btn btn-primary go"><span class="glyphicon glyphicon-circle-arrow-right"></span></button>
+      {{/if}}
     </div>
 </template>

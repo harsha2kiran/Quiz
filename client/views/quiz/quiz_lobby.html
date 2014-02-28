@@ -1,5 +1,6 @@
 <template name="quiz_lobby">
 	<h2>Quiz Lobby - {{categoryName}}</h2>
+
 	{{#if prequiz}}
 		<div>
 			{{#with lobby}}
@@ -11,7 +12,11 @@
 				</ul>
 			{{/with}}
 		</div>
-		<div id="quiz-countdown"></div>
+		<div id="quiz-countdown">
+			<p>
+				{{info}}
+			</p>
+		</div>
 	{{else}}
 		<div class="question-container">
 		{{> currentPlayerStats}}
@@ -25,13 +30,11 @@
 		<br>
 		{{#with current_question}}
 			{{#if quiz_finished_early}}
-				{{#if $neq question_number 1}}
 					<h3>Question {{question_number}} of 5</h3>
 					<h3>{{question}}</h3>
 					{{#each answer}}
 						{{> answer_option}}
 					{{/each}}
-				{{/if}}
 			{{else}}
 				<h3>Question {{question_number}} of 5</h3>
 				<h3>{{question}}</h3>

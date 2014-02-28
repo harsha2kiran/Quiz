@@ -1,0 +1,47 @@
+{
+  "dependencies": {
+    "fbgraph": {
+      "version": "0.2.9",
+      "dependencies": {
+        "request": {
+          "version": "2.11.4",
+          "dependencies": {
+            "form-data": {
+              "version": "0.0.3",
+              "dependencies": {
+                "combined-stream": {
+                  "version": "0.0.3",
+                  "dependencies": {
+                    "delayed-stream": {
+                      "version": "0.0.5"
+                    }
+                  }
+                },
+                "async": {
+                  "version": "0.1.9"
+                }
+              }
+            },
+            "mime": {
+              "version": "1.2.7"
+            }
+          }
+        },
+        "qs": {
+          "version": "0.5.6"
+        }
+      }
+    },
+    "fb": {
+      "version": "0.6.2",
+      "dependencies": {
+        "request": {
+          "version": "2.9.203"
+        },
+        "crypto": {
+          "version": "0.0.3"
+        }
+      }
+    }
+  }
+}

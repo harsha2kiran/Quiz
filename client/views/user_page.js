@@ -30,6 +30,9 @@ Template.user_page.helpers({
 	},
 	'avatar' : function(){
 		return this.avatar;
+	},
+	'username' : function(){
+		return this.username;
 	} 
 });
 

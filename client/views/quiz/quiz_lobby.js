@@ -1,8 +1,83 @@
 
+var infoDep = new Deps.Dependency;
+var info ;
+var stop; 
+var countdown;
+Meteor.startup(function(){
+	var handle = Lobbys.find().observe({
+		added: function(lobby){
+			info = "";
+			infoDep.changed();
+			if(lobby){
+
+				if(lobby.playerCount == 2){
+					var time = 5;
+					countdown = Meteor.setInterval(function() {
+						info = 'Game Starts in' + time + 'second(s)';
+						infoDep.changed();
+						time--;
+					}, 1000);
+
+					stop = Meteor.setTimeout(function() {
+						info = 'Game will start...';
+						infoDep.changed();
+						Meteor.clearInterval(countdown);
+						countdown = 0;
+					}, 6000);
+
+				}else if(lobby.playerCount == 1){
+					info = "";
+					infoDep.changed();
+				}
+			}else{
+
+			}
+		},
+		changed : function(newDoc,oldDoc){
+			if(newDoc.playerCount == 1 && oldDoc.playerCount == 2){
+				Meteor.clearInterval(countdown);
+				Meteor.clearTimeout(stop);
+				var quiz = Quizzes.findOne();	
+				if(countdown!=0){
+					console.log("countdown");
+					console.log(countdown);
+					info = "Your oponent left you will be redirect to lobby";
+					Meteor.call('setUserState','online',quiz.players[0].userId);
+					Meteor.setTimeout(function(){
+					Router.go('/');
+						Meteor.setTimeout(function() {
+							Router.go('/lobby/' + quiz.categoryId);
+						},100);
+					},3000);
+					infoDep.changed();
+				}
+
+			}if(newDoc.playerCount == 2 && oldDoc.playerCount == 1){
+				var time = 5;
+				countdown = Meteor.setInterval(function() {
+					info = 'Game Starts in' + time + 'second(s)';
+					infoDep.changed();
+					time--;
+				}, 1000);
+
+				stop = Meteor.setTimeout(function() {
+					info = 'Game will start...';
+					infoDep.changed();
+					Meteor.clearInterval(countdown);
+				}, 6000)
+			}
+		}
+
+	});
+});
 
 
 Template.quiz_lobby.helpers({
 
+	info : function(){
+		infoDep.depend();
+		return info;
+	},
 	noFriendship : function(){
 		var quiz = Quizzes.findOne({});
 		if (Meteor.user()) {
@@ -78,7 +153,8 @@ Template.quiz_lobby.helpers({
 	},
 	prequiz: function()  {
 		var quiz = Quizzes.findOne({});
-		return (!quiz || quiz.state === 'prequiz');
+		var lobby = Lobbys.findOne({});
+		return (!quiz || quiz.state === 'prequiz' || (countdown != 0 && lobby.playerCount == 1));
 	},
 	categoryName: function() {
 		var category = Categories.findOne( this.categoryId );
@@ -330,16 +406,7 @@ Template.quiz_lobby.events({
 	}
 });
 
-Template.quiz_lobby.created = function() {
-	Deps.autorun(function() {
-		var lobby = Lobbys.findOne({});
-		if (lobby) {
-			if (lobby.playerCount === 2) {
-				quizCountdownTimer();
-			}
-		}
-	});
-}
+
 
 var quizCountdownTimer = function() {
 	var time = 5;
@@ -348,10 +415,11 @@ var quizCountdownTimer = function() {
 		time--;
 	}, 1000);
 
-	Meteor.setTimeout(function() {
+	/*Meteor.setTimeout(function() {
 		$('#quiz-countdown').html('Game will start...');
 		Meteor.clearInterval(countdown);
 	}, 6000);
+*/
 }
 
 
@@ -403,11 +471,7 @@ Template.question_result.helpers({
 			
 	},
 	question_number: function() {
-		console.log("quiz");
-		console.log(quiz);
 		var quiz = Quizzes.findOne({});
-		console.log("quiz");
-		console.log(quiz);
 		return quiz.currentQuestion + 1;
 	},
 });

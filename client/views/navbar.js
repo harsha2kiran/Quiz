@@ -63,6 +63,7 @@ Template.navbar.events({
 		}
 	},
 	'click .busy' : function(evt){
+		console.log(Quizzes);
 		Session.set("currently_clicked",evt.target.name);
 		$('#confirm_break_game').addClass('modalActive');
 		$('#confirm_break_game').removeClass('modalHidden');

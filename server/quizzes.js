@@ -82,7 +82,6 @@ Meteor.publish('currentQuiz', function(lobbyId) {
 		},
 		removed: function(id) {
 			self.removed('quizzes', id);
-
 		}
 	});
 
@@ -262,7 +261,9 @@ Quiz.doQuestion = function(quizId) {
 		var lobby = Lobbys.findOne(quiz.lobbyId);
 		if (lobby.players.length === 1) {
 			Quizzes.update(quizId, {$set: { state: 'quizfinishedearly' } } );
-			
+			_.each(quiz.players,function(player){
+				Meteor.call('setUserState','online',player.userId);
+			});
 			var playerLeft = true;
 		}
 		

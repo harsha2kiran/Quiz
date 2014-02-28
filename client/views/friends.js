@@ -26,7 +26,8 @@ var conntectFacebookModalClassDep = new Deps.Dependency;
 var inviteEmailModalClass = 'modalHidden';
 var inviteEmailModalClassDep = new Deps.Dependency;
 
-
+var invitedUserFound;
+var invitedUserFoundDep = new Deps.Dependency;
 
 // because bootstrap modal doesnt work proerly 
 // in meteor this is the best way. 
@@ -38,6 +39,8 @@ var closeInviteEmailModal = function(){
 	emailErrorDep.changed();
 	$('#email-invitatio-alert-box').addClass('hidden');
 	$('#email-input').val("");
+	invitedUserFound = null; 
+	invitedUserFoundDep.changed(); 
 }
 
 var openInviteEmailModal = function(){
@@ -118,6 +121,10 @@ Template.invite_email_body.helpers({
 		emailErrorDep.depend();
 		return emailError;
 	},
+	invitedUserFound: function(){
+		invitedUserFoundDep.depend();
+		return invitedUserFound;
+	}
 });
 Template.invite_email_modal.helpers({
 	inviteEmailModalClass : function(){
@@ -128,7 +135,11 @@ Template.invite_email_modal.helpers({
 Template.invite_email_modal.events({
 	'click .close' : function(){
 		closeInviteEmailModal();
-	} 
+	},
+	'click .go' : function(){
+		closeInviteEmailModal();
+		Router.go('/user/'+invitedUserFound._id);
+	}
 });
 Template.friends.events({
 	'click .userPill' : function(){
@@ -178,6 +189,8 @@ Template.friends.events({
 		}
 	}, 
 	'click #send-invitation': function(){
+		invitedUserFound = null;
+		invitedUserFoundDep.changed();
 		var friend = $('#email-input').val();
 		var send = true;
 		if(friend.indexOf("@") == -1){
@@ -202,8 +215,10 @@ Template.friends.events({
 		if(send){
 			Meteor.call('sendMail',friend,function(err,res){
 				console.log(res);
-				if(res == 1){
-					emailError = "user already exists";
+				if(res.code == 1){
+					emailError = "user already exists, go to user profile page";
+					invitedUserFound = res.user; 
+					invitedUserFoundDep.changed(); 
 					emailErrorDep.changed();
 					Deps.afterFlush(function(){
 						$('#email-invitatio-alert-box').removeClass('hidden');

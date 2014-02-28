@@ -6,14 +6,12 @@
 standard-app-packages
 preserve-inputs
 accounts-password
-iron-router
 insecure
 moment
 sync-methods
 bootstrap3-wysihtml5
 bootstrap-3
 accounts-facebook
-npm
 accounts-google
 accounts-twitter
 underscore
@@ -26,3 +24,5 @@ accounts-ui-bootstrap-3
 font-awesome
 autocomplete
 jquery-ui-bootstrap
+npm
+iron-router

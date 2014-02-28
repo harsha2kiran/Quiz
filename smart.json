@@ -1,11 +1,9 @@
 {
   "packages": {
-    "iron-router": {},
     "moment": {},
     "sync-methods": {},
     "bootstrap3-wysihtml5": {},
     "bootstrap-3": {},
-    "npm": {},
     "datatables": {},
     "event-hooks": {},
     "handlebar-helpers": {},
@@ -16,6 +14,7 @@
     },
     "font-awesome": {},
     "autocomplete": {},
-    "jquery-ui-bootstrap": {}
+    "jquery-ui-bootstrap": {},
+    "iron-router": {}
   }
 }

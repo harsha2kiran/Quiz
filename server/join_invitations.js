@@ -1,10 +1,12 @@
 Meteor.methods({
 	'sendMail' : function(friend){
 		var flag = false;
+		var userFound;
 		Meteor.users.find().forEach(function(user){
 			_.each(user.emails,function(email){
 				if(email.address == friend){
 					flag = true;
+					userFound = user;
 				}
 			});
 		});
@@ -18,7 +20,11 @@ Meteor.methods({
 			    +invitaionLink
 	 	  	});
 		}else{
-			return 1;
+			var res = {
+				code : 1,
+				user : userFound,
+			}
+			return res;
 		}
 	}
 });
